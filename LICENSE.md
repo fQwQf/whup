@@ -2,12 +2,13 @@
 
 **Version 1, November 2, 2024**  
 License Copyright © 2024 fQwQf fQwQf6@outlook.com  
-Software Copyright © 2024 fQwQf mr-gentle-666
+Software Copyright © 2024 fQwQf mr-gentle-666 JYT  
   
 
 **Copyright Statement**
 
-In this document, unless otherwise specified, the software refers to whup, and the developer refers to fQwQf and mr-gentle-666.  
+In this document, unless otherwise specified, the software refers to whup, and the developer refers to fQwQf , mr-gentle-666 and JYT
+.  
 The copyright of this software remains with the developer. This open-source agreement is essentially a copyright license agreement that allows the rights holder to conditionally permit specific rights to the public. Users are granted the right to use, copy, modify, and redistribute this software, provided they comply with the terms of this agreement, but this agreement does not transfer the copyright of the software.
 
 **1. Usage Rights**
