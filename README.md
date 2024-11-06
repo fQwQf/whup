@@ -1,4 +1,5 @@
 # WHUP
+![WHUP](logo.png)
 WHUP/ ˈdʌbljuː eɪtʃ ʌp /(WHUP: High-level Unified Programming)是一个强类型，动态类型的编程语言。在这里，我们将实现whup的解释器，如果可能的话，实现whup的编译器。  
 # 重要数据结构
 ## 1.抽象语法树
