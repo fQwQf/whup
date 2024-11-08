@@ -32,18 +32,18 @@ std::string preprocess(const std::string& code) {
                 } else {
                     result += code[i];
                 }
-            } else if (code[i] == ' ' || code[i] == '\t') {
+            } else if (code[i] == ' ' || code[i] == '\t' || code[i] == '\n') {
                 if (!result.empty() && result.back() != ' ' && result.back() != '\n') {
                     result += code[i];
                 }
-            } else if (code[i] != '\n'){
+            } else {
                 result += code[i];
             }
         }
     }
 
-    // 去除末尾多余的空格
-    while (!result.empty() && (result.back() == ' ' || result.back() == '\t')) {
+    // 去除末尾多余的空格和换行符
+    while (!result.empty() && (result.back() == ' ' || result.back() == '\t' || result.back() == '\n')) {
         result.pop_back();
     }
 
