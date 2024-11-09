@@ -28,14 +28,14 @@ struct Scope {
     int id;
     Scope* parent;
 
-    Scope(int id, Scope* parent = nullptr) : id(id), parent(parent) {}
+    Scope(int id) : id(id), parent(parent) {}
 };
 
 class Lexer {
 public:
     Lexer(const std::string &input) : input(input), pos(0), line(1), current_scope_id(0)
     {
-        scopes.push_back(Scope(current_scope_id, nullptr));
+        scopes.push_back(Scope(current_scope_id));
     }
 
     std::vector<Token> tokenize();
@@ -178,7 +178,9 @@ bool Lexer::is_keyword(const std::string& word) {
 std::unordered_set<std::string> Lexer::keywords() const {
     return {
         "int", "char", "float", "double", "bool", "void",
-        "if", "else", "for", "while", "return"
+        "if", "else", "for", "while", "return","switch","func",
+        "let","var","const","break","continue","case", "true",
+        "false","null","new","delete","this","class","import","function"
     };
 }
 
