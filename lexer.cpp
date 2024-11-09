@@ -8,6 +8,8 @@
 #include <vector>
 #include <cctype>
 #include <unordered_set>
+#include <stack>
+#include <memory>
 
 enum class TokenType {
     KEYWORD, IDENTIFIER, NUMBER, STRING, SYMBOL, EOF_TOKEN
@@ -17,13 +19,24 @@ struct Token {
     TokenType type;
     std::string value;
     int line_number;
+    int scope_id;
 
-    Token(TokenType t, const std::string& v, int ln) : type(t), value(v), line_number(ln) {}
+    Token(TokenType t, const std::string& v, int ln, int sid) : type(t), value(v), line_number(ln) {}
+};
+
+struct Scope {
+    int id;
+    Scope* parent;
+
+    Scope(int id, Scope* parent = nullptr) : id(id), parent(parent) {}
 };
 
 class Lexer {
 public:
-    Lexer(const std::string& input) : input(input), pos(0), line(1) {}
+    Lexer(const std::string &input) : input(input), pos(0), line(1), current_scope_id(0)
+    {
+        scopes.push_back(Scope(current_scope_id, nullptr));
+    }
 
     std::vector<Token> tokenize();
 
@@ -31,6 +44,10 @@ private:
     std::string input;
     size_t pos;
     int line;
+    int current_scope_id;
+    int max_scope_id;
+    Scope* current_scope;
+    std::vector<Scope> scopes;
 
     char peek(int offset);
     char next();
@@ -44,6 +61,9 @@ private:
     bool is_keyword(const std::string& word);
 
     std::unordered_set<std::string> keywords() const;
+
+    void enter_scope();
+    void exit_scope();
 };
 
 char Lexer::peek(int offset=0) {
@@ -83,9 +103,9 @@ Token Lexer::read_keyword_or_identifier() {
         result += next();
     }
     if (is_keyword(result)) {
-        return Token(TokenType::KEYWORD, result, line);
+        return Token(TokenType::KEYWORD, result, line, current_scope_id);
     }
-    return Token(TokenType::IDENTIFIER, result, line);
+    return Token(TokenType::IDENTIFIER, result, line, current_scope_id);
 }
 
 Token Lexer::read_number() {
@@ -93,7 +113,7 @@ Token Lexer::read_number() {
     while (std::isdigit(peek()) || peek() == '.') {
         result += next();
     }
-    return Token(TokenType::NUMBER, result, line);
+    return Token(TokenType::NUMBER, result, line, current_scope_id);
 }
 
 Token Lexer::read_string_1() {
@@ -103,7 +123,7 @@ Token Lexer::read_string_1() {
         result += next();
     }
     if (peek() == '"') next();
-    return Token(TokenType::STRING, result, line);
+    return Token(TokenType::STRING, result, line, current_scope_id);
 }
 
 Token Lexer::read_string_2() {
@@ -113,12 +133,12 @@ Token Lexer::read_string_2() {
         result += next();
     }
     if (peek() == '\'') next();
-    return Token(TokenType::STRING, result, line);
+    return Token(TokenType::SYMBOL, result, line, current_scope_id);
 }
 
 Token Lexer::read_symbol() {
     std::string result(1, next());
-    return Token(TokenType::SYMBOL, result, line);
+    return Token(TokenType::SYMBOL, result, line, current_scope_id);
 }
 
 std::vector<Token> Lexer::tokenize() {
@@ -127,8 +147,14 @@ std::vector<Token> Lexer::tokenize() {
         skip_whitespace();
         skip_comment();
         if (peek() == '\0') {
-            tokens.push_back(Token(TokenType::EOF_TOKEN, "", line));
+            tokens.push_back(Token(TokenType::EOF_TOKEN, "", line, current_scope_id));
             break;
+        } else if (peek() == '{') {
+            tokens.push_back(read_symbol());
+            enter_scope();
+        } else if (peek() == '}') {
+            exit_scope();
+            tokens.push_back(read_symbol());
         } else if (std::isalpha(peek()) || peek() == '_') {
             tokens.push_back(read_keyword_or_identifier());
         } else if (std::isdigit(peek())) {
@@ -137,7 +163,7 @@ std::vector<Token> Lexer::tokenize() {
             tokens.push_back(read_string_1());
         } else if (peek() == '\'') {
             tokens.push_back(read_string_2());
-        } else if (peek() != '\n'){
+        }  else {
             tokens.push_back(read_symbol());
         }
     }
@@ -154,6 +180,22 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "int", "char", "float", "double", "bool", "void",
         "if", "else", "for", "while", "return"
     };
+}
+
+void Lexer::enter_scope()
+{
+    
+    //current_scope_id = max_scope_id++;
+    //scopes.push_back(Scope(current_scope_id, current_scope));
+    //current_scope = &(scopes[scopes.size()-1]);    
+    
+}
+
+void Lexer::exit_scope()
+{
+    
+    //current_scope =  current_scope->parent;
+    //current_scope_id = current_scope->id;
 }
 
 int main() {
@@ -173,7 +215,8 @@ int main() {
     std::vector<Token> tokens = lexer.tokenize();
 
     for (const auto& token : tokens) {
-        std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value << ", Line: " << token.line_number << std::endl;
+        std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value 
+                  << ", Line: " << token.line_number << ", Scope ID: " << token.scope_id << std::endl;
     }
 
     return 0;
