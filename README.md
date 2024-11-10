@@ -85,8 +85,313 @@ logo左边的图形是w和u的结合，右边的图形由左边的旋转180°而
 
 ## 核心议题
 
-- 是否真的构建一颗抽象语法树？    
-
-
+- 是否真的构建一颗抽象语法树？
 - 可以引入动态类型检查吗？如何抛出错误？
 - 函数和类在哪里处理？
+
+## whup语法规则
+
+whup的语法规则借鉴了python和JavaScript。  
+
+### whup 变量
+
+#### 声明（创建） whup 变量
+
+在 whup 中创建变量通常称为"声明"变量。  
+
+我们使用 var 关键词来声明变量：  
+
+```JavaScript
+var carname;  
+```
+
+变量声明之后，该变量是空的（它没有值）。  
+如需向变量赋值，请使用等号：  
+
+```JavaScript
+carname="Volvo";
+```
+
+不过，您也可以在声明变量时对其赋值：
+
+```JavaScript
+var carname="Volvo";
+```
+
+在对声明的变量初次赋值时，whup会自动确定变量数据类型。  
+您也可以不使用 var 关键词来声明变量，而直接为变量赋值：whup会自动声明变量。但是，在涉及变量作用域时，这可能会造成意料之外的结果。  
+
+#### whup 动态类型
+
+whup 拥有动态类型。这意味着相同的变量可用作不同的类型：
+
+```JavaScript
+var x;               // x 为 undefined
+var x = 5;           // 现在 x 为数字
+var x = "John";      // 现在 x 为字符串
+```
+
+变量的数据类型可以使用 type 函数来查看。
+
+#### whup 数据类型转换
+
+有时候，我们需要对数据内置的类型进行转换，数据类型的转换，一般情况下你只需要将数据类型作为函数名即可。
+
+whup 数据类型转换可以分为两种：
+
+- 隐式类型转换 - 自动完成
+- 显式类型转换 - 需要使用类型函数来转换
+
+##### 隐式类型转换
+
+在隐式类型转换中，whup 会自动将一种数据类型转换为另一种数据类型，不需要我们去干预。
+
+以下实例中，我们对两种不同类型的数据进行运算，较低数据类型（整数）就会转换为较高数据类型（浮点数）以避免数据丢失。
+
+```JavaScript
+var num_int = 123
+var num_flo = 1.23
+
+var num_new = num_int + num_flo
+
+print("num_int 数据类型为:"+type(num_int))
+print("num_flo 数据类型为:"+type(num_flo))
+
+print("num_new 值为:"+num_new)
+print("num_new 数据类型为:"+type(num_new))
+```
+
+以上实例输出结果为：
+
+```bash
+num_int 数据类型为: int
+num_flo 数据类型为: float
+num_new: 值为: 124.23
+num_new 数据类型为: float
+```
+
+代码解析：
+
+实例中我们对两个不同数据类型的变量 num_int 和 num_flo 进行相加运算，并存储在变量 num_new 中。
+然后查看三个变量的数据类型。
+在输出结果中，我们看到 num_int 是 整型（integer） ， num_flo 是 浮点型（float）。
+同样，新的变量 num_new 是 浮点型（float），这是因为 whup 会将较小的数据类型转换为较大的数据类型，以避免数据丢失。
+我们再看一个实例，整型数据与字符串类型的数据进行相加：
+
+```JavaScript
+var num_int = 123
+var num_str = "456"
+
+print("num_int 数据类型为:"+type(num_int))
+print("num_str 数据类型为:"+type(num_str))
+
+print(num_int+num_str)
+```
+
+以上实例输出结果为：
+
+```bash
+num_int 数据类型为: int
+num_str 数据类型为: str
+123456
+```
+
+从输出中可以看出，整型和字符串类型运算时，whup会将整型类型转换为字符串。  
+但是，这种结果不一定是我们期望的，whup为这些类型的情况提供了一种解决方案，称为显式转换。
+
+##### 显式类型转换
+
+在显式类型转换中，用户将对象的数据类型转换为所需的数据类型。 我们使用 int()、float()、str() 等预定义函数来执行显式类型转换。  
+
+int() 强制转换为整型：
+
+```JavaScript
+var x = int(1)   // x 输出结果为 1
+var y = int(2.8) // y 输出结果为 2
+var z = int("3") // z 输出结果为 3
+```
+
+float() 强制转换为浮点型：
+
+```JavaScript
+var x = float(1)     // x 输出结果为 1.0
+var y = float(2.8)   // y 输出结果为 2.8
+var z = float("3")   // z 输出结果为 3.0
+var w = float("4.2") // w 输出结果为 4.2
+```
+
+str() 强制转换为字符串类型：
+
+```JavaScript
+var x = str("s1") // x 输出结果为 's1'
+var y = str(2)    // y 输出结果为 '2'
+var z = str(3.0)  // z 输出结果为 '3.0'
+```
+
+整型和字符串类型进行运算，就可以用强制类型转换来完成：
+
+```JavaScript
+var num_int = 123
+var num_str = "456"
+
+print("num_int 数据类型为:"+type(num_int))
+print("类型转换前，num_str 数据类型为:"+type(num_str))
+
+num_str = int(num_str)    // 强制转换为整型
+print("类型转换后，num_str 数据类型为:"+type(num_str))
+
+var num_sum = num_int + num_str
+
+print("num_int 与 num_str 相加结果为:"+num_sum)
+print("num_sum 数据类型为:"+type(num_sum))
+```
+
+以上实例输出结果为：
+
+```bash
+num_int 数据类型为: int
+类型转换前，num_str 数据类型为: str
+类型转换后，num_str 数据类型为: int
+num_int 与 num_str 相加结果为: 579
+num_sum 数据类型为: int
+```
+
+#### 变量命名规则
+
+- 变量必须以字母或下划线（_）开头  
+- 变量名称对大小写敏感（y 和 Y 是不同的变量）  
+
+#### 重新声明 whup 变量
+
+如果重新声明 whup 变量，该变量的值不会丢失：  
+
+在以下两条语句执行后，变量 carname 的值依然是 "Volvo"：  
+
+```JavaScript
+var carname="Volvo";
+var carname;
+```
+
+### whup 注释
+
+whup 不会执行注释。  
+我们可以添加注释来对 whup 进行解释，或者提高代码的可读性。  
+单行注释以 `//` 开头。  
+多行注释以 `/*` 开始，以 `*/` 结尾。  
+
+### whup 运算符
+
+#### whup运算符优先级
+
+以下表格列出了从最高到最低优先级的所有运算符， 相同单元格内的运算符具有相同优先级。 运算符均指二元运算，除非特别指出。 相同单元格内的运算符从左至右分组（除了幂运算和赋值是从右至左分组）：
+
+运算符 | 描述
+---|---
+(expressions...) | 圆括号的表达式
+x[index], x[index:index], x(arguments...), x.attribute | 读取，切片，调用，属性引用
+**|乘方(指数)
+*, /, %|乘，除，取余
++, -|加和减
+<, <=, >, >=, !=, ==|比较运算，包括成员检测和标识号检测
+not x,!x | 逻辑非 NOT
+and,&&|逻辑与 AND
+or,\|\||逻辑或 OR
+=,+=,-=,*=,/=,%=|赋值表达式
+
+#### 用于字符串的 + 运算符
+
+\+ 运算符用于把文本值或字符串变量加起来（连接起来）。  
+如需把两个或多个字符串变量连接起来，请使用 + 运算符。
+
+```JavaScript
+txt1="What a very";
+txt2="nice day";
+txt3=txt1+txt2;
+```
+
+txt3 运算结果如下:
+
+```JavaScript
+What a verynice day
+```
+
+#### 对字符串和数字进行加法运算
+
+两个数字相加，返回数字相加的和，如果数字与字符串相加，返回字符串，如下实例：  
+
+```JavaScript
+x=5+5;
+y="5"+5;
+z="Hello"+5;
+```
+
+x,y, 和 z 输出结果为:
+
+```JavaScript
+10
+55
+Hello5
+```
+
+如果把数字与字符串相加，结果将成为字符串。
+
+### whup作用域
+
+在 whup 中，作用域为可访问变量，对象，函数的集合。  
+whup 中每一个代码块，包括函数，类，内置语句都拥有自身的作用域，并且所有作用域之间呈包含关系。  
+显然，作用域的父子关系是递归的。即，父作用域的父作用域也是父作用域，子作用域同理。  
+
+#### 父作用域与子作用域变量的关系
+
+在父作用域声明的变量是父作用域变量，它在该作用域与它的所有子作用域中的任何地方都是可见的。  
+
+```JavaScript
+var carname="Volvo";
+// 这里可以调用 carname 变量
+function myFunction(){
+    // 这里也可以调用 carname 变量
+}
+```
+
+在子作用域内声明的变量是子作用域变量，它在父作用域是不可见的。  
+
+```JavaScript
+// 这里不能调用 carname 变量
+function myFunction(){
+    var carname="Volvo";
+    // 这里可以调用 carname 变量
+}
+// 这里不能调用 carname 变量
+```
+
+#### 重新定义变量
+
+在子作用域重新声明变量后，对于重新声明的变量所做的修改只在子作用域内有效。
+
+```JavaScript
+var x = 10;
+// 这里输出 x 为 10
+{
+    // 这里输出 x 为 10
+    var x = 2;
+    // 这里输出 x 为 2
+}
+// 这里输出 x 为 10
+```
+
+### whup 输入和输出
+
+#### print() 函数
+
+print() 内置函数用于向控制台打印输出。它只接受一个参数，即要输出到控制台的文本。如果输入并非字符串，那么会自动进行类型转换。  
+没有返回值。  
+
+#### 读取用户输入
+
+input() 内置函数接受一行数据，返回一个字符串。
+
+```JavaScript
+var x = input("请输入一些文本");
+```
+
+如果想要获取非字符串输入，请使用显式类型转换。
