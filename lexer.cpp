@@ -202,15 +202,13 @@ void Lexer::exit_scope()
 
 int main() {
     std::string code = R"(
-        // 这是一个注释
-        int main() {
-            int a = 10; // 变量声明
-            float b = 3.14;
-            /* 多行
-               注释 */
-            char c = 'csdf';
-            return 0;
-        }
+        var a ;
+a = 2;
+var b;
+var c;
+b = 2;
+c = a + b;
+print(c);
     )";
 
     Lexer lexer(code);

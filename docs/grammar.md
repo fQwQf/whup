@@ -27,7 +27,7 @@ var name = "fQwQf";
 ```
 
 whup 会在初次赋值时自动确定变量的数据类型。  
-此外，也可以直接赋值而不使用 `var`，whup 会自动声明变量，但在变量作用域上可能产生意料外的结果。
+此外，也可以直接赋值而不使用 `var` `，whup 会自动声明变量，但在变量作用域上可能产生意料外的结果 `。
 
 ### whup 的动态类型
 
@@ -285,3 +285,73 @@ var x = input("请输入一些文本");
 ```
 
 如需其他类型输入，可使用显式类型转换。  
+
+## 条件判断
+if...else if...else 语句
+使用 if....else if...else 语句来选择多个代码块之一来执行。
+
+语法
+if (condition1)
+{
+    当条件 1 为 true 时执行的代码
+}
+else if (condition2)
+{
+    当条件 2 为 true 时执行的代码
+}
+else
+{
+  当条件 1 和 条件 2 都不为 true 时执行的代码
+}
+
+## 循环
+
+while 循环
+Python 中 while 语句的一般形式：
+
+while 判断条件(condition)：
+    执行语句(statements)……
+
+## for 语句
+
+Python for 循环可以遍历任何可迭代对象，如一个列表或者一个字符串。
+
+for循环的一般格式如下：
+
+for <variable> in <sequence>:
+    <statements>
+else:
+    <statements>
+
+同时，循环中应当支持break 和 continue 语句。
+
+## 函数
+JavaScript 函数语法
+函数就是包裹在花括号中的代码块，前面使用了关键词 function：
+
+function functionname()
+{
+    // 执行代码
+}
+当调用该函数时，会执行函数内的代码。
+
+可以在某事件发生时直接调用函数（比如当用户点击按钮时），并且可由 JavaScript 在任何位置进行调用。
+
+JavaScript 对大小写敏感。关键词 function 必须是小写的，并且必须以与函数名称相同的大小写来调用函数。
+
+调用带参数的函数
+在调用函数时，您可以向其传递值，这些值被称为参数。
+
+这些参数可以在函数中使用。
+
+您可以发送任意多的参数，由逗号 (,) 分隔：
+
+myFunction(argument1,argument2)
+当您声明函数时，请把参数作为变量来声明：
+
+function myFunction(var1,var2)
+{
+代码
+}
+变量和参数必须以一致的顺序出现。第一个变量就是第一个被传递的参数的给定的值，以此类推。  
+
