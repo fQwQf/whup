@@ -19,9 +19,8 @@ struct Token {
     TokenType type;
     std::string value;
     int line_number;
-    int scope_id;
 
-    Token(TokenType t, const std::string& v, int ln, int sid) : type(t), value(v), line_number(ln) {}
+    Token(TokenType t, const std::string& v, int ln) : type(t), value(v), line_number(ln) {}
 };
 
 struct Scope {
@@ -32,9 +31,9 @@ struct Scope {
 };
 
 class Lexer {
+
 public:
-    Lexer(const std::string &input) : input(input), pos(0), line(1), current_scope_id(0)
-    {
+    Lexer(const std::string &input) : input(input), pos(0), line(1) {
         scopes.push_back(Scope(current_scope_id));
     }
 
@@ -59,11 +58,13 @@ private:
     Token read_string_2();
     Token read_symbol();
     bool is_keyword(const std::string& word);
+    bool is_symbol_set(const std::string& word);
+
 
     std::unordered_set<std::string> keywords() const;
+    std::unordered_set<std::string> symbol_sets() const;
 
-    void enter_scope();
-    void exit_scope();
+
 };
 
 char Lexer::peek(int offset=0) {
@@ -103,9 +104,9 @@ Token Lexer::read_keyword_or_identifier() {
         result += next();
     }
     if (is_keyword(result)) {
-        return Token(TokenType::KEYWORD, result, line, current_scope_id);
+        return Token(TokenType::KEYWORD, result, line);
     }
-    return Token(TokenType::IDENTIFIER, result, line, current_scope_id);
+    return Token(TokenType::IDENTIFIER, result, line);
 }
 
 Token Lexer::read_number() {
@@ -113,7 +114,7 @@ Token Lexer::read_number() {
     while (std::isdigit(peek()) || peek() == '.') {
         result += next();
     }
-    return Token(TokenType::NUMBER, result, line, current_scope_id);
+    return Token(TokenType::NUMBER, result, line);
 }
 
 Token Lexer::read_string_1() {
@@ -123,7 +124,7 @@ Token Lexer::read_string_1() {
         result += next();
     }
     if (peek() == '"') next();
-    return Token(TokenType::STRING, result, line, current_scope_id);
+    return Token(TokenType::STRING, result, line);
 }
 
 Token Lexer::read_string_2() {
@@ -133,12 +134,15 @@ Token Lexer::read_string_2() {
         result += next();
     }
     if (peek() == '\'') next();
-    return Token(TokenType::SYMBOL, result, line, current_scope_id);
+    return Token(TokenType::SYMBOL, result, line);
 }
 
 Token Lexer::read_symbol() {
     std::string result(1, next());
-    return Token(TokenType::SYMBOL, result, line, current_scope_id);
+    if (is_symbol_set(result + peek())){
+        result += next();
+    };
+    return Token(TokenType::SYMBOL, result, line);
 }
 
 std::vector<Token> Lexer::tokenize() {
@@ -147,13 +151,11 @@ std::vector<Token> Lexer::tokenize() {
         skip_whitespace();
         skip_comment();
         if (peek() == '\0') {
-            tokens.push_back(Token(TokenType::EOF_TOKEN, "", line, current_scope_id));
+            tokens.push_back(Token(TokenType::EOF_TOKEN, "end_of_file", line));
             break;
         } else if (peek() == '{') {
             tokens.push_back(read_symbol());
-            enter_scope();
         } else if (peek() == '}') {
-            exit_scope();
             tokens.push_back(read_symbol());
         } else if (std::isalpha(peek()) || peek() == '_') {
             tokens.push_back(read_keyword_or_identifier());
@@ -175,6 +177,11 @@ bool Lexer::is_keyword(const std::string& word) {
     return keyword_set.find(word) != keyword_set.end();
 }
 
+bool Lexer::is_symbol_set(const std::string& word) {
+    static const std::unordered_set<std::string> keyword_set = symbol_sets();
+    return keyword_set.find(word) != keyword_set.end();
+}
+
 std::unordered_set<std::string> Lexer::keywords() const {
     return {
         "int", "char", "float", "double", "bool", "void",
@@ -184,20 +191,11 @@ std::unordered_set<std::string> Lexer::keywords() const {
     };
 }
 
-void Lexer::enter_scope()
-{
-    
-    //current_scope_id = max_scope_id++;
-    //scopes.push_back(Scope(current_scope_id, current_scope));
-    //current_scope = &(scopes[scopes.size()-1]);    
-    
-}
-
-void Lexer::exit_scope()
-{
-    
-    //current_scope =  current_scope->parent;
-    //current_scope_id = current_scope->id;
+std::unordered_set<std::string> Lexer::symbol_sets() const {
+    return {
+        "++","--","+=","-=","*=","/=","%=","&=","|=","^=","<<=",">>=",
+        "==","!=",">=","<=","&&","||","**","->","::","<<",">>"
+    };
 }
 
 int main() {
@@ -207,7 +205,7 @@ a = 2;
 var b;
 var c;
 b = 2;
-c = a + b;
+c = a ** b;
 print(c);
     )";
 
@@ -216,7 +214,7 @@ print(c);
 
     for (const auto& token : tokens) {
         std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value 
-                  << ", Line: " << token.line_number << ", Scope ID: " << token.scope_id << std::endl;
+                  << ", Line: " << token.line_number  << std::endl;
     }
 
     return 0;

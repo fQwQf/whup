@@ -1,4 +1,4 @@
-//a=1;
+var a=1;
 
 while(a<4){
     a++;
@@ -8,19 +8,4 @@ while(a<4){
     a++;
 };
 
-bool t1;
-
-l0:
-t1 = a<4;
-
-if t1 goto l1;
-goto end;
-
-l1:
- a++
- t2 = (a==3)
- if(t2) goto l1;
- a++;
- goto l0;
-
-end:
+print(a);
