@@ -2,7 +2,7 @@
 
 **Version 1, November 2, 2024**  
 License Copyright © 2024 fQwQf fQwQf6@outlook.com  
-Software Copyright © 2024 fQwQf mr-gentle-666 JYT  
+Software Copyright © 2024 fQwQf , mr-gentle-666 , JYT  
   
 
 **Copyright Statement**
