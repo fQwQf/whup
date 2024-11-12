@@ -3,6 +3,7 @@
 #include<stack>
 #include<vector>
 #include<string>
+#include"lexer.cpp"
 class Expr
 {
 private:
