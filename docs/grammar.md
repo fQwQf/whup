@@ -225,6 +225,8 @@ z = "Hello" + 5;
 Hello5
 ```
 
+请注意，这只是whup对于加号的特别处理，仅仅是一个特例，这并不代表whup是弱类型语言。  
+
 ## 作用域
 
 在 whup 中，作用域指的是变量、对象、函数的可访问范围。  
@@ -291,7 +293,7 @@ var x = input("请输入一些文本");
 if...else if...else 语句
 使用 if....else if...else 语句来选择多个代码块之一来执行。
 
-语法
+```Javascript
 if (condition1)
 {
     当条件 1 为 true 时执行的代码
@@ -303,7 +305,8 @@ else if (condition2)
 else
 {
   当条件 1 和 条件 2 都不为 true 时执行的代码
-}
+};
+```
 
 ## 循环
 
@@ -339,7 +342,7 @@ for <variable> in <sequence>{
 function functionname()
 {
     // 执行代码
-}
+};
 ```
 
 当调用该函数时，会执行函数内的代码。  
