@@ -1,0 +1,27 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\",
+  "Documents": [],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
