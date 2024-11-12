@@ -104,4 +104,19 @@ class environment{
 
 int environment::i = 0;
 
+/*
+*一个生成label的类
+*只有一个方法：
+*
+*get_label：生成一个label名。label名是唯一的。
+*/
+class Lable {
 
+    private:
+        int n = 0;
+
+    public:
+        std::string get_label(){
+            return "lable_" + std::to_string(n);
+        };
+};
