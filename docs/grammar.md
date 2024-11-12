@@ -291,7 +291,7 @@ var x = input("请输入一些文本");
 if...else if...else 语句
 使用 if....else if...else 语句来选择多个代码块之一来执行。
 
-语法
+```Javascript
 if (condition1)
 {
     当条件 1 为 true 时执行的代码
@@ -303,7 +303,8 @@ else if (condition2)
 else
 {
   当条件 1 和 条件 2 都不为 true 时执行的代码
-}
+};
+```
 
 ## 循环
 
@@ -339,7 +340,7 @@ for <variable> in <sequence>{
 function functionname()
 {
     // 执行代码
-}
+};
 ```
 
 当调用该函数时，会执行函数内的代码。  
