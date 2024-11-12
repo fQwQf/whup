@@ -53,14 +53,14 @@ class environment{
      * 如果不存在，则会递归地在父作用域中查找。如果最终未找到变量，则返回"null"。
      *
      * 参数： 
-     *  name 要查找的变量的名称
-     * 返回值： 变量的值，如果未找到则返回"null"
+     *  name 要查找的变量在whup中的的名称
+     * 返回值： 变量翻译成的c++的名称，如果未找到则返回"null"
      */
     std::string find_var(std::string name)
     {
         if (var_table.find(name) != var_table.end())
         {
-            return var_table[name];
+            return name + '_' + std::to_string(id) + '_' + var_table[name];
         }
         else
         {
