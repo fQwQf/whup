@@ -50,10 +50,11 @@ std::string infixToPostfix(const std::string& infix) {
 
 
 
-int main() {
-    std::string infix = "3+4*2/(1-5)";
-    std::string postfix = infixToPostfix(infix);
-    std::cout << "中缀表达式: " << infix << std::endl;
-    std::cout << "后缀表达式: " << postfix << std::endl;
-    return 0;
-}
+//  int main() {
+//      std::string infix = "3+4*2/(1-5)";
+//      std::string postfix = infixToPostfix(infix);
+//      std::cout << "中缀表达式: " << infix << std::endl;
+//      std::cout << "后缀表达式: " << postfix << std::endl;
+//      return 0;
+//  }
+//  //""
