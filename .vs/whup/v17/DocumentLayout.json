@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:expression.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\expression.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:expression.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\lexer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:lexer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\expression.cpp||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:expression.cpp||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\docs\\class.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
@@ -46,15 +46,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "expression.cpp",
               "DocumentMoniker": "D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\expression.cpp",
               "RelativeDocumentMoniker": "expression.cpp",
               "ToolTip": "D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\expression.cpp",
               "RelativeToolTip": "expression.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-11-12T14:44:20.747Z"
+              "WhenOpened": "2024-11-12T15:14:02.416Z"
             },
             {
               "$type": "Document",
@@ -64,7 +64,7 @@
               "RelativeDocumentMoniker": "expression.h",
               "ToolTip": "D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\expression.h",
               "RelativeToolTip": "expression.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-11-12T14:26:33.194Z",
               "EditorCaption": ""
@@ -83,15 +83,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "lexer.cpp",
               "DocumentMoniker": "D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\lexer.cpp",
               "RelativeDocumentMoniker": "lexer.cpp",
               "ToolTip": "D:\\\u5927\u4E00\u8BFE\u7A0B\u3001\u6559\u6750\u53CA\u76F8\u5173\u6587\u4EF6\\\u9AD8\u7EA7\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1A \u4F5C\u4E1A\\c\u002B\u002B\u5927\u4F5C\u4E1A\\whup\\lexer.cpp",
               "RelativeToolTip": "lexer.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAARAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAMsAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-11-12T14:24:34.486Z"
+              "WhenOpened": "2024-11-12T14:24:34.486Z",
+              "EditorCaption": ""
             }
           ]
         }
