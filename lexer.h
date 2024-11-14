@@ -1,4 +1,10 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cctype>
+#include <unordered_set>
+#include <stack>
+#include <memory>
 
 enum TokenType {
     KEYWORD, IDENTIFIER, NUMBER, STRING, SYMBOL, EOF_TOKEN
