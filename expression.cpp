@@ -30,8 +30,7 @@ int precedence(char op) {
 +, - | 加和减
 */
 //返回扫描到的符号，并创建左右子树，以左边和右边的所有token传入所有构造
-//对于小括号的实现：可以增加第三层扫描括号，并且在前两层调用一个略去括号的函数
-// 待实现：多层括号的处理
+//对于小括号的实现：可以增加一层扫描括号，并且在前两层调用一个略去括号的函数
 //eg：对一个（1+2）直接进行操作，会先调用两次略去括号的函数，再开始扫描括号
 void Expr::matchPar(int& i)
 {
@@ -58,6 +57,7 @@ void Expr::matchPar(int& i)
 
 
 void Expr::expr() {
+
     //扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--) {
         matchPar(i);
@@ -198,17 +198,15 @@ void Expr::expr() {
             return;
         };
     };
-    //去掉括号并调用expr（）从第一层开始重新解析
-    Expr* child = new Expr(std::vector<Token>(E_expr.begin() + 1, E_expr.end() - 1));
-    child->expr();
-    tac.op = " ";
-    tac.arg1 = child->tac.result;
-    tac.arg2 = " ";
-    tacs.push_back(tac);
+    //前面均没扫到说明全部被括号包裹
+    //去掉首尾括号并重新调用expr（）
+    E_expr.pop_back();
+    E_expr.erase(E_expr.begin());
+    this->expr();
 };
 
 int main() {
-    std::string expression = "(d==3*9+8/((3*(6+4))*5-2)) or c";
+    std::string expression = "(3+2)-(8+7)*2";
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
@@ -224,7 +222,7 @@ int main() {
     //std::cout << expr.tac.arg2 << std::endl;
     //postfixToTAC(postfix);
 
-    //// 打印三地址码
+    // 打印三地址码
     for (const auto& code : tacs) {
         std::cout << code.result << " = " << code.arg1
             << code.op << code.arg2 << std::endl;
