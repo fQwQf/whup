@@ -19,11 +19,7 @@
 Token::Token(TokenType type, const std::string& value, int line_number) 
         : type(type), value(value), line_number(line_number) {};
 
-Scope::Scope(int id) : id(id), parent(parent) {};
-
-Lexer::Lexer(const std::string &input) : input(input), pos(0), line(1) {
-        scopes.push_back(Scope(current_scope_id));
-    }
+Lexer::Lexer(const std::string &input) : input(input), pos(0), line(1) {}
 
 char Lexer::peek(int offset=0) {
     if (pos >= input.size()) return '\0';

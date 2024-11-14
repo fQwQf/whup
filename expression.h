@@ -8,25 +8,11 @@
 
 std::string newTempVar();
 
-/*
-*结构：三地址码
-*
-*储存四个字符串，分别代表运算符，操作数1，操作数2，结果
-*/
-struct ThreeAddressCode {
-    std::string op;   // 操作符
-    std::string arg1;
-    std::string arg2;
-    std::string result;
-};
+
 
 class Expr {
     private:
         std::vector<Token> E_expr;
-        std::stack<Token> E_ops;
-        std::stack<Token> E_val;
-        std::vector<Token> E_postfix;
-        std::stack<Token> E_tac;
         ThreeAddressCode tac; // 三地址码输出
 
         Expr* left;

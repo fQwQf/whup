@@ -12,11 +12,16 @@ struct Token {
     Token(TokenType type, const std::string& value, int line_number);
 };
 
-struct Scope {
-    int id;
-    Scope* parent;
-
-    Scope(int id);
+/*
+*结构：三地址码
+*
+*储存四个字符串，分别代表运算符，操作数1，操作数2，结果
+*/
+struct ThreeAddressCode {
+    std::string op;   // 操作符
+    std::string arg1;
+    std::string arg2;
+    std::string result;
 };
 
 class Lexer {
@@ -30,10 +35,6 @@ private:
     std::string input;
     size_t pos;
     int line;
-    int current_scope_id;
-    int max_scope_id;
-    Scope* current_scope;
-    std::vector<Scope> scopes;
 
     char peek(int offset);
     char next();

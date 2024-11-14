@@ -148,7 +148,7 @@ void Expr::expr() {
 }*/
 
 int main() {
-    std::string expression = "3 + 4 * 2 /  1 - 5 ";
+    std::string expression = "3 + 4 * 2 /  1 ";
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
@@ -171,5 +171,5 @@ int main() {
         std::cout << "-----------------" << std::endl;
     }
 
-    return 0;
+    return 0;  
 }
