@@ -35,14 +35,27 @@ int precedence(char op) {
 //eg：对一个（1+2）直接进行操作，会先调用两次略去括号的函数，再开始扫描括号
 void Expr::matchPar(int i)
 {
-    if (E_expr[i] == ')')
+    if (E_expr[i].value == ")")
     {
-        while (E_expr != '(')
+        int leftPar = 0;
+        int rightPar = 1;//分别记录已经读取的左括号右括号的个数,当相等时即可结束
+        while (leftPar != rightPar)
         {
-            i--;
+            --i;
+            if (E_expr[i].value == ")")
+            {
+                rightPar++;
+            }
+            else if (E_expr[i].value == "(")
+            {
+                leftPar++;
+            }
+            else
+                continue;
         }
     }
 }
+
 
 void Expr::expr() {
     //第一层：扫描加和减
