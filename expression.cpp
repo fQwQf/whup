@@ -33,7 +33,7 @@ int precedence(char op) {
 //对于小括号的实现：可以增加第三层扫描括号，并且在前两层调用一个略去括号的函数
 // 待实现：多层括号的处理
 //eg：对一个（1+2）直接进行操作，会先调用两次略去括号的函数，再开始扫描括号
-void Expr::matchPar(int i)
+void Expr::matchPar(int& i)
 {
     if (E_expr[i].value == ")")
     {
@@ -113,77 +113,16 @@ void Expr::expr() {
         };
     };
     //第三层：去掉括号并调用expr（）从第一层开始重新解析
-    child = new Expr(std::vector<Token>(E_expr.begin() + 1, E_expr.end() - 1));
+    Expr* child = new Expr(std::vector<Token>(E_expr.begin() + 1, E_expr.end() - 1));
     child->expr();
+    tac.op = " ";
+    tac.arg1 = child->tac.result;
+    tac.arg2 = " ";
+    tacs.push_back(tac);
 };
 
-
-
-
-
-
-
-
-
-
-// 将中缀表达式转换为后缀表达式
-/*std::queue<Token> infixToPostfix(const std::vector<Token>& expr) {
-    std::stack<Token> ops;
-    std::queue<Token> postfix;
-    for (Token c : expr) {
-        if (c.type == IDENTIFIER || c.type == NUMBER) {
-            postfix.push(c);//压入数据
-        }
-        else if (c.value == "(") {
-            ops.push(c);
-        }
-        else if (c.value == ")") {
-            while (!ops.empty() && ops.top().value != "(") {
-                postfix.push(ops.top());
-                ops.pop();
-            }
-            ops.pop();
-        }
-        else {
-            while (!ops.empty() && precedence(ops.top().value[0]) >= precedence(c.value[0])) {
-                postfix.push(ops.top());
-                ops.pop();
-            }
-            ops.push(c);
-        }
-    }
-    while (!ops.empty()) {
-        postfix.push(ops.top());
-        ops.pop();
-    }
-
-    return postfix;
-}*/
-
-// 将后缀表达式转换为三地址码
-/*void postfixToTAC(const std::string& postfix) {
-    std::istringstream iss(postfix);
-    std::stack<std::string> values;
-    std::string token;
-    while (iss >> token) {
-        if (isdigit(token[0])) {
-            tac.push_back({ "=", token, "", newTempVar() });
-            values.push(newTempVar());
-        }
-        else {
-            std::string op1 = values.top();
-            values.pop();
-            std::string op2 = values.top();
-            values.pop();
-            std::string result = newTempVar();
-            tac.push_back({ "=", op2 + " " + token + " " + op1, "", result });
-            values.push(result);
-        }
-    }
-}*/
-
 int main() {
-    std::string expression = "3 + 4 * 2 /  1 - 5 ";
+    std::string expression = "(1+1)+2*3";
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符

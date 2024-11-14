@@ -33,11 +33,10 @@ private:
     double exprValue;
     int precedence(char op);			 //
 
-    void matchPar(int i);//用来跳过括号内容
+    void matchPar(int& i);//用来跳过括号内容
 public:
     Expr(const std::vector<Token>& expr) : E_expr(expr) {
         tac.result = newTempVar();
-        numOfPar = getNumOfPar();
     } // 用表达式词法单元串初始化
 
     void expr(); // 合并对expr的所有处理,将得到的三地址码栈压入总栈？
