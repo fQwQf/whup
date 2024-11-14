@@ -1,6 +1,5 @@
 //#include <sstream>
 //#include <cmath>
-#include <bits/stdc++.h>
 #include "expression.h"
 
 //#include"lexer.cpp"
@@ -31,58 +30,81 @@ int precedence(char op) {
 +, - | 加和减
 */
 //返回扫描到的符号，并创建左右子树，以左边和右边的所有token传入所有构造
+//对于小括号的实现：可以增加第三层扫描括号，并且在前两层调用一个略去括号的函数
+// 待实现：多层括号的处理
+//eg：对一个（1+2）直接进行操作，会先调用两次略去括号的函数，再开始扫描括号
+void Expr::matchPar(int i)
+{
+    if (E_expr[i] == ')')
+    {
+        while (E_expr != '(')
+        {
+            i--;
+        }
+    }
+}
+
 void Expr::expr() {
     //第一层：扫描加和减
-    for (int i = E_expr.size()- 1; i >0; i--) {
+    for (int i = E_expr.size() - 1; i > 0; i--) {
+        matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "+" || E_expr[i].value == "-")) {
-            if(i == 1){
-                tac.arg1 = E_expr[i-1].value;
-            }else{
+            if (i == 1) {
+                tac.arg1 = E_expr[i - 1].value;
+            }
+            else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
 
-            if(i == E_expr.size() - 2){
-                tac.arg2 = E_expr[i+1].value;
-            }else{
+            if (i == E_expr.size() - 2) {
+                tac.arg2 = E_expr[i + 1].value;
+            }
+            else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
-    
-        tac.op = E_expr[i].value;
-        tacs.push_back(tac);
-        return;
+
+            tac.op = E_expr[i].value;
+            tacs.push_back(tac);
+            return;
         };
     };
 
     //第二层：扫描乘，除，取余
-    for (int i = E_expr.size()- 1; i >0; i--) {
+    for (int i = E_expr.size() - 1; i > 0; i--) {
+        matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "*" || E_expr[i].value == "/" || E_expr[i].value == "%")) {
-            if(i == 1){
-                tac.arg1 = E_expr[i-1].value;
-            }else{
+            if (i == 1) {
+                tac.arg1 = E_expr[i - 1].value;
+            }
+            else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
 
-            if(i == E_expr.size() - 2){
-                tac.arg2 = E_expr[i+1].value;
-            }else{
+            if (i == E_expr.size() - 2) {
+                tac.arg2 = E_expr[i + 1].value;
+            }
+            else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
-
-        tac.op = E_expr[i].value;
-        tacs.push_back(tac);
-        return;
+            tac.op = E_expr[i].value;
+            tacs.push_back(tac);
+            return;
         };
     };
-
+    //第三层：去掉括号并调用expr（）从第一层开始重新解析
+    child = new Expr(std::vector<Token>(E_expr.begin() + 1, E_expr.end() - 1));
+    child->expr();
 };
+
+
 
 
 
@@ -153,10 +175,10 @@ int main() {
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
     for (const auto& token : tokens) {
-       std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value 
-                 << ", Line: " << token.line_number  << std::endl;
+        std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value
+            << ", Line: " << token.line_number << std::endl;
     }
-    
+
     Expr expr(tokens);
     expr.expr();
     //std::cout << expr.tac.result << std::endl;
@@ -166,8 +188,8 @@ int main() {
 
     //// 打印三地址码
     for (const auto& code : tacs) {
-        std::cout << code.result << " = " << code.arg1 
-        << code.op << code.arg2 << std::endl;
+        std::cout << code.result << " = " << code.arg1
+            << code.op << code.arg2 << std::endl;
         std::cout << "-----------------" << std::endl;
     }
 
