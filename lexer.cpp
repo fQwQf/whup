@@ -139,9 +139,10 @@ bool Lexer::is_symbol_set(const std::string& word) {
 std::unordered_set<std::string> Lexer::keywords() const {
     return {
         "int", "char", "float", "double", "bool", "void",
-        "if", "else", "for", "while", "return","switch","func",
+        "if", "else", "for", "while", "return","switch","function",
         "let","var","const","break","continue","case", "true",
-        "false","null","new","delete","this","class","import","function"
+        "false","null","new","delete","this","class","import","function",
+        "not","and","or"
     };
 }
 

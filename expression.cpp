@@ -58,7 +58,93 @@ void Expr::matchPar(int& i)
 
 
 void Expr::expr() {
-    //第一层：扫描加和减
+    //扫描逻辑或
+    for (int i = E_expr.size() - 1; i > 0; i--) {
+        matchPar(i);
+        if (E_expr[i].type == SYMBOL && E_expr[i].value == "||" || E_expr[i].type == KEYWORD && E_expr[i].value == "or") {
+            if (i == 1) {
+                tac.arg1 = E_expr[i - 1].value;
+            }
+            else {
+                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->expr();
+                tac.arg1 = left->tac.result;
+            };
+
+            if (i == E_expr.size() - 2) {
+                tac.arg2 = E_expr[i + 1].value;
+            }
+            else {
+                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->expr();
+                tac.arg2 = right->tac.result;
+            };
+
+            tac.op = "||";
+            tacs.push_back(tac);
+            return;
+        };
+    };
+
+    //扫描逻辑与
+    for (int i = E_expr.size() - 1; i > 0; i--) {
+        matchPar(i);
+        if (E_expr[i].type == SYMBOL && E_expr[i].value == "&&" || E_expr[i].type == KEYWORD && E_expr[i].value == "and") {
+            if (i == 1) {
+                tac.arg1 = E_expr[i - 1].value;
+            }
+            else {
+                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->expr();
+                tac.arg1 = left->tac.result;
+            };
+
+            if (i == E_expr.size() - 2) {
+                tac.arg2 = E_expr[i + 1].value;
+            }
+            else {
+                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->expr();
+                tac.arg2 = right->tac.result;
+            };
+
+            tac.op = "&&";
+            tacs.push_back(tac);
+            return;
+        };
+    };
+
+    //扫描比较符
+    //幸运的是，c++中int完全兼容bool，因此没有必要区分
+    for (int i = E_expr.size() - 1; i > 0; i--) {
+        matchPar(i);
+        if (E_expr[i].type == SYMBOL && (E_expr[i].value == "<" || E_expr[i].value == "<=" || E_expr[i].value == ">" || E_expr[i].value == ">=" || E_expr[i].value == "==" || E_expr[i].value == "!=")) {
+            if (i == 1) {
+                tac.arg1 = E_expr[i - 1].value;
+            }
+            else {
+                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->expr();
+                tac.arg1 = left->tac.result;
+            };
+
+            if (i == E_expr.size() - 2) {
+                tac.arg2 = E_expr[i + 1].value;
+            }
+            else {
+                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->expr();
+                tac.arg2 = right->tac.result;
+            };
+
+            tac.op = E_expr[i].value;
+            tacs.push_back(tac);
+            return;
+        };
+    };
+
+
+    //扫描加和减
     for (int i = E_expr.size() - 1; i > 0; i--) {
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "+" || E_expr[i].value == "-")) {
@@ -86,7 +172,7 @@ void Expr::expr() {
         };
     };
 
-    //第二层：扫描乘，除，取余
+    //扫描乘，除，取余
     for (int i = E_expr.size() - 1; i > 0; i--) {
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "*" || E_expr[i].value == "/" || E_expr[i].value == "%")) {
@@ -112,7 +198,7 @@ void Expr::expr() {
             return;
         };
     };
-    //第三层：去掉括号并调用expr（）从第一层开始重新解析
+    //去掉括号并调用expr（）从第一层开始重新解析
     Expr* child = new Expr(std::vector<Token>(E_expr.begin() + 1, E_expr.end() - 1));
     child->expr();
     tac.op = " ";
@@ -122,7 +208,7 @@ void Expr::expr() {
 };
 
 int main() {
-    std::string expression = "(1+1)+2*3";
+    std::string expression = "(d==3*9+8/((3*(6+4))*5-2)) or c";
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
