@@ -1,4 +1,6 @@
+#include "block.h"
 #include "expression.h"
+
 
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern int tempVarCounter;  // 临时变量计数器
@@ -8,13 +10,11 @@ int main() {
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
-    for (const auto& token : tokens) {
-        std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value
-            << ", Line: " << token.line_number << std::endl;
-    }
 
-    Expr expr(tokens);
-    expr.expr();
+    Expr exp(tokens);
+    Environment* env = new Environment();
+    exp.setEnv(env);
+    exp.expr();
     //std::cout << expr.tac.result << std::endl;
     //std::cout << expr.tac.arg1 << std::endl;
     //std::cout << expr.tac.arg2 << std::endl;

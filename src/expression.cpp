@@ -36,6 +36,10 @@ void Expr::matchPar(int& i)
     }
 }
 
+void Expr::setEnv(Environment* env) {
+    this->env = env;
+}
+
 
 void Expr::expr() {
 
@@ -48,6 +52,7 @@ void Expr::expr() {
             }
             else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->env = env; // 传递环境
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
@@ -57,6 +62,7 @@ void Expr::expr() {
             }
             else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->env = env;
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
@@ -76,6 +82,7 @@ void Expr::expr() {
             }
             else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->env = env; // 传递环境
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
@@ -85,6 +92,7 @@ void Expr::expr() {
             }
             else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->env = env;
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
@@ -105,6 +113,7 @@ void Expr::expr() {
             }
             else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->env = env; // 传递环境
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
@@ -114,6 +123,7 @@ void Expr::expr() {
             }
             else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->env = env;
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
@@ -134,6 +144,7 @@ void Expr::expr() {
             }
             else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->env = env; // 传递环境
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
@@ -143,6 +154,7 @@ void Expr::expr() {
             }
             else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->env = env;
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
@@ -162,6 +174,7 @@ void Expr::expr() {
             }
             else {
                 left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i));
+                left->env = env; // 传递环境
                 left->expr();
                 tac.arg1 = left->tac.result;
             };
@@ -171,6 +184,7 @@ void Expr::expr() {
             }
             else {
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()));
+                right->env = env;
                 right->expr();
                 tac.arg2 = right->tac.result;
             };
@@ -179,6 +193,7 @@ void Expr::expr() {
             return;
         };
     };
+
     //前面均没扫到说明全部被括号包裹
     //去掉首尾括号并重新调用expr（）
     E_expr.pop_back();

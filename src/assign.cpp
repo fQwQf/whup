@@ -1,22 +1,19 @@
-#include"expression.h"
+#include"assign.h"
 extern std::vector<ThreeAddressCode> tacs;
-class Assign
+
+Assign::Assign(std::vector<Token> code)
 {
-	Token var;//等号左侧变量
-	Expr* expr;//等号右侧表达式
-public:
-	Assign(std::vector<Token> code)
-	{
-		var = code[0];
-		code.erase(code.begin());
-		code.erase(code.begin());//两次处理将等号和等号左侧变量消去
-		expr = new Expr(code);
-	}
-	void assign();
-};
+	var = code[0];
+	code.erase(code.begin());
+	code.erase(code.begin()); // 两次处理将等号和等号左侧变量消去
+	expr = new Expr(code);
+}
+
+void assign();
 
 void Assign::assign()
 {
+	expr->setEnv(env);
 	expr->expr();
 	tacs.push_back({ "","",expr->getTacResult(),var.value});
 }

@@ -27,7 +27,7 @@ std::string newTempLabel() {
 *具有以下几个方法：  
 *
 *- insert_var：插入一个变量名，默认类型null。  
-*- find_var：查找一个变量名，返回类型。  
+*- get_var：查找一个变量名，返回类型。  
 *- change_type_var：修改一个变量的类型。   
 */
 
@@ -63,7 +63,7 @@ void Environment::insert_var(std::string name)
  *  name 要查找的变量在whup中的的名称
  * 返回值： 变量翻译成的c++的名称，如果未找到则返回"null"
  */
-std::string Environment::find_var(std::string name)
+std::string Environment::get_var(std::string name)
 {
     if (var_table.find(name) != var_table.end())
     {
@@ -77,7 +77,7 @@ std::string Environment::find_var(std::string name)
         }
         else
         {
-            return parent->find_var(name);
+            return parent->get_var(name);
         }
     }
     return "null";

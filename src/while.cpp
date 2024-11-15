@@ -1,5 +1,6 @@
+#include"block.h"
 #include"expression.h"
-#include"block.cpp"
+
 extern std::vector<ThreeAddressCode> tacs;
 class While
 {
@@ -13,9 +14,9 @@ public:
 While::While(std::vector<Token>& code)
 {
 	code.pop_back();
-	code.erase(code.begin());//预先将while和；词法单元去掉
+	code.erase(code.begin());//棰勫厛灏唚hile鍜岋紱璇嶆硶鍗曞厓鍘绘帀
 
-	//初始化W_expr;
+	//鍒濆鍖朩_expr;
 	std::vector<Token> temp_W_expr;
 	int pos = 1;
 	while (code[pos].value != ")")
@@ -24,7 +25,7 @@ While::While(std::vector<Token>& code)
 		pos++;
 	}
 	W_expr = new Expr(temp_W_expr);
-	////初始化W_block;
+	////鍒濆鍖朩_block;
 	//std::vector<Token> temp_W_block;
 	//pos++;
 	//while (code[pos].value != "}")

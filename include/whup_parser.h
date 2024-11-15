@@ -29,7 +29,7 @@ struct ThreeAddressCode {
 *具有以下几个方法：  
 *
 *- insert_var：插入一个变量名，默认类型null。  
-*- find_var：查找一个变量名，返回类型。  
+*- get_var：查找一个变量名，返回类型。  
 *- change_type_var：修改一个变量的类型。   
 */
 class Environment{
@@ -68,7 +68,7 @@ class Environment{
      *  name 要查找的变量在whup中的的名称
      * 返回值： 变量翻译成的c++的名称，如果未找到则返回"null"
      */
-    std::string find_var(std::string name);
+    std::string get_var(std::string name);
 
     /**
      * 简介： 更改变量类型的函数
@@ -82,6 +82,5 @@ class Environment{
      */
     void change_type_var(std::string name,std::string t);
 };
-
 
 #endif
