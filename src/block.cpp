@@ -28,12 +28,18 @@ Block::Block(std::vector<Token> tokens)
 
     int last_semicolon = 0;
 
+
     for (int i = 0; i < tokens.size(); i++)
     {
-        if (tokens[i].type == SYMBOL || tokens[i].value == ";")
+        if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
-            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i - 1);
-            last_semicolon += 1;
+            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
+            last_semicolon = i+1;
+            for (int i = 0; i < subtokens.size(); i++)
+            {
+                std::cout << subtokens[i].value << " ";
+            }
+            std::cout << std::endl;
             generate(subtokens);
         }
     }
@@ -42,9 +48,17 @@ Block::Block(std::vector<Token> tokens)
 // 根据首token传入对应的类的构造函数中。
 void Block::generate(std::vector<Token> subtokens)
 {
+    
     if (subtokens[0].type == IDENTIFIER)
     {
-        new Assign(subtokens);
+        std::cout << "assign" << std::endl;
+        for (int i = 0; i < subtokens.size(); i++){
+            std::cout << subtokens[i].value << " ";
+        }
+        std::cout << std::endl;
+        Assign* res = new Assign(subtokens);
+        res->setEnv(env);
+        res->assign();
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {

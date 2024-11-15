@@ -6,15 +6,17 @@ extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern int tempVarCounter;  // 临时变量计数器
 
 int main() {
-    std::string expression = "(3+2)-(8+7)*2";
+    std::string expression = "a = (3+2)-(8+7)*2;b = 2;a = (3+2)-(8+7)*2;a = (3+2)-(8+7)*2;";
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 
-    Expr exp(tokens);
+    /*Assign exp(tokens);
     Environment* env = new Environment();
     exp.setEnv(env);
-    exp.expr();
+    exp.assign();*/
+
+    Block block(tokens);
     //std::cout << expr.tac.result << std::endl;
     //std::cout << expr.tac.arg1 << std::endl;
     //std::cout << expr.tac.arg2 << std::endl;

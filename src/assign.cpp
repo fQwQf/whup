@@ -1,4 +1,5 @@
 #include"assign.h"
+
 extern std::vector<ThreeAddressCode> tacs;
 
 Assign::Assign(std::vector<Token> code)
@@ -16,4 +17,9 @@ void Assign::assign()
 	expr->setEnv(env);
 	expr->expr();
 	tacs.push_back({ "","",expr->getTacResult(),var.value});
+}
+
+void Assign::setEnv(Environment* env)
+{
+	this->env = env;
 }

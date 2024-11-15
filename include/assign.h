@@ -11,6 +11,7 @@ class Assign
 public:
 	Assign(std::vector<Token> code);
 	void assign();
+    void setEnv(Environment* env);
 };
 
 #endif
