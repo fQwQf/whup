@@ -9,7 +9,7 @@ class Assign
 
     Environment* env;//当前环境
 public:
-	Assign(std::vector<Token> code);
+	Assign(std::vector<Token> code, Environment* env);
 	void assign();
     void setEnv(Environment* env);
 };

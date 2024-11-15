@@ -22,9 +22,7 @@ private:
 
     void matchPar(int& i);//用来跳过括号内容
 public:
-    Expr(const std::vector<Token>& expr) : E_expr(expr) {
-        tac.result = newTempVar();
-    } // 用表达式词法单元串初始化
+    Expr(const std::vector<Token>& expr,Environment* env);
 
     void expr(); // 合并对expr的所有处理,将得到的三地址码栈压入总栈
     std::string getTacResult()

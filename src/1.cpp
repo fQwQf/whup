@@ -58,3 +58,20 @@ std::string infixToPostfix(const std::string& infix) {
 //      return 0;
 //  }
 //  //""
+int main() {
+    int a, b, c, d;
+    int t1, t2, t3, t4, t5, t6, t7, t8;
+    t2 = 3 + 2;
+    t4 = 8 + 7;
+    t3 = t4 * 2;
+    t1 = t2 - t3;
+    a = t1;
+    b = 3;
+    t5 = a + b;
+    c = t5;
+    t8 = 5 * a;
+    t7 = t8 / c;
+    t6 = 4 + t7;
+    d = t6;
+    std::cout << a << " " << b << " " << c << " " << d << std::endl;
+}

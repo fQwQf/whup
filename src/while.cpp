@@ -6,6 +6,8 @@ class While
 {
 	Expr* W_expr;
 	Block* W_block;
+
+	Environment* env;
 public:
 	While(std::vector<Token>& code);
 	void whup_while ();
@@ -24,7 +26,7 @@ While::While(std::vector<Token>& code)
 		temp_W_expr.push_back(code[pos]);
 		pos++;
 	}
-	W_expr = new Expr(temp_W_expr);
+	W_expr = new Expr(temp_W_expr,env);
 	////初始化W_block;
 	//std::vector<Token> temp_W_block;
 	//pos++;
