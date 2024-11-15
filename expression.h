@@ -9,7 +9,6 @@
 std::string newTempVar();
 
 
-class Assign;
 class Expr {
 private:
     std::vector<Token> E_expr;
@@ -30,6 +29,9 @@ public:
     } // 用表达式词法单元串初始化
 
     void expr(); // 合并对expr的所有处理,将得到的三地址码栈压入总栈？
-    friend class Assign;
+    std::string getTacResult()
+    {
+        return tac.result;
+    }
 };
 #endif // !EXPRESSION_H_

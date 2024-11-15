@@ -18,5 +18,5 @@ public:
 void Assign::assign()
 {
 	expr->expr();
-	tacs.push_back({ "","",expr->tac.result,var.value });
+	tacs.push_back({ "","",expr->getTacResult(),var.value});
 }
