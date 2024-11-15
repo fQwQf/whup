@@ -2,25 +2,8 @@
 //#include <cmath>
 #include "expression.h"
 
-//#include"lexer.cpp"
-
-
-
-std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
-int tempVarCounter = 0;  // 临时变量计数器
-
-std::string newTempVar() {
-    return "t" + std::to_string(++tempVarCounter);
-}
-
-// 比较运算符优先级
-int precedence(char op) {
-    if (op == '+' || op == '-') return 1;
-    if (op == '*' || op == '/') return 2;
-    return 0;
-}
-
-
+extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+extern int tempVarCounter;  // 临时变量计数器
 
 
 //从右至左对输入进行遍历，扫描以下运算符，从下向上

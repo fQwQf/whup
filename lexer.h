@@ -18,17 +18,7 @@ struct Token {
     Token(TokenType type, const std::string& value, int line_number);
 };
 
-/*
-*结构：三地址码
-*
-*储存四个字符串，分别代表运算符，操作数1，操作数2，结果
-*/
-struct ThreeAddressCode {
-    std::string op;   // 操作符
-    std::string arg1;
-    std::string arg2;
-    std::string result;
-};
+
 
 class Lexer {
 
