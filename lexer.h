@@ -1,3 +1,5 @@
+#ifndef LEXER_H_
+#define LEXER_H_
 #include <iostream>
 #include <string>
 #include <vector>
@@ -50,3 +52,4 @@ private:
 
 
 };
+#endif

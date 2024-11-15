@@ -2,3 +2,4 @@
 .vs/
 *.exe
 *.out
+build/

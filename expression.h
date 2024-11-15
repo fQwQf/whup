@@ -3,7 +3,10 @@
 #include <stack>
 #include <vector>
 #include <string>
+
+#ifndef PARSER_H_
 #include"parser.h"
+#endif
 
 
 std::string newTempVar();
