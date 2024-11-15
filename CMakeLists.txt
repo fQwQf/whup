@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
 
-# set the project name
 project(whup)
 
-set(WHUPC_LIST expression.cpp parser.cpp lexer.cpp whupc.cpp)
+aux_source_directory(./src WHUPC_LIST)
 
+include_directories ( ./include )
 
-# add the executable
 add_executable(whupc  ${WHUPC_LIST})

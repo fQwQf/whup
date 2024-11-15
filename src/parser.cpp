@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "parser.h"
+#include "whup_parser.h"
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量

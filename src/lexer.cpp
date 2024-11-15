@@ -21,6 +21,8 @@ Token::Token(TokenType type, const std::string& value, int line_number)
 
 Lexer::Lexer(const std::string &input) : input(input), pos(0), line(1) {}
 
+
+
 char Lexer::peek(int offset=0) {
     if (pos >= input.size()) return '\0';
     return input[pos + offset];

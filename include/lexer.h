@@ -18,6 +18,7 @@ struct Token {
     int line_number;
 
     Token(TokenType type, const std::string& value, int line_number);
+    Token();
 };
 
 
