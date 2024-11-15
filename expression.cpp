@@ -1,5 +1,3 @@
-//#include <sstream>
-//#include <cmath>
 #include "expression.h"
 
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
@@ -212,5 +210,5 @@ int main() {
         std::cout << "-----------------" << std::endl;
     }
 
-    return 0;  
+    return 0;
 }
