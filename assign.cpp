@@ -1,4 +1,5 @@
 #include"expression.h"
+extern std::vector<ThreeAddressCode> tacs;
 class Assign
 {
 	Token var;//µÈºÅ×ó²à±äÁ¿
@@ -18,5 +19,5 @@ public:
 void Assign::assign()
 {
 	expr->expr();
-	expr->E_tac.push({ "","",expr->tac.result,var.value });
+	tacs.push_back({ "","",expr->tac.result,var.value });
 }
