@@ -1,7 +1,7 @@
+#ifndef PAESER_H_
+#define PARSER_H_
 #include <bits/stdc++.h>
 #include "lexer.h"
-
-
 
 std::string newTempVar();
 
@@ -96,3 +96,5 @@ class Lable {
     public:
         std::string get_label();
 };
+
+#endif
