@@ -5,6 +5,7 @@
 #include "lexer.h"
 
 std::string newTempVar();
+std::string newTempLabel();
 
 /*
 *结构：三地址码
@@ -82,20 +83,5 @@ class Environment{
     void change_type_var(std::string name,std::string t);
 };
 
-
-/*
-*一个生成label的类
-*只有一个方法：
-*
-*get_label：生成一个label名。label名是唯一的。
-*/
-class Lable {
-
-    private:
-        int n = 0;
-
-    public:
-        std::string get_label();
-};
 
 #endif

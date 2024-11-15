@@ -3,10 +3,17 @@
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+
 int tempVarCounter = 0;  // 临时变量计数器
+int tempLabelCounter = 0;  // 临时标签计数器
+
 
 std::string newTempVar() {
     return "t" + std::to_string(++tempVarCounter);
+}
+
+std::string newTempLabel() {
+    return "t" + std::to_string(++tempLabelCounter);
 }
 
 
@@ -108,7 +115,3 @@ void Environment::change_type_var(std::string name, std::string t)
 
 int Environment::i = 0;
 
-std::string Lable::get_label()
-{
-    return "lable_" + std::to_string(n);
-};
