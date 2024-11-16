@@ -3,6 +3,7 @@
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+std::vector<std::pair<std::string, std::string>> var_declares;  // 存储将放入c++中变量名和类型的向量
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
@@ -110,6 +111,7 @@ void Environment::change_type_var(std::string name, std::string t)
             parent->change_type_var(name, t);
         }
     }
+    var_declares.push_back({get_var(name),t});
     return;
 }
 

@@ -1,6 +1,5 @@
 #include"block.h"
 #include"while.h"
-#include"whupc.h"
 
 While::While(std::vector<Token>& code,Environment*env):While_env(env)
 {

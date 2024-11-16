@@ -3,6 +3,7 @@
 
 
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+extern std::vector<std::pair<std::string, std::string>> var_declares;
 extern int tempVarCounter;  // 临时变量计数器
 
 int main() {

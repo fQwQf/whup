@@ -1,3 +1,5 @@
+#include "expression.h"
+
 extern std::vector<ThreeAddressCode> tacs;
 class While
 {
