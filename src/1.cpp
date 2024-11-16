@@ -58,7 +58,7 @@ std::string infixToPostfix(const std::string& infix) {
 //      return 0;
 //  }
 //  //""
-int main() {
+/*int main() {
     int a, b, c, d;
     int t1, t2, t3, t4, t5, t6, t7, t8;
     t2 = 3 + 2;
@@ -74,4 +74,4 @@ int main() {
     t6 = 4 + t7;
     d = t6;
     std::cout << a << " " << b << " " << c << " " << d << std::endl;
-}
+}*/

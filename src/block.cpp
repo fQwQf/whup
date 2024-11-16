@@ -1,4 +1,30 @@
 #include "block.h"
+#include"assign.h"
+#include"var.h"
+
+//跳过大括号
+void Block::matchBrace(int &i,std::vector<Token> &tokens)
+{
+    if (tokens[i].value == "{")
+    {
+        int leftPar = 1;
+        int rightPar = 0; // 分别记录已经读取的左大括号右大括号的个数,当相等时即可结束
+        while (leftPar != rightPar)
+        {
+            ++i;
+            if (tokens[i].value == "}")
+            {
+                rightPar++;
+            }
+            else if (tokens[i].value == "{")
+            {
+                leftPar++;
+            }
+            else
+                continue;
+        }
+    }
+}
 
 // 以分号为分隔扫描
 Block::Block(std::vector<Token> tokens, Environment *env)
@@ -9,6 +35,7 @@ Block::Block(std::vector<Token> tokens, Environment *env)
 
     for (int i = 0; i < tokens.size(); i++)
     {
+        matchBrace(i, tokens);
         if (tokens[i].type == SYMBOL || tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i - 1);
@@ -47,10 +74,10 @@ void Block::generate(std::vector<Token> subtokens)
 
     if (subtokens[0].type == IDENTIFIER)
     {
-        Assign *res = new Assign(subtokens,env);
+        new Assign(subtokens,env);
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
-        // new Var(subtokens);
+        new Var(subtokens,env);
     }
 }

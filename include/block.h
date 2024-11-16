@@ -1,7 +1,10 @@
+#ifndef PARSER_H_
 #include"whup_parser.h"
-#include"assign.h"
+#endif
+
 
 #include <bits/stdc++.h>
+
 
 /*
 *构建block最主要的目的是便于确定变量作用域。
@@ -19,6 +22,9 @@ public:
     //以分号为分隔扫描
     Block(std::vector<Token> tokens, Environment* env);
     Block(std::vector<Token> tokens);
+
+    //跳过大括号
+    void matchBrace(int &i,std::vector<Token> &tokens);
 
     //根据首token传入对应的类的构造函数中。
     void generate(std::vector<Token> subtokens);

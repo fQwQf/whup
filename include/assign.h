@@ -1,6 +1,9 @@
 #ifndef ASSIGN_H_
 #define ASSIGN_H_
+
+#ifndef EXPRESSION_H_
 #include"expression.h"
+#endif
 
 class Assign
 {

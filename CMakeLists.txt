@@ -6,4 +6,13 @@ aux_source_directory(./src WHUPC_LIST)
 
 include_directories ( ./include )
 
+file(GLOB LIBS "src/*.cpp")
+
+#将所有.cpp文件添加到库列表中
+add_library(var SHARED src/var.cpp)
+add_library(block SHARED src/block.cpp)
+
+target_link_libraries(block PUBLIC var )
+
+
 add_executable(whupc  ${WHUPC_LIST})
