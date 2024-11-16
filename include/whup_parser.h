@@ -1,5 +1,5 @@
 //mingw-w64里有一个parser.h，为避免冲突改名
-#ifndef PAESER_H_
+#ifndef PARSER_H_
 #define PARSER_H_
 #include <bits/stdc++.h>
 #include "lexer.h"
