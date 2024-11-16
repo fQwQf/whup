@@ -10,11 +10,11 @@ class Assign
 	Token var;//等号左侧变量
 	Expr* expr;//等号右侧表达式
 
-    Environment* env;//当前环境
+	Environment* env;//当前环境
 public:
 	Assign(std::vector<Token> code, Environment* env);
 	void assign();
-    void setEnv(Environment* env);
+	void setEnv(Environment* env);
 };
 
 #endif
