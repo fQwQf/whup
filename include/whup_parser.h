@@ -2,7 +2,10 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 #include <bits/stdc++.h>
+
+#ifndef LEXER_H_
 #include "lexer.h"
+#endif
 
 std::string newTempVar();
 std::string newTempLabel();
