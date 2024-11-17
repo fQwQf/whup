@@ -11,7 +11,7 @@ extern std::unordered_map<std::string, std::string> var_declares;  // 存储将�
 
 std::string generator()
 {
-    std::string code = "";
+    /*std::string code = "";
     for (auto &i : var_declares)
     {   
         if (i.second == "number"){
@@ -20,9 +20,9 @@ std::string generator()
             code += i.second  + " " + i.first + ";\n";
         }
         
-    }
+    }*/
 
-    for (auto &i : tacs)
+    /*for (auto &i : tacs)
     {
         if (i.op == "=")
         {
@@ -44,7 +44,7 @@ std::string generator()
         {
             code += "goto " + i.result + ";\n";
         }
-    }
+    }*/
 
-    return code;
+    return "";//code;
 }
