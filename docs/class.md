@@ -63,8 +63,7 @@ bool t3 = a < 3;
 if (t1) goto l1;
 if (t2) goto l2;
 if (t3) goto l3;
-stmt4;
-goto end;
+goto l4;
 
 l1:
     stmt1;
@@ -78,6 +77,9 @@ l3:
     stmt3;
     goto end;
 
+l4:
+    stmt4;
+    goto end;
 end:
 
 ```
