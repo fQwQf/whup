@@ -13,9 +13,18 @@ add_library(var SHARED src/var.cpp)
 add_library(block SHARED src/block.cpp)
 add_library(expression SHARED src/expression.cpp)
 add_library(while SHARED src/while.cpp)
+add_library(parser SHARED src/parser.cpp)
+add_library(assign SHARED src/assign.cpp)
+add_library(lexer SHARED src/lexer.cpp)
+
+
 
 
 target_link_libraries(while PUBLIC expression)
+target_link_libraries(var PUBLIC parser assign)
+target_link_libraries(assign PUBLIC parser expression lexer)
+target_link_libraries(expression PUBLIC parser)
+target_link_libraries(while PUBLIC block)
 
 target_link_libraries(block PUBLIC var)
 

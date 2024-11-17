@@ -11,6 +11,11 @@ extern int tempVarCounter;  // 临时变量计数器
 
 int main(int n, const char *arg[])
 {
+    if(n==1){
+        std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
+        return 0;
+    }
+
     Extractor extractor(n, arg);
 
     std::string out;
@@ -35,7 +40,7 @@ int main(int n, const char *arg[])
     io.write(code);
 
     std::cout << "Generate code to " << out << std::endl;
-    std::cout << "Done!😉" << std::endl;
+    std::cout << "Done!" << std::endl;
 
     return 0;
 }
