@@ -1,6 +1,7 @@
 #include "block.h"
 #include"assign.h"
 #include"var.h"
+#include"whup_parser.h"
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -27,9 +28,9 @@ void Block::matchBrace(int &i,std::vector<Token> &tokens)
 }
 
 // 以分号为分隔扫描
-Block::Block(std::vector<Token> tokens, Environment *env)
+Block::Block(std::vector<Token> tokens, Environment *e)
 {
-    this->env = new Environment(env);
+    this->env = new Environment(e);
 
     int last_semicolon = 0;
 
