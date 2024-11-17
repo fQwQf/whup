@@ -45,4 +45,6 @@ While::While(std::vector<Token>& code,Environment*env):While_env(env)
 		pos++;
 	}
 	While_Block = new Block(temp_While_Block, env);
+
+	tacs.push_back({ "goto","","",While_Expr_label });//跳转再次进入while
 }
