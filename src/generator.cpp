@@ -2,7 +2,7 @@
 #include "whup_parser.h"
 
 extern std::vector<ThreeAddressCode> tacs;
-extern std::vector<std::pair<std::string, std::string>> var_declares;  // 存储将放入c++中变量名和类型的向量
+extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 
 /*
 生成器
@@ -13,8 +13,13 @@ std::string generator()
 {
     std::string code = "";
     for (auto &i : var_declares)
-    {
-        code += i.first + " " + i.second + ";\n";
+    {   
+        if (i.second == "number"){
+            code += "float " + i.first + ";\n";
+        }else{
+            code += i.second  + " " + i.first + ";\n";
+        }
+        
     }
 
     for (auto &i : tacs)

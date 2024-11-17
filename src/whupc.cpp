@@ -2,6 +2,7 @@
 #include "expression.h"
 #include "whup_io.h"
 #include "extractor.h"
+#include "generator.h"
 
 
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
@@ -22,10 +23,8 @@ int main(int n, const char *arg[])
     Block block(tokens);
 
     // 打印三地址码
-    for (const auto& code : tacs) {
-        std::cout << code.result << " = " << code.arg1
-            << code.op << code.arg2 << std::endl;
-    }
+    std::string code = generator();
 
+    std::cout << code << std::endl;
     return 0;
 }

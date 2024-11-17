@@ -12,9 +12,16 @@ Var::Var(std::vector<Token> tokens,Environment* env)
     this->env = env;
     if (tokens.size() == 2){
         var(env, tokens[1].value);
+    }else if(tokens[2].value == ","){//同时声明多个变量
+        for(int i=1;i<tokens.size();i += 2){
+            var(env,tokens[i].value);
+        }
     }else{
-        var(env, "int", tokens[1].value);
-        Assign(std::vector<Token>(tokens.begin()+1, tokens.end()),env);
+        //先判断返回类型
+        
+        Assign *ass = new Assign(std::vector<Token>(tokens.begin()+1, tokens.end()),env);//幽默变量名
+        
+        var(env, ass->return_type(), tokens[1].value);
     }
 }
 
