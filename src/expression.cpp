@@ -51,6 +51,21 @@ Expr::Expr(const std::vector<Token> &expr,Environment* env) : E_expr(expr)
     this->expr();
 } // 用表达式词法单元串初始化
 
+std::string Expr::return_type()
+{
+    for (auto i : E_expr)
+    {
+        if (i.type == STRING)
+        {
+            return "string";
+        }
+        else if (i.type == SYMBOL && (i.value == "<" || i.value == "<=" || i.value == ">" || i.value == ">=" || i.value == "==" || i.value == "!="))
+        {
+            return "bool";
+        }
+    }
+    return "number";
+}
 void Expr::expr()
 {
 

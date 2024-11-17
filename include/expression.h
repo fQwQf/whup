@@ -32,15 +32,6 @@ public:
 
     void setEnv(Environment* env);
 
-    std::string return_type(){
-        for(auto i : E_expr){
-            if(i.type == STRING){
-                return "string";
-            }else if(i.type == SYMBOL && (i.value == "<" || i.value == "<=" || i.value == ">" || i.value == ">=" || i.value == "==" || i.value == "!=")){
-                return "bool";
-            }
-        }
-        return "number";
-    }
+    std::string return_type();
 };
 #endif

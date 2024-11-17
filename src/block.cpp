@@ -51,18 +51,14 @@ Block::Block(std::vector<Token> tokens, Environment *env)
 Block::Block(std::vector<Token> tokens)
 {
     this->env = new Environment();
-    
-    std::cout << "new env" << std::endl;
 
     int last_semicolon = 0;
-
-    std::cout << "start for";
 
     for (int i = 0; i < tokens.size(); i++)
     {
         //打印出所有Token
-        //相信我,debug时特别有用
-        std::cout << tokens[i].value;
+        //debug时可能有用
+        //std::cout << tokens[i].value;
 
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {

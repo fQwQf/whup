@@ -10,7 +10,9 @@ int tempLabelCounter = 0;  // 临时标签计数器
 
 
 std::string newTempVar() {
-    return "t" + std::to_string(++tempVarCounter);
+    std::string t = "t" + std::to_string(++tempVarCounter);
+    var_declares[t] = "float";
+    return t;
 }
 
 std::string newTempLabel() {

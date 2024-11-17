@@ -22,8 +22,8 @@ int main(int n, const char *arg[])
     Block block(tokens);
 
     // 打印三地址码
-    //std::string code = generator();
+    std::string code = generator();
 
-    //std::cout << code << std::endl;
+    std::cout << code << std::endl;
     return 0;
 }
