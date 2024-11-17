@@ -46,5 +46,8 @@ std::string generator()
         }
     }
 
+    code = "#include <bits/stdc++.h>\nint main()\n{\n"+code+"\n}";
+
+
     return code;
 }

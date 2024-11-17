@@ -12,18 +12,30 @@ extern int tempVarCounter;  // 临时变量计数器
 int main(int n, const char *arg[])
 {
     Extractor extractor(n, arg);
-    IO io(extractor.get_input_file(), extractor.get_output_file());
+
+    std::string out;
+    if(extractor.get_output_file() != ""){
+        out = extractor.get_output_file();
+    }else{
+        out = "out.cpp";
+    }
+
+    IO io(extractor.get_input_file(), out);
 
     std::string expression = io.read();
     Lexer lexer(expression);
+
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 
     Block block(tokens);
 
-    // 打印三地址码
     std::string code = generator();
 
-    std::cout << code << std::endl;
+    io.write(code);
+
+    std::cout << "Generate code to " << out << std::endl;
+    std::cout << "Done!🥰" << std::endl;
+
     return 0;
 }
