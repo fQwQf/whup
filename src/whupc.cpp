@@ -35,7 +35,7 @@ int main(int n, const char *arg[])
     io.write(code);
 
     std::cout << "Generate code to " << out << std::endl;
-    std::cout << "Done!🥰" << std::endl;
+    std::cout << "Done!😉" << std::endl;
 
     return 0;
 }
