@@ -1,12 +1,10 @@
+var j=4;
 var i=0;
-while(i<=10)
+print(j);
+while(i<=5)
 {
-    var j=0;
-    while (j<=10)
-    {
-        print(j);
-        j=j+1;
-    };
-    
+    var j=3;
+    print(j);
     i=i+1;
+    
 };
