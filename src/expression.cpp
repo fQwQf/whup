@@ -40,10 +40,19 @@ void Expr::setEnv(Environment *env)
     this->env = env;
 }
 
-Expr::Expr(const std::vector<Token> &expr,Environment* env) : E_expr(expr)
-{   
-    if (expr.size() == 1){ // 只有一个元素
-        tac.result = E_expr[0].value;
+Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
+{
+    if (expr.size() == 1)
+    { // 只有一个元素
+        if (expr[0].type == IDENTIFIER)
+        {
+            tac.result = env->get_var(E_expr[0].value);
+        }
+        else
+        {
+            tac.result = E_expr[0].value;
+        }
+
         return;
     };
     this->setEnv(env);
@@ -51,6 +60,21 @@ Expr::Expr(const std::vector<Token> &expr,Environment* env) : E_expr(expr)
     this->expr();
 } // 用表达式词法单元串初始化
 
+std::string Expr::return_type()
+{
+    for (auto i : E_expr)
+    {
+        if (i.type == STRING)
+        {
+            return "string";
+        }
+        else if (i.type == SYMBOL && (i.value == "<" || i.value == "<=" || i.value == ">" || i.value == ">=" || i.value == "==" || i.value == "!="))
+        {
+            return "bool";
+        }
+    }
+    return "number";
+}
 void Expr::expr()
 {
 
@@ -60,27 +84,13 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "||" || E_expr[i].type == KEYWORD && E_expr[i].value == "or")
         {
-            if (i == 1)
-            {
-                tac.arg1 = E_expr[i - 1].value;
-            }
-            else
-            {
-                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i),this->env);
-                left->env = env; // 传递环境
-                tac.arg1 = left->tac.result;
-            };
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
 
-            if (i == E_expr.size() - 2)
-            {
-                tac.arg2 = E_expr[i + 1].value;
-            }
-            else
-            {
-                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()),this->env);
-                right->env = env;
-                tac.arg2 = right->tac.result;
-            };
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
 
             tac.op = "||";
             tacs.push_back(tac);
@@ -94,27 +104,14 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "&&" || E_expr[i].type == KEYWORD && E_expr[i].value == "and")
         {
-            if (i == 1)
-            {
-                tac.arg1 = E_expr[i - 1].value;
-            }
-            else
-            {
-                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i),this->env);
-                left->env = env; // 传递环境
-                tac.arg1 = left->tac.result;
-            };
 
-            if (i == E_expr.size() - 2)
-            {
-                tac.arg2 = E_expr[i + 1].value;
-            }
-            else
-            {
-                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()),this->env);
-                right->env = env;
-                tac.arg2 = right->tac.result;
-            };
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
+
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
 
             tac.op = "&&";
             tacs.push_back(tac);
@@ -129,27 +126,14 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "<" || E_expr[i].value == "<=" || E_expr[i].value == ">" || E_expr[i].value == ">=" || E_expr[i].value == "==" || E_expr[i].value == "!="))
         {
-            if (i == 1)
-            {
-                tac.arg1 = E_expr[i - 1].value;
-            }
-            else
-            {
-                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i),this->env);
-                left->env = env; // 传递环境
-                tac.arg1 = left->tac.result;
-            };
 
-            if (i == E_expr.size() - 2)
-            {
-                tac.arg2 = E_expr[i + 1].value;
-            }
-            else
-            {
-                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()),this->env);
-                right->env = env;
-                tac.arg2 = right->tac.result;
-            };
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
+
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
 
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
@@ -163,27 +147,14 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "+" || E_expr[i].value == "-"))
         {
-            if (i == 1)
-            {
-                tac.arg1 = E_expr[i - 1].value;
-            }
-            else
-            {
-                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i),this->env);
-                left->env = env; // 传递环境
-                tac.arg1 = left->tac.result;
-            };
 
-            if (i == E_expr.size() - 2)
-            {
-                tac.arg2 = E_expr[i + 1].value;
-            }
-            else
-            {
-                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()),this->env);
-                right->env = env;
-                tac.arg2 = right->tac.result;
-            };
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
+
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
 
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
@@ -197,27 +168,15 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "*" || E_expr[i].value == "/" || E_expr[i].value == "%"))
         {
-            if (i == 1)
-            {
-                tac.arg1 = E_expr[i - 1].value;
-            }
-            else
-            {
-                left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i),this->env);
-                left->env = env; // 传递环境
-                tac.arg1 = left->tac.result;
-            };
 
-            if (i == E_expr.size() - 2)
-            {
-                tac.arg2 = E_expr[i + 1].value;
-            }
-            else
-            {
-                right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()),this->env);
-                right->env = env;
-                tac.arg2 = right->tac.result;
-            };
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
+
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
+
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;

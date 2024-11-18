@@ -15,6 +15,7 @@ public:
 	Assign(std::vector<Token> code, Environment* env);
 	void assign();
 	void setEnv(Environment* env);
+	std::string return_type();
 };
 
 #endif
