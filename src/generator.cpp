@@ -44,9 +44,12 @@ std::string generator()
         {
             code += "goto " + i.result + ";\n";
         }
+        else if (i.op == "print"){
+            code += "cout << " + i.arg1 + ";\n";
+        }
     }
 
-    code = "#include <bits/stdc++.h>\nint main()\n{\n"+code+"\n}";
+    code = "#include <bits/stdc++.h>\nusing namespace std;\nint main()\n{\n"+code+"\n}";
 
 
     return code;
