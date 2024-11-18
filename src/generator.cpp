@@ -45,7 +45,7 @@ std::string generator()
             code += "goto " + i.result + ";\n";
         }
         else if (i.op == "print"){
-            code += "cout << " + i.arg1 + ";\n";
+            code += "cout << " + i.arg1 + " << endl;\n";
         }
     }
 

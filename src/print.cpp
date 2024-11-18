@@ -10,7 +10,7 @@ Print::Print(std::vector<Token> &tokens,Environment* env) {
     tokens.pop_back();
 
     Expr* expr = new Expr(tokens,env);
-    std::cout << "Expr!" << std::endl;
+
     tacs.push_back({"print",expr->getTacResult(),"",""});
 
 }
