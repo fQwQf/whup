@@ -4,6 +4,11 @@
 #include "extractor.h"
 #include "generator.h"
 
+#ifdef _WIN32
+#include "windows.h"
+#endif
+
+
 
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern std::vector<std::pair<std::string, std::string>> var_declares;
@@ -11,6 +16,10 @@ extern int tempVarCounter;  // 临时变量计数器
 
 int main(int n, const char *arg[])
 {
+    #ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    #endif
+    
     if(n==1){
         std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
         return 0;
@@ -37,7 +46,7 @@ int main(int n, const char *arg[])
     io.write(code);
 
     std::cout << "Generate code to " << out << std::endl;
-    std::cout << "Done!" << std::endl;
+    std::cout << "Done!ヾ(•ω•`)o" << std::endl;
 
     return 0;
 }
