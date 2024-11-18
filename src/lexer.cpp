@@ -146,7 +146,7 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "if", "else", "for", "while", "return","switch","function",
         "let","var","const","break","continue","case", "true",
         "false","null","new","delete","this","class","import","function",
-        "not","and","or"
+        "not","and","or","print","input"
     };
 }
 

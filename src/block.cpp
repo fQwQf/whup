@@ -1,6 +1,7 @@
 #include "block.h"
 #include"assign.h"
 #include"var.h"
+#include"print.h"
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -78,9 +79,16 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens[0].type == IDENTIFIER)
     {
         new Assign(subtokens,env);
+        //std::cout << "assign" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
         new Var(subtokens,env);
+        //std::cout << "var" << std::endl;
+    }
+    else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
+    {
+        new Print(subtokens,env);
+        //std::cout << "print" << std::endl;
     }
 }
