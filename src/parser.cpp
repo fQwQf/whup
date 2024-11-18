@@ -16,7 +16,7 @@ std::string newTempVar() {
 }
 
 std::string newTempLabel() {
-    return "t" + std::to_string(++tempLabelCounter);
+    return "l" + std::to_string(++tempLabelCounter);
 }
 
 

@@ -1,9 +1,6 @@
-var a = (3+2)-(8+7)*2;
-b = 3;
-c = a + b;
-d = 4+5*a/c;
-print (a);
-print (b);
-print (c);
-print (d);
-print (d+a+b+c);
+var i=0;
+while(i<3)
+{
+    print(i);
+    i=i+1;
+};
