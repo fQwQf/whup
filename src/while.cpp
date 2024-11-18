@@ -1,29 +1,73 @@
 #include"block.h"
 #include"while.h"
-
-While::While(std::vector<Token>& code,Environment*env):While_env(env)
+void While::matchPar(int& i, std::vector<Token>code)
 {
-	
+	if (code[i].value == "(")
+	{
+		int leftPar = 1;
+		int rightPar = 0; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
+		while (leftPar != rightPar)
+		{
+			++i;
+			if (code[i].value == ")")
+			{
+				rightPar++;
+			}
+			else if (code[i].value == "(")
+			{
+				leftPar++;
+			}
+			else
+				continue;
+		}
+	}
+}
+void While::matchBrace(int& i, std::vector<Token>code)
+{
+	if (code[i].value == "{")
+	{
+		int leftBrace = 1;
+		int rightBrace = 0; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
+		while (leftBrace != rightBrace)
+		{
+			++i;
+			if (code[i].value == "}")
+			{
+				rightBrace++;
+			}
+			else if (code[i].value == "{")
+			{
+				leftBrace++;
+			}
+			else
+				continue;
+		}
+	}
+}
+While::While(std::vector<Token> &code,Environment*env):While_env(env)
+{
+	std::cout<<"code lenths="<<code.size()<<std::endl;
 	code.erase(code.begin());//预先将while和；词法单元去掉
 	//首先设计label用于后续跳转
 	std::string While_Expr_label = newTempLabel();
 	std::string While_Block_label = newTempLabel();
 	std::string While_end = newTempLabel();
-
 	//先为expression提供标签
 	tacs.push_back({ "label","","",While_Expr_label});//一个特殊的“三地址”：“label：”
-
 	//初始化W_expr;
-	std::vector<Token> temp_While_Expr;
-	int pos = 1;//不录入括号
-	while (code[pos].value != ")")
+	int pos = 0;
+	matchPar(pos, code);//跳过括号地同时得到）的位置从而初始化expr
+	if (pos <= 1 || pos > code.size()) 
 	{
-		temp_While_Expr.push_back(code[pos]);
-		pos++;
+    throw std::length_error("Invalid position for creating vector");
 	}
-	While_Expr = new Expr(temp_While_Expr,env);
+	std::cout<<"pos="<<pos<<std::endl;
+	While_Expr = new Expr(std::vector<Token>(code.begin(), code.begin() + pos+1),this->While_env);
+	/*
+	唐得没边之：搞错迭代器开始和结束的范围
+	*/
 	//注意，此时已经将三地址码压入tacs中
-
+	std::cout<<"expr done"<<std::endl;
 	//先处理判断语句
 	std::string While_Expr_result = While_Expr->getTacResult();
 	ThreeAddressCode While_Expr_tac;
@@ -36,13 +80,21 @@ While::While(std::vector<Token>& code,Environment*env):While_env(env)
 
 	//为block提供标签
 	tacs.push_back({ "label","","",While_Block_label });
+
+	std::cout<<"Block begin"<<std::endl;
 	//初始化W_block;
-	std::vector<Token> temp_While_Block;
-	pos+=2;//跳过）和{
-	while (code[pos].value != "}")
-	{
-		temp_While_Block.push_back(code[pos]);
-		pos++;
-	}
-	While_Block = new Block(temp_While_Block, env);
+	++pos;//跳过“）”
+	std::cout<<code.size()<<std::endl;
+	int Block_begin = pos;
+	std::cout<<"pos="<<pos<<std::endl;
+	matchBrace(pos, code);
+	std::cout<<"pos="<<pos<<std::endl;
+	While_Block = new Block(std::vector<Token>(code.begin() + Block_begin + 1, code.begin() + pos+1), While_env);
+
+	std::cout<<"xunhuan begin."<<std::endl;
+	//跳转再次进入while
+	tacs.push_back({ "goto","","",While_Expr_label });
+
+	//最后为结束标签
+	tacs.push_back({ "label","","",While_end });
 }
