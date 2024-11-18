@@ -7,6 +7,7 @@ std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c+
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
+int global_env_id = 0;  //全局EnvironmentID计数器
 
 
 std::string newTempVar() {
@@ -38,10 +39,14 @@ std::string newTempLabel() {
 传入一个指向父环境的指针，或者不传入。*/
 Environment::Environment(Environment *p) : parent(p)
 {
-    id = Environment::i;
-    Environment::i++;
+    id = global_env_id;
+    global_env_id++;
+    
 }
-Environment::Environment() : parent(nullptr) {}
+Environment::Environment() : parent(nullptr) {
+    id = global_env_id;
+    global_env_id++;
+}
 
 /**
  * 简介： 向变量表中插入一个新变量。
@@ -118,5 +123,4 @@ void Environment::change_type_var(std::string name, std::string t)
     return;
 }
 
-int Environment::i = 0;
 
