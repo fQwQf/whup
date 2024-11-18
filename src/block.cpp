@@ -28,9 +28,9 @@ void Block::matchBrace(int &i,std::vector<Token> &tokens)
 }
 
 // 以分号为分隔扫描
-Block::Block(std::vector<Token> tokens, Environment *env)
+Block::Block(std::vector<Token> tokens, Environment *e)
 {
-    this->env = new Environment(env);
+    this->env = new Environment(e);
 
     int last_semicolon = 0;
 

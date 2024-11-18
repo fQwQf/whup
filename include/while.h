@@ -9,4 +9,6 @@ class While
 	Environment* While_env;
 public:
 	While(std::vector<Token>& code, Environment* env);
+	void matchPar(int& pos, std::vector<Token>code);
+	void matchBrace(int& pos, std::vector<Token>code);
 };
