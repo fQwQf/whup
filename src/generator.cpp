@@ -16,6 +16,8 @@ std::string generator()
     {   
         if (i.second == "number"){
             code += "float " + i.first + ";\n";
+        }else if (i.second == "string"){
+            code += "string " + i.first + ";\n";
         }else{
             code += i.second  + " " + i.first + ";\n";
         }

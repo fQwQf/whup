@@ -48,8 +48,13 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         {
             tac.result = env->get_var(E_expr[0].value);
         }
+        else if (expr[0].type == STRING)
+        {
+            tac.result = "\"" + E_expr[0].value + "\"";
+        }
         else
         {
+            
             tac.result = E_expr[0].value;
         }
 
