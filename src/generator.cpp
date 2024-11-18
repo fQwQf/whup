@@ -32,7 +32,12 @@ std::string generator()
         }
         else if (!std::isdigit(i.op[0]) && !std::isalpha(i.op[0]))
         {
-            code += i.result + " = " + i.arg1 + i.op + i.arg2 + ";\n";
+            if (i.op == "%"){
+                code += i.result + " = fmod(" + i.arg1 + "," + i.arg2 + ");\n";
+            }else{
+                code += i.result + " = " + i.arg1 + i.op + i.arg2 + ";\n";
+            }
+            
         }
         else if (i.op == "label")
         {

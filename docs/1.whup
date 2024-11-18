@@ -1,11 +1,5 @@
 var j=4;
-var i=0;
+var i=3;
 var a = "sdf";
-print(j);
-while(i<=5)
-{
-    var j=3;
-    print(a);
-    i=i+1;
-    
-};
+print(j%3);
+
