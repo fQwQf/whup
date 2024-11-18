@@ -3,14 +3,16 @@
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
-std::vector<std::pair<std::string, std::string>> var_declares;  // 存储将放入c++中变量名和类型的向量
+std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
 
 
 std::string newTempVar() {
-    return "t" + std::to_string(++tempVarCounter);
+    std::string t = "t" + std::to_string(++tempVarCounter);
+    var_declares[t] = "float";
+    return t;
 }
 
 std::string newTempLabel() {
@@ -82,6 +84,7 @@ std::string Environment::get_var(std::string name)
         }
     }
     return "null";
+
 }
 
 /**
@@ -111,7 +114,7 @@ void Environment::change_type_var(std::string name, std::string t)
             parent->change_type_var(name, t);
         }
     }
-    var_declares.push_back({get_var(name),t});
+    var_declares[get_var(name)] = t;//并非在符号表创建条目时就插入var_declares，这样只声明未赋值的变量就不会被编译
     return;
 }
 

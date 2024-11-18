@@ -1,7 +1,7 @@
 #include "block.h"
 #include"assign.h"
 #include"var.h"
-#include"whup_parser.h"
+#include"print.h"
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -55,9 +55,12 @@ Block::Block(std::vector<Token> tokens)
 
     int last_semicolon = 0;
 
-
     for (int i = 0; i < tokens.size(); i++)
     {
+        //打印出所有Token
+        //debug时可能有用
+        //std::cout << tokens[i].value;
+
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
@@ -71,14 +74,21 @@ Block::Block(std::vector<Token> tokens)
 void Block::generate(std::vector<Token> subtokens)
 {
     if (subtokens.empty())
-        return; // Add this line to check if subtokens is empty
+        return; 
 
     if (subtokens[0].type == IDENTIFIER)
     {
         new Assign(subtokens,env);
+        //std::cout << "assign" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
         new Var(subtokens,env);
+        //std::cout << "var" << std::endl;
+    }
+    else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
+    {
+        new Print(subtokens,env);
+        //std::cout << "print" << std::endl;
     }
 }

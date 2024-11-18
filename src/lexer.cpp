@@ -146,7 +146,7 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "if", "else", "for", "while", "return","switch","function",
         "let","var","const","break","continue","case", "true",
         "false","null","new","delete","this","class","import","function",
-        "not","and","or"
+        "not","and","or","print","input"
     };
 }
 
@@ -156,25 +156,3 @@ std::unordered_set<std::string> Lexer::symbol_sets() const {
         "==","!=",">=","<=","&&","||","**","->","::","<<",">>"
     };
 }
-
-/*int main() {
-   std::string code = R"(
-       var a ;
-a = 2;
-var b;
-var c;
-b = 2;
-c = a ** b;
-print(c);
-   )";
-
-   Lexer lexer(code);
-   std::vector<Token> tokens = lexer.tokenize();
-
-   for (const auto& token : tokens) {
-       std::cout << "Type: " << static_cast<int>(token.type) << ", Value: " << token.value 
-                 << ", Line: " << token.line_number  << std::endl;
-   }
-
-   return 0;
-}*/
