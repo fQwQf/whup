@@ -13,5 +13,5 @@ public:
 	void martchPar(int& i, std::vector<Token>code);
 	void martchBrace(int& i, std::vector<Token>code);
 
-	void martchIfElse(int& i, std::vector<Token>code);//1表示继续，0表示else后不再有if
+	bool martchIfElse(int& i, std::vector<Token>code);//1表示继续，0表示else后不再有if
 };

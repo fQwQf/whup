@@ -1,23 +1,26 @@
 #include"if.h"
 /*呃呃写完发现好像不用block，expr数组，在new临时变量IBT和IET时就已经把tac压入搭配tacs中了
 不过作为一种记录过程的方式，也许可以利于拓展（？）*/
-void If::martchIfElse(int&i,std::vector<Token>code)
+bool If::martchIfElse(int&i,std::vector<Token>code)
 {
 	if (code[i].type == KEYWORD && code[i].value == "if")
 	{
 		i++;
-		return;
+		return 1;
 	}
 	else if (code[i].type == KEYWORD && code[i].value == "else")
 	{
 		i++;
+
+		std::cout<<"else judge success"<<std::endl;
+
 		if (code[i].type == KEYWORD && code[i].value == "if")
 		{
 			i++;
-			return;
+			return 1;
 		}
 		else if (code[i].value == "{")
-			return;
+			return 0;
 	}
 }
 void If::martchPar(int& i, std::vector<Token>code)
@@ -28,7 +31,7 @@ void If::martchPar(int& i, std::vector<Token>code)
 		int rightPar = 0; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
 		while (leftPar != rightPar)
 		{
-			--i;
+			++i;
 			if (code[i].value == ")")
 			{
 				rightPar++;
@@ -50,7 +53,7 @@ void If::martchBrace(int& i, std::vector<Token>code)
 		int rightBrace = 0; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
 		while (leftBrace != rightBrace)
 		{
-			--i;
+			++i;
 			if (code[i].value == "}")
 			{
 				rightBrace++;
@@ -72,24 +75,46 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	std::vector<std::vector<Token>>If_Block_temps;
 	//用一个label数组来记录生成了多少个Block并接收对应的label
 	std::vector<std::string>If_Block_labelArr;
+	std::string If_endLabel=newTempLabel();
 	int pos = 0;
+
+	std::cout<<"begin"<<std::endl;
+
 	while (pos < code.size())//做一次扫描的同时将code分别储存到各个expr和block中（以token形式）后续在进行tacs操作
 	{
 		//处理if和else的token
-		martchIfElse(pos, code);
+		bool isIfElse=martchIfElse(pos, code);
 
 		//记录一个expr
-		int Expr_begin = pos;
-		martchPar(pos, code);
-		If_Expr_temps.push_back(std::vector<Token>(code.begin() + Expr_begin+1, code.begin() + pos-1));
-		pos++;
+		if(isIfElse)
+		{
+			int Expr_begin = pos;
+			martchPar(pos, code);
+			If_Expr_temps.push_back(std::vector<Token>(code.begin() + Expr_begin+1, code.begin() + pos));
+			pos++;
+		}
+		else
+		{
+			std::cout<<"no expr"<<std::endl;
+		}
+		
+
+		std::cout<<"pos="<<pos<<std::endl;
+		std::cout<<"expr record success"<<std::endl;
+
 		//记录一个block
 		int Block_begin = pos;
 		martchBrace(pos, code);
-		If_Block_temps.push_back(std::vector<Token>(code.begin() + Block_begin + 1, code.begin() + pos - 1));
+		If_Block_temps.push_back(std::vector<Token>(code.begin() + Block_begin + 1, code.begin() + pos ));
 		If_Block_labelArr.push_back(newTempLabel());//记录block代码的同时创建一个label，使得二者按索引对应
 		pos++;
+
+		std::cout<<"pos="<<pos<<std::endl;
+		std::cout<<"block record success"<<std::endl;
 	}
+
+	std::cout<<"ief.size()="<<If_Expr_temps.size()<<std::endl;
+	std::cout<<"ifb.size()="<<If_Block_temps.size()<<std::endl;
 
 	//下面先将expr处理，用于生成跳转语句
 	for (int i = 0; i < If_Expr_temps.size(); i++)
@@ -98,9 +123,16 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 		If_Expr.push_back(IET);
 		tacs.push_back({ "if_goto",IET->getTacResult(),"", If_Block_labelArr[i]});//生成跳转语句
 	}
+
+	std::cout<<"expr generate success"<<std::endl;
+
 	if (If_Expr_temps.size() < If_Block_temps.size())//可能结尾为else{}，不会生成Expr
 	{
-		tacs.push_back({ "goto","","",*If_Block_labelArr.end() });//goto用于实现默认进入else后的block
+		std::cout<<"defualt goto generate"<<std::endl;
+
+		tacs.push_back({ "goto","","",*(If_Block_labelArr.end()-1) });//goto用于实现默认进入else后的block
+
+		std::cout<<"defualt goto generate success"<<std::endl;
 	}
 	/*
 	与原定形式不太一样但效果相同
@@ -113,12 +145,14 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	//下面处理block
 	for (int i = 0; i < If_Block_temps.size(); i++)
 	{
-		Block* IBT = new Block(If_Block_temps[i], If_Env);
 		tacs.push_back({ "label","","",If_Block_labelArr[i] });//先给label
+		Block* IBT = new Block(If_Block_temps[i], If_Env);
 		If_Block.push_back(IBT);//再给代码
 		tacs.push_back({ "goto","","",If_endLabel });//运行完前面的代码直接goto endLabel
 	}
 
+	//最后加上endlabel
+	tacs.push_back({"label","","",If_endLabel});
 }
 
 /*

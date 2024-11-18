@@ -2,4 +2,3 @@ var j=4;
 var i=3;
 var a = "sdf";
 print(j%3);
-
