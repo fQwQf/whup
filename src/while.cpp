@@ -44,7 +44,7 @@ void While::matchBrace(int& i, std::vector<Token>code)
 		}
 	}
 }
-While::While(std::vector<Token>& code,Environment*env):While_env(env)
+While::While(std::vector<Token> &code,Environment*env):While_env(env)
 {
 	std::cout<<"code lenths="<<code.size()<<std::endl;
 	code.erase(code.begin());//预先将while和；词法单元去掉
@@ -89,7 +89,7 @@ While::While(std::vector<Token>& code,Environment*env):While_env(env)
 	std::cout<<"pos="<<pos<<std::endl;
 	matchBrace(pos, code);
 	std::cout<<"pos="<<pos<<std::endl;
-	While_Block = new Block(std::vector<Token>(code.begin() + Block_begin, code.begin() + pos+1), While_env);
+	While_Block = new Block(std::vector<Token>(code.begin() + Block_begin + 1, code.begin() + pos+1), While_env);
 
 	std::cout<<"xunhuan begin."<<std::endl;
 	//跳转再次进入while

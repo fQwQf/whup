@@ -39,11 +39,15 @@ Block::Block(std::vector<Token> tokens, Environment *e)
     for (int i = 0; i < tokens.size(); i++)
     {
         matchBrace(i, tokens);
-        if (tokens[i].type == SYMBOL || tokens[i].value == ";")
+        if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
-            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i - 1);
-            last_semicolon += 1;
+            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
+            last_semicolon = i+1;
+            for (auto i : subtokens){
+                std::cout << i.value ;
+            }
             generate(subtokens);
+            std::cout << "generate" << std::endl;
         }
     }
 }
@@ -93,11 +97,11 @@ void Block::generate(std::vector<Token> subtokens)
         new Print(subtokens,env);
         //std::cout << "print" << std::endl;
     }
-    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="if")
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="if")
     {
         new If(subtokens,env);
     }
-    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="while")
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="while")
     {
         new While(subtokens,env);
     }

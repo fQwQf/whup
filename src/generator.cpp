@@ -49,7 +49,7 @@ std::string generator()
         }
     }
 
-    code = "#include <bits/stdc++.h>\nusing namespace std;\nint main()\n{\n"+code+"\n}";
+    code = "#include <bits/stdc++.h>\nusing namespace std;\nint main()\n{\n"+code+"\nreturn 0;\n\n}";
 
 
     return code;
