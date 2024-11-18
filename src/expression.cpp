@@ -77,7 +77,7 @@ std::string Expr::return_type()
 }
 void Expr::expr()
 {
-
+    std::cout<<E_expr.size()<<std::endl;
     // 扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--)
     {
@@ -188,4 +188,5 @@ void Expr::expr()
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());
     this->expr();
+    std::cout<<"expr success.";
 };

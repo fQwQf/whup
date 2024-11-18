@@ -26,13 +26,10 @@ int main(int n, const char *arg[])
     }
 
     IO io(extractor.get_input_file(), out);
-
     std::string expression = io.read();
-    Lexer lexer(expression);
-
+    Lexer lexer(expression);   
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
-
     Block block(tokens);
 
     std::string code = generator();

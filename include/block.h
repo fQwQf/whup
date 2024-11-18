@@ -2,7 +2,8 @@
 #include"whup_parser.h"
 #endif
 
-
+#ifndef BLOCK_H_
+#define BLOCK_H_
 #include <bits/stdc++.h>
 
 
@@ -31,3 +32,4 @@ public:
     
 
 };
+#endif
