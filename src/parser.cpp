@@ -10,9 +10,9 @@ int tempLabelCounter = 0;  // 临时标签计数器
 int global_env_id = 0;  //全局EnvironmentID计数器
 int global_circulation_id=0;//全局循环计数器
 
-std::string newTempVar() {
+std::string newTempVar(std::string type) {
     std::string t = "t" + std::to_string(++tempVarCounter);
-    var_declares[t] = "float";
+    var_declares[t] = type;
     return t;
 }
 
@@ -123,4 +123,21 @@ void Environment::change_type_var(std::string name, std::string t)
     return;
 }
 
-
+std::string Environment::get_type_var(std::string name){
+    if (var_table.find(name) != var_table.end())
+    {
+        return var_table[name];
+    }
+    else
+    {
+        if (parent == nullptr)
+        {
+            return "notfound";
+        }
+        else
+        {
+            return parent->get_var(name);
+        }
+    }
+    return "notfound";
+}

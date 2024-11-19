@@ -11,6 +11,12 @@ Print::Print(std::vector<Token> &tokens,Environment* env) {
 
     Expr* expr = new Expr(tokens,env);
 
-    tacs.push_back({"print",expr->getTacResult(),"",""});
-
+    if (expr->return_type() == "bool")
+    {
+        tacs.push_back({"print", expr->getTacResult(), "", "bool"});
+    }
+    else
+    {
+        tacs.push_back({"print", expr->getTacResult(), "", ""});
+    }
 }
