@@ -12,14 +12,14 @@ std::string newTempLabel();
 
 /*
 *结构：三地址码
-*
+*result = arg1 op arg2 ;
 *储存四个字符串，分别代表运算符，操作数1，操作数2，结果
 */
 struct ThreeAddressCode {
     std::string op;   // 操作符
-    std::string arg1;
-    std::string arg2;
-    std::string result;
+    std::string arg1;   //变量1
+    std::string arg2;   //变量2
+    std::string result; //存储结果的变量
 };
 
 /*
@@ -39,7 +39,7 @@ class Environment{
     private:
 
     std::unordered_map<std::string,std::string> var_table;
-    Environment* parent;
+    Environment* parent;//指向父环境的指针
     int id;
     static int i;
 

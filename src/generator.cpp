@@ -1,14 +1,13 @@
 #include "generator.h"
 #include "whup_parser.h"
 
-extern std::vector<ThreeAddressCode> tacs;
+extern std::vector<ThreeAddressCode> tacs;// 存储三地址代码的向量
 extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 
 /*
-生成器
+代码生成器
 读取三地址码和声明表，生成相应的c++代码
 */
-
 std::string generator()
 {
     std::string code = "";
