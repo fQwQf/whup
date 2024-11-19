@@ -1,2 +1,2 @@
-a = "sdf";
-print("dsf"+"HJGFDHJH");
+var a = "1";
+print(a);
