@@ -1,4 +1,16 @@
 var j=4;
-var i=3;
-var a = "sdf";
-print(j%3);
+var i=0;
+print(j);
+while(i<=5)
+{
+    print (i);
+    if(i<=3)
+    {
+        
+        print("less than 3");
+    }else{
+        print("more than 3");
+    };
+    i=i+1;
+    
+};

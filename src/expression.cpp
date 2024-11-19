@@ -51,8 +51,8 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         else if (expr[0].type == STRING)
         {
             tac.result = "\"" + E_expr[0].value + "\"";
-        }
-        else
+        } 
+        else if (expr[0].type == NUMBER)
         {
             
             tac.result = E_expr[0].value;

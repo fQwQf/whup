@@ -16,3 +16,4 @@
 定义一个Label类，具有以下方法：  
 
 - get_label：生成一个label名。label名是唯一的。
+
