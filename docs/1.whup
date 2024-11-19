@@ -1,0 +1,21 @@
+var i=0;
+if(1<2)
+{
+    var i=1;
+    print(i);
+    if(2<3)
+    {
+        var i=2;
+        print(i);
+        if(3<4)
+        {
+            var i=3;
+            print(i);
+            if(5>4)
+            {
+                var i=4;
+                print(i);
+            };
+        };
+    };
+};

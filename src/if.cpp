@@ -1,6 +1,8 @@
 #include"if.h"
 /*呃呃写完发现好像不用block，expr数组，在new临时变量IBT和IET时就已经把tac压入搭配tacs中了
 不过作为一种记录过程的方式，也许可以利于拓展（？）*/
+
+//此处未设置默认处理，后续做调试功能时可以在此扩展
 bool If::martchIfElse(int&i,std::vector<Token>code)
 {
 	if (code[i].type == KEYWORD && code[i].value == "if")
@@ -11,9 +13,6 @@ bool If::martchIfElse(int&i,std::vector<Token>code)
 	else if (code[i].type == KEYWORD && code[i].value == "else")
 	{
 		i++;
-
-		std::cout<<"else judge success"<<std::endl;
-
 		if (code[i].type == KEYWORD && code[i].value == "if")
 		{
 			i++;
@@ -77,9 +76,6 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	std::vector<std::string>If_Block_labelArr;
 	std::string If_endLabel=newTempLabel();
 	int pos = 0;
-
-	std::cout<<"begin"<<std::endl;
-
 	while (pos < code.size())//做一次扫描的同时将code分别储存到各个expr和block中（以token形式）后续在进行tacs操作
 	{
 		//处理if和else的token
@@ -95,12 +91,9 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 		}
 		else
 		{
-			std::cout<<"no expr"<<std::endl;
+			//不做默认处理，可拓展
 		}
 		
-
-		std::cout<<"pos="<<pos<<std::endl;
-		std::cout<<"expr record success"<<std::endl;
 
 		//记录一个block
 		int Block_begin = pos;
@@ -108,13 +101,7 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 		If_Block_temps.push_back(std::vector<Token>(code.begin() + Block_begin + 1, code.begin() + pos ));
 		If_Block_labelArr.push_back(newTempLabel());//记录block代码的同时创建一个label，使得二者按索引对应
 		pos++;
-
-		std::cout<<"pos="<<pos<<std::endl;
-		std::cout<<"block record success"<<std::endl;
 	}
-
-	std::cout<<"ief.size()="<<If_Expr_temps.size()<<std::endl;
-	std::cout<<"ifb.size()="<<If_Block_temps.size()<<std::endl;
 
 	//下面先将expr处理，用于生成跳转语句
 	for (int i = 0; i < If_Expr_temps.size(); i++)
@@ -124,15 +111,10 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 		tacs.push_back({ "if_goto",IET->getTacResult(),"", If_Block_labelArr[i]});//生成跳转语句
 	}
 
-	std::cout<<"expr generate success"<<std::endl;
 
 	if (If_Expr_temps.size() < If_Block_temps.size())//可能结尾为else{}，不会生成Expr
 	{
-		std::cout<<"defualt goto generate"<<std::endl;
-
 		tacs.push_back({ "goto","","",*(If_Block_labelArr.end()-1) });//goto用于实现默认进入else后的block
-
-		std::cout<<"defualt goto generate success"<<std::endl;
 	}
 	/*
 	与原定形式不太一样但效果相同
