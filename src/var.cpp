@@ -19,9 +19,7 @@ Var::Var(std::vector<Token> tokens,Environment* env)
     }else{
         //先判断返回类型
         var(env, tokens[1].value);
-        Assign *ass = new Assign(std::vector<Token>(tokens.begin()+1, tokens.end()),env);//幽默变量名
-        
-        
+        Assign *ass = new Assign(std::vector<Token>(tokens.begin()+1, tokens.end()),env);//幽默指针名
     }
 }
 
