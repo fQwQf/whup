@@ -116,6 +116,9 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	{
 		tacs.push_back({ "goto","","",*(If_Block_labelArr.end()-1) });//goto用于实现默认进入else后的block
 	}
+	else{
+		tacs.push_back({ "goto","","",If_endLabel });//没有默认的话直接跳到endLabel
+	}
 	/*
 	与原定形式不太一样但效果相同
 		1.原定形式中没有对ti的计算，但只要计算步骤紧跟在跳转语句之前就没有影响
