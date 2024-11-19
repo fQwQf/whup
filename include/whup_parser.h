@@ -7,7 +7,7 @@
 #include "lexer.h"
 #endif
 
-std::string newTempVar();
+std::string newTempVar(std::string type);
 std::string newTempLabel();
 
 /*

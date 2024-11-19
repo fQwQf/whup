@@ -7,7 +7,7 @@
 #endif
 
 
-std::string newTempVar();
+std::string newTempVar(std::string type);
 
 
 class Expr {

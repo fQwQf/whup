@@ -10,9 +10,9 @@ int tempLabelCounter = 0;  // 临时标签计数器
 int global_env_id = 0;  //全局EnvironmentID计数器
 
 
-std::string newTempVar() {
+std::string newTempVar(std::string type) {
     std::string t = "t" + std::to_string(++tempVarCounter);
-    var_declares[t] = "float";
+    var_declares[t] = type;
     return t;
 }
 
