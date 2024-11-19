@@ -10,23 +10,18 @@ file(GLOB LIBS "src/*.cpp")
 
 #将所有.cpp文件添加到库列表中
 
-add_library(var SHARED src/var.cpp)
-add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp)
+add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp)
 add_library(expression SHARED src/expression.cpp)
-add_library(while SHARED src/while.cpp)
 add_library(parser SHARED src/parser.cpp)
-add_library(assign SHARED src/assign.cpp)
 add_library(lexer SHARED src/lexer.cpp)
-add_library(print SHARED src/print.cpp)
+add_library(extractor SHARED src/extractor.cpp)
+add_library(generator SHARED src/generator.cpp)
+add_library(io SHARED src/io.cpp)
 
-
-target_link_libraries(while PUBLIC expression)
-target_link_libraries(var PUBLIC parser assign)
-target_link_libraries(assign PUBLIC parser expression lexer)
 target_link_libraries(expression PUBLIC parser)
-target_link_libraries(while PUBLIC block)
-target_link_libraries(block PUBLIC  var print)
-target_link_libraries(print PUBLIC expression)
+target_link_libraries(block PUBLIC parser expression lexer)
+target_link_libraries(generator PUBLIC parser)
 
+add_executable(whupc src/whupc.cpp)
 
-add_executable(whupc  ${WHUPC_LIST})
+target_link_libraries(whupc PUBLIC block parser expression lexer extractor generator io)

@@ -16,6 +16,8 @@ std::string generator()
     {   
         if (i.second == "number"){
             code += "float " + i.first + ";\n";
+        }else if (i.second == "string"){
+            code += "string " + i.first + ";\n";
         }else{
             code += i.second  + " " + i.first + ";\n";
         }
@@ -30,7 +32,12 @@ std::string generator()
         }
         else if (!std::isdigit(i.op[0]) && !std::isalpha(i.op[0]))
         {
-            code += i.result + " = " + i.arg1 + i.op + i.arg2 + ";\n";
+            if (i.op == "%"){
+                code += i.result + " = fmod(" + i.arg1 + "," + i.arg2 + ");\n";
+            }else{
+                code += i.result + " = " + i.arg1 + i.op + i.arg2 + ";\n";
+            }
+            
         }
         else if (i.op == "label")
         {
