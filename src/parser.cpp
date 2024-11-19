@@ -8,7 +8,6 @@ std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c+
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
 int global_env_id = 0;  //全局EnvironmentID计数器
-int global_circulation_id=0;//全局循环计数器
 
 std::string newTempVar(std::string type) {
     std::string t = "t" + std::to_string(++tempVarCounter);

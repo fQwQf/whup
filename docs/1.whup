@@ -1,2 +1,7 @@
-a = "sdf";
-print("dsf"+"HJGFDHJH");
+while(1<2)
+{
+    if(2>1)
+    {
+        break;
+    };
+};

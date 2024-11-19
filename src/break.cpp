@@ -1,7 +1,8 @@
 #include"break.h"
+int global_circulation_id=0;
 Break::Break(Environment*env)
 {
-    std::string endLabelName="Circulation_endlabel_"+std::to_string(globl_circulation_id);//需要提前知道“键”是什么
+    std::string endLabelName="Circulation_endlabel_"+std::to_string(global_circulation_id);//需要提前知道“键”是什么
     //这是在label生成时创建的“变量名”，借用变量名去查找label翻译出来的名字
     //所以关键在于在label生成时，合理地创建“变量名”
     std::string endLabel=env->get_var(endLabelName);//得到out.cpp会出现地的label名
