@@ -84,6 +84,18 @@ class Environment{
      *  t 新的变量类型
      */
     void change_type_var(std::string name,std::string t);
+
+    /**
+     * 函数名：get_type_var
+     *
+     * 该函数用于在变量表中查找指定名称的变量类型。
+     * 如果当前作用域中不存在该变量，则会递归地在父作用域中查找。
+     *
+     * 参数： 
+     *  name 要查找的变量的名称
+     */
+    std::string get_type_var(std::string name);
+
 };
 
 #endif

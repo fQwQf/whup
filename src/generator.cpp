@@ -52,7 +52,12 @@ std::string generator()
             code += "goto " + i.result + ";\n";
         }
         else if (i.op == "print"){
+            if(i.result == "bool"){
+                code += "if(" + i.arg1 + ") cout << \"True\" << endl;\n";
+                code += "else cout << \"False\" << endl;\n";
+            }else{
             code += "cout << " + i.arg1 + " << endl;\n";
+            }
         }
     }
 

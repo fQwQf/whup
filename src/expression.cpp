@@ -67,18 +67,25 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 
 std::string Expr::return_type()
 {
-    for (auto i : E_expr)
+    if (E_expr.size() == 1 && E_expr[0].type == IDENTIFIER)
     {
-        if (i.type == STRING)
-        {
-            return "string";
-        }
-        else if (i.type == SYMBOL && (i.value == "<" || i.value == "<=" || i.value == ">" || i.value == ">=" || i.value == "==" || i.value == "!="))
-        {
-            return "bool";
-        }
+        return env->get_type_var(E_expr[0].value);
     }
-    return "number";
+    else
+    {
+        for (auto i : E_expr)
+        {
+            if (i.type == STRING)
+            {
+                return "string";
+            }
+            else if (i.type == SYMBOL && (i.value == "<" || i.value == "<=" || i.value == ">" || i.value == ">=" || i.value == "==" || i.value == "!="))
+            {
+                return "bool";
+            }
+        }
+        return "number";
+    }
 }
 void Expr::expr()
 {

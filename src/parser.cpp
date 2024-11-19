@@ -123,4 +123,21 @@ void Environment::change_type_var(std::string name, std::string t)
     return;
 }
 
-
+std::string Environment::get_type_var(std::string name){
+    if (var_table.find(name) != var_table.end())
+    {
+        return var_table[name];
+    }
+    else
+    {
+        if (parent == nullptr)
+        {
+            return "notfound";
+        }
+        else
+        {
+            return parent->get_var(name);
+        }
+    }
+    return "notfound";
+}
