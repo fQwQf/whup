@@ -42,8 +42,11 @@ void Expr::setEnv(Environment *env)
 
 Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 {
+
     if (expr.size() == 1)
     { // 只有一个元素
+        this->setEnv(env);
+
         if (expr[0].type == IDENTIFIER)
         {
             tac.result = env->get_var(E_expr[0].value);
@@ -54,13 +57,10 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         } 
         else if (expr[0].type == NUMBER)
         {
-            
             tac.result = E_expr[0].value;
         }
-
         return;
     };
-    this->setEnv(env);
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
