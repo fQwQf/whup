@@ -4,6 +4,7 @@
 #include"print.h"
 #include"if.h"
 #include"while.h"
+#include"break.h"
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -85,17 +86,17 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens[0].type == IDENTIFIER)
     {
         new Assign(subtokens,env);
-        //std::cout << "assign" << std::endl;
+        std::cout << "assign generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
         new Var(subtokens,env);
-        //std::cout << "var" << std::endl;
+        std::cout << "var generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
     {
         new Print(subtokens,env);
-        //std::cout << "print" << std::endl;
+        std::cout << "print generate" << std::endl;
     }
     else if(subtokens[0].type==KEYWORD && subtokens[0].value=="if")
     {
@@ -104,5 +105,13 @@ void Block::generate(std::vector<Token> subtokens)
     else if(subtokens[0].type==KEYWORD && subtokens[0].value=="while")
     {
         new While(subtokens,env);
+    }
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="break")
+    {
+        new Break(env);
+    }
+    else
+    {
+        std::cout << "error" << std::endl;
     }
 }
