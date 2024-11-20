@@ -7,7 +7,9 @@
 #include "lexer.h"
 #endif
 
+//创建新的临时变量
 std::string newTempVar(std::string type);
+//创建新的临时标签
 std::string newTempLabel();
 
 /*
@@ -23,6 +25,8 @@ struct ThreeAddressCode {
 };
 
 /*
+*创建环境类
+*
 *定义一个符号表类，具有链表结构，有一个指向父符号表的指针。
 *叫environment是为了致敬龙书。  
 *内部有一个private的unordered_map，用来存储变量名，类型。  
@@ -38,6 +42,7 @@ struct ThreeAddressCode {
 class Environment{
     private:
 
+    //以哈希表创建符号表，用于存储变量名及其类型
     std::unordered_map<std::string,std::string> var_table;
     Environment* parent;//指向父环境的指针
     int id;
@@ -46,8 +51,10 @@ class Environment{
 
     public:
 
-    /*构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
-    传入一个指向父环境的指针，或者不传入。*/
+    /*
+    构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
+    传入一个指向父环境的指针，或者不传入(不传入一般表示根节点)。
+    */
     Environment(Environment* p);
     Environment();
 

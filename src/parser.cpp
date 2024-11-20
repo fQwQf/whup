@@ -35,8 +35,10 @@ std::string newTempLabel() {
 *- change_type_var：修改一个变量的类型。   
 */
 
-/*构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
-传入一个指向父环境的指针，或者不传入。*/
+/*
+构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
+传入一个指向父环境的指针，或者不传入(不传入一般表示根节点)。
+*/
 Environment::Environment(Environment *p) : parent(p)
 {
     id = global_env_id;

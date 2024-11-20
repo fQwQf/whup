@@ -5,9 +5,9 @@ extern int tempVarCounter;                 // 临时变量计数器
 
 // 从右至左对输入进行遍历，扫描以下运算符，从下向上
 /*
-** | 幂运算
-*, /, % | 乘，除，取余
-+, - | 加和减
+    ** 表示 幂运算
+    *  , /, % 表示 乘，除，取余
+    +, - 表示 加和减
 */
 // 返回扫描到的符号，并创建左右子树，以左边和右边的所有token传入所有构造
 // 对于小括号的实现：可以增加一层扫描括号，并且在前两层调用一个略去括号的函数
@@ -66,6 +66,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
     this->expr();
 } // 用表达式词法单元串初始化
 
+//返回token类型的函数
 std::string Expr::return_type()
 {
     if (E_expr.size() == 1 && E_expr[0].type == IDENTIFIER)
@@ -88,13 +89,15 @@ std::string Expr::return_type()
         return "number";
     }
 }
+
+//合并对expr的所有处理,将得到的三地址码栈压入总栈
 void Expr::expr()
 {
     std::cout<<E_expr.size()<<std::endl;
     // 扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--)
     {
-        matchPar(i);
+        matchPar(i);//扫描括号符号
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "||" || E_expr[i].type == KEYWORD && E_expr[i].value == "or")
         {
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
