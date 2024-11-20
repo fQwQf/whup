@@ -1,13 +1,3 @@
 var i=1;
-while(i<10)
-{
-    while(i<10)
-    {
-        while(i<10)
-        {
-            break;
-        };
-        break;
-    };
-    break;
-};
+print(i<100);
+var c=1;
