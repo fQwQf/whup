@@ -4,6 +4,7 @@
 #include"print.h"
 #include"if.h"
 #include"while.h"
+#include"break.h"
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -91,5 +92,13 @@ void Block::generate(std::vector<Token> subtokens)
     else if(subtokens[0].type==KEYWORD && subtokens[0].value=="while")
     {
         new While(subtokens,env);
+    }
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="break")
+    {
+        new Break(env);
+    }
+    else
+    {
+        std::cout << "error" << std::endl;
     }
 }
