@@ -1,7 +1,7 @@
 #include"block.h"
 #include"while.h"
 extern int global_env_id;  //全局EnvironmentID计数器
-extern int global_circulation_id;//全局循环计数器
+extern std::stack<int> global_circulation_id;//全局循环计数器
 void While::matchPar(int& i, std::vector<Token>code)
 {
 	if (code[i].value == "(")
@@ -55,9 +55,8 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	std::string While_Block_label = newTempLabel();
 
 	//需要设计这里的变量名
-	// std::string While_end = newTempLabel();
-	global_circulation_id=global_env_id;//这里的id是为了区分不同的循环
-	std::string labelToEnv="Circulation_endlabel_"+std::to_string(global_circulation_id);
+	global_circulation_id.push(global_env_id);//这里的id是为了区分不同的循环
+	std::string labelToEnv="Circulation_endlabel_"+std::to_string(global_circulation_id.top());
 	While_env->insert_var(labelToEnv);
 	std::string While_end = While_env->get_var(labelToEnv);
 	//这里把一个标识符插入符号表，该标识符指向
