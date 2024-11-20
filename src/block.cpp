@@ -85,17 +85,17 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens[0].type == IDENTIFIER)
     {
         new Assign(subtokens,env);
-        //std::cout << "assign" << std::endl;
+        std::cout << "assign generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
         new Var(subtokens,env);
-        //std::cout << "var" << std::endl;
+        std::cout << "var generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
     {
         new Print(subtokens,env);
-        //std::cout << "print" << std::endl;
+        std::cout << "print generate" << std::endl;
     }
     else if(subtokens[0].type==KEYWORD && subtokens[0].value=="if")
     {

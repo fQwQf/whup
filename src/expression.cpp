@@ -43,21 +43,28 @@ void Expr::setEnv(Environment *env)
 Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 {
 
+    this->setEnv(env);
     if (expr.size() == 1)
     { // 只有一个元素
-        this->setEnv(env);
+        
 
         if (expr[0].type == IDENTIFIER)
         {
+            std::cout << "find IDENTIFIER!";
             tac.result = env->get_var(E_expr[0].value);
+            std::cout << "result: " << tac.result << std::endl;
         }
         else if (expr[0].type == STRING)
         {
+            std::cout << "find STRING!";
             tac.result = "\"" + E_expr[0].value + "\"";
+            std::cout << "result: " << tac.result << std::endl;
         } 
         else if (expr[0].type == NUMBER)
         {
+            std::cout << "find NUMBER!";
             tac.result = E_expr[0].value;
+            std::cout << "result: " << tac.result << std::endl;
         }
         return;
     };
@@ -90,13 +97,16 @@ std::string Expr::return_type()
 }
 void Expr::expr()
 {
-    std::cout<<E_expr.size()<<std::endl;
+    std::cout << "expr scan start!" << "size:";
+    std::cout << E_expr.size() << std::endl;
     // 扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--)
     {
         matchPar(i);
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "||" || E_expr[i].type == KEYWORD && E_expr[i].value == "or")
         {
+            std::cout << "find ||" << std::endl;
+
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
             tac.arg1 = left->tac.result;
@@ -117,6 +127,7 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "&&" || E_expr[i].type == KEYWORD && E_expr[i].value == "and")
         {
+            std::cout << "find &&" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -139,6 +150,7 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "<" || E_expr[i].value == "<=" || E_expr[i].value == ">" || E_expr[i].value == ">=" || E_expr[i].value == "==" || E_expr[i].value == "!="))
         {
+            std::cout << "find compare" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -163,6 +175,8 @@ void Expr::expr()
             //c++不支持两个直接的string相加，故这样处理
             if (E_expr.size() == 3 && E_expr[0].type == STRING && E_expr[2].type == STRING && E_expr[1].value == "+")
             {
+                std::cout << "find string add" << std::endl;
+
                 std::string temp = newTempVar("string");
                 tacs.push_back({"=", "\"" + E_expr[0].value + "\"", "", temp});
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
@@ -175,6 +189,8 @@ void Expr::expr()
                 tacs.push_back(tac);
                 return;
             }
+
+            std::cout << "find add" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -196,6 +212,7 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "*" || E_expr[i].value == "/" || E_expr[i].value == "%"))
         {
+            std::cout << "find */%" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -213,6 +230,8 @@ void Expr::expr()
 
     // 前面均没扫到说明全部被括号包裹
     // 去掉首尾括号并重新调用expr（）
+    std::cout << "find par" << std::endl;
+
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());
     this->expr();
