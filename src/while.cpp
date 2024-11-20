@@ -1,7 +1,7 @@
 #include"block.h"
 #include"while.h"
 extern int global_env_id;  //全局EnvironmentID计数器
-extern std::stack<int> global_circulation_id;//全局循环计数器
+std::stack<int> global_circulation_id;
 void While::matchPar(int& i, std::vector<Token>code)
 {
 	if (code[i].value == "(")
@@ -51,18 +51,22 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	std::cout<<"code lenths="<<code.size()<<std::endl;
 	code.erase(code.begin());//预先将while和；词法单元去掉
 	//首先设计label用于后续跳转
-	std::string While_Expr_label = newTempLabel();
 	std::string While_Block_label = newTempLabel();
 
 	//需要设计这里的变量名
 	global_circulation_id.push(global_env_id);//这里的id是为了区分不同的循环
-	std::string labelToEnv="Circulation_endlabel_"+std::to_string(global_circulation_id.top());
-	While_env->insert_var(labelToEnv);
-	std::string While_end = While_env->get_var(labelToEnv);
+	//
+	std::string beginLabelToEnv="Circulation_beginlabel_"+std::to_string(global_circulation_id.top());
+	While_env->insert_var(beginLabelToEnv);
+	std::string While_begin_label = While_env->get_var(beginLabelToEnv);
+	//
+	std::string endLabelToEnv="Circulation_endlabel_"+std::to_string(global_circulation_id.top());
+	While_env->insert_var(endLabelToEnv);
+	std::string While_end_label = While_env->get_var(endLabelToEnv);
 	//这里把一个标识符插入符号表，该标识符指向
 
 	//先为expression提供标签
-	tacs.push_back({ "label","","",While_Expr_label});//一个特殊的“三地址”：“label：”
+	tacs.push_back({ "label","","",While_begin_label});//一个特殊的“三地址”：“label：”
 	//初始化W_expr;
 	int pos = 0;
 	matchPar(pos, code);//跳过括号地同时得到）的位置从而初始化expr
@@ -85,7 +89,7 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	While_Expr_tac.result = While_Block_label;
 	tacs.push_back(While_Expr_tac);//如果true进入block
 
-	tacs.push_back({ "goto","","",While_end });//如果false跳转至结束
+	tacs.push_back({ "goto","","",While_end_label });//如果false跳转至结束
 
 	//为block提供标签
 	tacs.push_back({ "label","","",While_Block_label });
@@ -102,8 +106,8 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 
 	std::cout<<"xunhuan begin."<<std::endl;
 	//跳转再次进入while
-	tacs.push_back({ "goto","","",While_Expr_label });
+	tacs.push_back({ "goto","","",While_begin_label });
 
 	//最后为结束标签
-	tacs.push_back({ "label","","",While_end });
+	tacs.push_back({ "label","","",While_end_label });
 }
