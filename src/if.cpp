@@ -22,6 +22,7 @@ bool If::martchIfElse(int&i,std::vector<Token>code)
 			return 0;
 	}
 }
+
 void If::martchPar(int& i, std::vector<Token>code)
 {
 	if (code[i].value == "(")
@@ -44,6 +45,7 @@ void If::martchPar(int& i, std::vector<Token>code)
 		}
 	}
 }
+
 void If::martchBrace(int& i, std::vector<Token>code)
 {
 	if (code[i].value == "{")

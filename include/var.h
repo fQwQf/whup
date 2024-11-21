@@ -8,6 +8,8 @@ class Var{
     std::string type;
     std::string name;
     std::string value;
+    
+    //“声明”函数，，将新声明的变量加入符号表中
     void declare();
 
     public:
