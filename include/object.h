@@ -3,15 +3,22 @@
 #endif
 #ifndef OBJECT_H_
 #define OBJECT_H_
+enum LimitsType{PRIVATE,PROTECTED,PUBLIC};
 class Object
 {
     private:
     Environment*env;
     public:
     //以分号为分隔扫描,另外，注意对private，public，protected的处理
-    Object(std::vector<Token>tokens,Environment*e);
+    Object(std::vector<Token>tokens);
 
-    //根据首token传入对应的类的构造函数中。
-    void generate(std::vector<Token> subtokens);
+    //处理block (按分号;)
+    void addressBlock(std::vector<Token>tokens,LimitsType type);
+    //变量声明
+    void generateVar(std::vector<Token> subtokens,LimitsType type);
+    //声明函数
+    void generateFunction(std::vector<Token> subtokens,LimitsType type) ;
+
+    void matchBrace(int&i,std::vector<Token>&tokens);
 };
 #endif
