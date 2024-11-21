@@ -69,7 +69,7 @@ void Block::block(std::vector<Token> tokens)
 void Block::generate(std::vector<Token> subtokens)
 {
     if (subtokens.empty())
-        return; 
+        return;
 
     if (subtokens[0].type == IDENTIFIER)
     {

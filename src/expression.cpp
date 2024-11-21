@@ -46,7 +46,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
     this->setEnv(env);
     if (expr.size() == 1)
     { // 只有一个元素
-        
+
 
         if (expr[0].type == IDENTIFIER)
         {
@@ -59,7 +59,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             std::cout << "find STRING!";
             tac.result = "\"" + E_expr[0].value + "\"";
             std::cout << "result: " << tac.result << std::endl;
-        } 
+        }
         else if (expr[0].type == NUMBER)
         {
             std::cout << "find NUMBER!";

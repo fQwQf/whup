@@ -3,6 +3,7 @@
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
 std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 std::unordered_map<std::string, std::vector<std::string>> functions;  // 存储函数名和形参对应的哈希表
 
@@ -23,16 +24,16 @@ std::string newTempLabel() {
 
 /*
 *定义一个符号表类，具有链表结构，有一个指向父符号表的指针。
-*叫environment是为了致敬龙书。  
-*内部有一个private的unordered_map，用来存储变量名，类型。  
+*叫environment是为了致敬龙书。
+*内部有一个private的unordered_map，用来存储变量名，类型。
 *每个新增的对象都有一个独特的id。
 *除此之外应该还有函数表和类表，不过之后再说
 *
-*具有以下几个方法：  
+*具有以下几个方法：
 *
-*- insert_var：插入一个变量名，默认类型null。  
-*- get_var：查找一个变量名，返回类型。  
-*- change_type_var：修改一个变量的类型。   
+*- insert_var：插入一个变量名，默认类型null。
+*- get_var：查找一个变量名，返回类型。
+*- change_type_var：修改一个变量的类型。
 */
 
 /*
@@ -43,7 +44,7 @@ Environment::Environment(Environment *p) : parent(p)
 {
     id = global_env_id;
     global_env_id++;
-    
+
 }
 Environment::Environment() : parent(nullptr) {
     id = global_env_id;

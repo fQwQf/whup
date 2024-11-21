@@ -386,19 +386,17 @@ myFunction(3, true);  // 输出 4
 请按以下语法来避免类型转换的错误：  
 
 ```JavaScript
-function myFunction(var1: str, var2: int){
-    print(var1 + str(var2));
+function myFunction(var1: string, var2: number){
+    print(var1 + string(var2));
 };
 myFunction("hello", 3);  //输出 hello3
 ```
 
-
-
 另外，whup 也支持函数返回值类型声明，如下例所示。  
 
 ```JavaScript
-function myFunction(var1: str, var2: int): str{
-    return var1 + str(var2);
+function myFunction(var1: string, var2: number): string{
+    return var1 + string(var2);
 };
 ```
 

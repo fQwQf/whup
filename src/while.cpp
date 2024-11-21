@@ -70,7 +70,7 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	//初始化W_expr;
 	int pos = 0;
 	matchPar(pos, code);//跳过括号地同时得到）的位置从而初始化expr
-	if (pos <= 1 || pos > code.size()) 
+	if (pos <= 1 || pos > code.size())
 	{
     throw std::length_error("Invalid position for creating vector");
 	}

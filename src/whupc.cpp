@@ -19,7 +19,7 @@ int main(int n, const char *arg[])
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     #endif
-    
+
     if(n==1){
         std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
         return 0;
@@ -34,13 +34,13 @@ int main(int n, const char *arg[])
     }else{
         out = "out.cpp";
     }
-    
+
     //用io类读取输入文件内容到字符串expression中
     IO io(extractor.get_input_file(), out);
     std::string expression = io.read();
 
     //进行词法分析
-    Lexer lexer(expression);   
+    Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 
