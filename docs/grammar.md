@@ -369,3 +369,73 @@ function myFunction(var1,var2){
 ```
 
 变量和参数必须以一致的顺序出现。第一个变量就是第一个被传递的参数的给定的值，以此类推。  
+您可以在形参中不指定参数类型，此时whup会自动分析参数类型。但这可能会造成一些意外结果，如：
+
+```JavaScript
+function myFunction(var1,var2){
+    print(var1 + var2);
+};
+myFunction("hello", 3);  // 异常
+myFunction(3, 4);  // 输出 7
+myFunction(3, 4.5);  // 输出 7.5
+myFunction(3, true);  // 输出 4
+```
+
+这是由于whup返回值类型并非可变，在未声明的情况下由whup分析并确定。一旦出现类型不匹配，whup会尝试进行类型转换，然而类型转换并不一定成功。在上面的例子中，whup自动将返回值确定为数字，并会尝试将字符串转换为数字，但是由于字符串"hello3"无法转换为数字，因此无法运行。  
+**注意！**这种错误是无法获到的，因为whup在运行时才进行类型转换，而函数调用是在编译时就已确定。因此，在涉及字符串与数字的混合处理时，指定类型是一个良好的习惯。  
+请按以下语法来避免类型转换的错误：  
+
+```JavaScript
+function myFunction(var1: str, var2: int){
+    print(var1 + str(var2));
+};
+myFunction("hello", 3);  //输出 hello3
+```
+
+
+
+另外，whup 也支持函数返回值类型声明，如下例所示。  
+
+```JavaScript
+function myFunction(var1: str, var2: int): str{
+    return var1 + str(var2);
+};
+```
+
+值得一提的是，whup 支持函数重载，即函数名相同但参数类型不同的函数可以并存。另外，whup 支持函数默认参数，即函数调用时可以不传递参数，此时参数将使用默认值。并且，重复的重载将被覆盖。  
+
+```JavaScript
+function myFunction(var1: str, var2: int = 3){
+    print(var1 + str(var2));
+};
+function myFunction(var1: int, var2: int = 3){
+    print(var1 + var2);
+};
+myFunction("hello",);  // 输出 hello3
+myFunction(3,);  // 输出 6
+```
+
+使用默认参数时应该注意：如果函数有默认参数，那么在调用函数时，必须以留空的形式提供所有非默认参数，否则会报错。不过，默认参数的位置是灵活的，不必全部放在最后。如：  
+
+```JavaScript
+function myFunction(var1: int, var2: int = 3, var3: int){};
+myFunction(1,2,3);  // 正确
+myFunction(1,2);  // 错误
+myFunction(1, ,2);  // 正确
+myFunction(1,);  // 错误
+```
+
+## 类
+
+类是对象的蓝图或模板。  
+要创建一个类，您可以使用 class 关键词。  
+类中的函数称为方法。  
+
+```JavaScript
+class MyClass {
+    
+}
+
+
+
+whup会优先调用指定了参数类型的重载函数，如果未找到指定参数类型的重载函数，则调用无类型的重载函数，如果没有无类型参数的重载函数，则抛出异常。  
