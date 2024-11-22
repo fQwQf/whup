@@ -19,5 +19,6 @@ class Function {
 
     public:
         Function(std::vector<Token> &tokens);
+        void call(std::vector<Token> &tokens,Environment* env);
 
 };

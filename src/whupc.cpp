@@ -54,7 +54,7 @@ int main(int n, const char *arg[])
     io.write(code);
 
     std::cout << "Generate code to " << out << std::endl;
-    std::cout << "Done!ヾ(•ω•`)o" << std::endl;
+    std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
     return 0;
 }

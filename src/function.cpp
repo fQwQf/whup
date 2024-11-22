@@ -95,9 +95,15 @@ std::string function_ret_label;//只有在处理函数时才会有的值。用�
 
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
+extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
+
 
 Function::Function(std::vector<Token> &tokens)
 {
+    start_label = newTempLabel();
+    end_label = newTempLabel();
+
+
     tokens.erase(tokens.begin()); // 删除第一个token，即function关键字
     name = tokens[0].value;
     tokens.erase(tokens.begin());
@@ -162,6 +168,10 @@ Function::Function(std::vector<Token> &tokens)
     }
 
     this->body_tokens = tokens;
+}
+
+void Function::call(std::vector<Token> &tokens,Environment* env){
+    
 }
 
 /*class FunctionBlock : public Block{

@@ -7,8 +7,12 @@
 #include"break.h"
 #include"continue.h"
 #include "return.h"
+#include "function.h"
+
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
+extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -74,10 +78,19 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens.empty())
         return;
 
-    if (subtokens[0].type == IDENTIFIER)
+    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "(")
     {
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
+    }
+    else if(subtokens[0].type == IDENTIFIER && subtokens[1].value == "(")
+    {
+        if(functions.find(subtokens[0].value) == functions.end()){
+            std::cout << "Function " << subtokens[0].value << " not found" << std::endl;
+        }else{
+            functions[subtokens[0].value]->call(subtokens,env);
+            std::cout << "Function " << subtokens[0].value << " generate" << std::endl;
+        }
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
