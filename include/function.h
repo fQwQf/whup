@@ -20,5 +20,6 @@ class Function {
     public:
         Function(std::vector<Token> &tokens);
         void call(std::vector<Token> &tokens,Environment* env);
+        void Function::matchPar(int &i,std::vector<Token> &tokens);
 
 };

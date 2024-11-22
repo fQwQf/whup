@@ -19,7 +19,7 @@ void Block::matchBrace(int &i,std::vector<Token> &tokens)
 {
     if (tokens[i].value == "{")
     {
-        int leftPar = 1;
+        int leftPar = 1;//甚至par都没有改成brace
         int rightPar = 0; // 分别记录已经读取的左大括号右大括号的个数,当相等时即可结束
         while (leftPar != rightPar)
         {
@@ -38,7 +38,6 @@ void Block::matchBrace(int &i,std::vector<Token> &tokens)
     }
 }
 
-// 以分号为分隔扫描
 Block::Block(std::vector<Token> tokens, Environment *e)
 {
     this->env = new Environment(e);
@@ -53,6 +52,7 @@ Block::Block(std::vector<Token> tokens)
     block(tokens);
 }
 
+// 以分号为分隔扫描
 void Block::block(std::vector<Token> tokens)
 {
     int last_semicolon = 0;
