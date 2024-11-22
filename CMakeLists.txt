@@ -8,8 +8,6 @@ include_directories ( ./include )
 
 file(GLOB LIBS "src/*.cpp")
 
-#将所有.cpp文件添加到库列表中
-
 add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp src/break.cpp src/continue.cpp src/return.cpp src/function.cpp src/expression.cpp)
 add_library(parser SHARED src/parser.cpp)
 add_library(lexer SHARED src/lexer.cpp)

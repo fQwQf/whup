@@ -1,8 +1,7 @@
-function(a:int, b:int):int {
+function add(a:int, b:int):int {
     m = a+b;
     return m;
 };
 m=3;
 n=2;
-s=add(m,n);
-print(s);
+add(m,n);

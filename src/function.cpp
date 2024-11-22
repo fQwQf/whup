@@ -111,6 +111,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     tokens.erase(tokens.begin());
 
     functions[name] = this;
+    std::cout << "Function name: " << name << std::endl;
 
     // 现在开始分析形参
     // TODO:如果这里发现错误如首token不是括号，抛出异常
@@ -215,7 +216,7 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
             std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
             last_comma = i+1;
             Expr* expression = new Expr(subtokens,env);
-            tacs.push_back({"=",expression->getTacResult(),"",params_name[param_num].second});
+            tacs.push_back({"=",env->get_var(expression->getTacResult()),"",params_name[param_num].second});
             param_num++;
         }
         if (tokens[i].type == SYMBOL && tokens[i].value == ")")
