@@ -19,9 +19,16 @@ class Function {
 
     std::string return_value; //储存返回值的临时变量
 
+    std::string jump_in_label;//储存储存跳入标签的临时变量的变量
+
+    Environment* env;//必然是全局的
+
     public:
-        Function(std::vector<Token> &tokens);
+        Function(std::vector<Token> &tokens,Environment* env);
         std::string call(std::vector<Token> &tokens,Environment* env);
         void matchPar(int &i,std::vector<Token> &tokens);
+        void generate();//生成函数代码
 
 };
+
+

@@ -1,26 +1,6 @@
-var i=1;
-while (i<100){
-    print("🥰😅🤣🙃");
-    i=i+1;
-    j=0;
-    while (j<100){
-        print(j);
-        j=j+1;
-        k=0;
-        while (k<100){
-            print(k);
-            k=k+1;
-            if (k>5){
-                break;
-            };
-        };
-        if (j>5){
-            break;
-        };
-    };
-    print(i);
-    if (i>5){
-        break;
-    };
-    
+function(a:int, b:int):int {
+    return a + b;
 };
+m=3;
+n=2;
+print(add(m, n));

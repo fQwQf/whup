@@ -99,10 +99,12 @@ extern std::unordered_map<std::string, std::string> var_declares;  // 存储将�
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 
 
-Function::Function(std::vector<Token> &tokens)
+Function::Function(std::vector<Token> &tokens,Environment *env)
 {
     start_label = newTempLabel();
     end_label = newTempLabel();
+    jump_in_label = newTempVar("string");
+    this->env = env;
 
     tokens.erase(tokens.begin()); // 删除第一个token，即function关键字
     name = tokens[0].value;
@@ -218,23 +220,38 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
         }
         if (tokens[i].type == SYMBOL && tokens[i].value == ")")
         {
-            tokens.erase(tokens.begin,tokens.begin() + i);//检测到括号，则删除括号及括号之前的所有内容
+            tokens.erase(tokens.begin(),tokens.begin() + i);//检测到括号，则删除括号及括号之前的所有内容
             break;
         }
     }
 
     //现在应该设置跳转，即一个跳出的if...goto...，一个用于跳回的label
-    tacs.push_back({"if_goto","true","",start_label});
     std::string label = newTempLabel();
+    tacs.push_back({"=","\""+label+"\"","",jump_in_label});
+    tacs.push_back({"if_goto","true","",start_label});
     tacs.push_back({"label","","",label});
-    return_labels = label;
+    return_labels.push_back(label);
 
     return return_value;
 
-    
-
 
 }
+
+void Function::generate(){
+    function_ret_label = end_label;
+    tacs.push_back({"label","","",start_label});
+    new Block(body_tokens,env);
+
+    //以下是跳转区
+    tacs.push_back({"label","","",end_label});
+    for(auto i:return_labels){
+        std::string bool_var = newTempVar("bool");
+        tacs.push_back({"==",jump_in_label,"\""+i+"\"",bool_var});
+        tacs.push_back({"if_goto",bool_var,"",i});
+    }
+}
+
+
 
 /*class FunctionBlock : public Block{
     Environment* env;//在全局Environment声明函数，函数所在Block的环境就是全局环境;对象内同理
