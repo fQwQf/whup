@@ -6,6 +6,9 @@
 #include"while.h"
 #include"break.h"
 #include"continue.h"
+#include "return.h"
+
+extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -102,8 +105,27 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Continue(env);
     }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="return")
+    {
+        if (function_ret_label == "")
+        {
+            std::cout << "error:unexpected return" << std::endl;
+            exit(1);
+        }
+        else
+        {
+            if (subtokens.size() == 1)
+            {
+                new Return(env);
+            }
+            else
+            {
+                new Return(subtokens, env);
+            }
+        }
+    }
     else
     {
-        std::cout << "error" << std::endl;
+        std::cout << "error:unexpected token" << std::endl;
     }
 }

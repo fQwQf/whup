@@ -91,8 +91,10 @@ myFunction(1,);  // 错误
 ```
 */
 
-extern std::unordered_map<std::string, std::vector<std::string>> functions;  // 存储函数名和形参对应的哈希表
-extern std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
+std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
+
+extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+//extern std::vector<FunctionBlock*> function_blocks; // 储存FunctionBlock*的向量，在主程序执行完毕后依次执行，将函数体压入
 extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 
 
@@ -100,9 +102,16 @@ extern std::unordered_map<std::string, std::string> var_declares;  // 存储将�
 class Function {
     std::string name;
     std::string return_type;
+    
     std::string body;
-    std::vector<std::string> params_name;
+    std::vector<std::pair<std::string,std::string>> params_name;//形参名,分别为原形参名和生成的专用形参名
     std::vector<std::string> params_type;
+    std::string end_label; //函数结束标签
+    std::string start_label; //函数开始标签
+
+    std::vector<Token> body;//函数体
+
+    std::vector<std::string> return_labels; //返回时需要跳转回去的标签
 
     public:
         Function(std::vector<Token> &tokens) {
@@ -116,15 +125,20 @@ class Function {
                 tokens.erase(tokens.begin());
                 //接下来要按照逗号和冒号来分割参数
                 while (tokens[0].type != SYMBOL || tokens[0].value != ")") {
-                    params_name.push_back(tokens[0].value);
+                    params_name.push_back({tokens[0].value,""});
                     tokens.erase(tokens.begin());
                     if (tokens[0].type == SYMBOL && tokens[0].value == ",") {
                         params_type.push_back("auto");
+                        params_name.back().second = newTempVar("auto");
                         tokens.erase(tokens.begin());
-                    } else if (tokens[0].type == SYMBOL && tokens[0].value == ":") {
+                    }
+                    else if (tokens[0].type == SYMBOL && tokens[0].value == ":")
+                    {
                         tokens.erase(tokens.begin());
                         params_type.push_back(tokens[0].value);
-                        tokens.erase(tokens.begin(),tokens.begin()+1);
+                        params_name.back().second = newTempVar(tokens[0].value);
+
+                        tokens.erase(tokens.begin(), tokens.begin() + 1);
                     }
                 }
                 tokens.erase(tokens.begin());
@@ -141,16 +155,36 @@ class Function {
 
             //这里分析函数体
             //函数体分析可以直接继承Block,因为函数体就是一段代码块
-            //只需要对Token进行修改，改变其中的参数名即可
+            //只需要对Token进行修改，改变其中的参数名即可，改成专用参数名
+            for (auto &token: tokens) {
+                if (token.type == IDENTIFIER) {
+                    for (int i = 0; i < params_name.size(); i++) {
+                        if (token.value == params_name[i].first && token.type == IDENTIFIER) {
+                            token.value = params_name[i].second;
+                            token.processed = 1;
+                            break;
+                        }
+                    }
+                }
+            }
 
+            this->body = tokens;
 
         }
-        
-};
-
-class FunctionBlock : public Block{
-
-
-
 
 };
+
+/*class FunctionBlock : public Block{
+    Environment* env;//在全局Environment声明函数，函数所在Block的环境就是全局环境;对象内同理
+    
+
+    public:
+    FunctionBlock(std::vector<Token> tokens,Environment* env){
+        this->env = env;
+        function_blocks.push_back(this);
+    };
+
+
+
+
+};*/
