@@ -1,7 +1,10 @@
 #include "expression.h"
+#include "function.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
+extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+
 
 // 从右至左对输入进行遍历，扫描以下运算符，从下向上
 /*
@@ -42,11 +45,10 @@ void Expr::setEnv(Environment *env)
 
 Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 {
-
+    
     this->setEnv(env);
     if (expr.size() == 1)
     { // 只有一个元素
-
 
         if (expr[0].type == IDENTIFIER)
         {
@@ -72,6 +74,14 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
+    if (expr[0].type == IDENTIFIER && expr[1].type == SYMBOL && expr[1].value == "(" && expr[expr.size() - 1].type == SYMBOL && expr[expr.size() - 1].value == ")"){
+        Function* func = functions[expr[0].value];
+        std::vector<Token> expression = expr;
+        func->call(expression,env);
+        tac.result = func->get_return_value();
+        std::cout << "call function: " << expr[0].value << std::endl;
+        return;
+    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();

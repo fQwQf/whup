@@ -28,6 +28,7 @@ class Function {
         std::string call(std::vector<Token> &tokens,Environment* env);
         void matchPar(int &i,std::vector<Token> &tokens);
         void generate();//生成函数代码
+        std::string get_return_value();
 
 };
 

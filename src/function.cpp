@@ -251,7 +251,9 @@ void Function::generate(){
     }
 }
 
-
+std::string Function::get_return_value(){
+    return return_value;
+}
 
 /*class FunctionBlock : public Block{
     Environment* env;//在全局Environment声明函数，函数所在Block的环境就是全局环境;对象内同理

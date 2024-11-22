@@ -61,7 +61,7 @@ void Block::block(std::vector<Token> tokens)
     {
         //打印出所有Token
         //debug时可能有用
-        //std::cout << tokens[i].value;
+        std::cout << tokens[i].value;
         matchBrace(i, tokens);
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
@@ -75,6 +75,8 @@ void Block::block(std::vector<Token> tokens)
 // 根据首token传入对应的类的构造函数中。
 void Block::generate(std::vector<Token> subtokens)
 {
+
+
     if (subtokens.empty())
         return;
 
@@ -85,11 +87,16 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else if(subtokens[0].type == IDENTIFIER && subtokens[1].value == "(")
     {
-        if(functions.find(subtokens[0].value) == functions.end()){
+        if (functions.find(subtokens[0].value) == functions.end())
+        {
             std::cout << "Function " << subtokens[0].value << " not found" << std::endl;
-        }else{
-            functions[subtokens[0].value]->call(subtokens,env);
-            std::cout << "Function " << subtokens[0].value << " generate" << std::endl;
+        }
+        else
+        {
+            Function *func = functions[subtokens[0].value];
+            func->call(subtokens, env);
+            std::cout << "call function: " << subtokens[0].value << std::endl;
+            return;
         }
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
@@ -136,6 +143,10 @@ void Block::generate(std::vector<Token> subtokens)
                 new Return(subtokens, env);
             }
         }
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="function")
+    {
+        new Function(subtokens,env);
     }
     else
     {
