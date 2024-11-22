@@ -143,6 +143,7 @@ Function::Function(std::vector<Token> &tokens)
     {
         tokens.erase(tokens.begin());
         return_type = tokens[0].value;
+        return_value = newTempVar(return_type);
         tokens.erase(tokens.begin());
     }
     else
@@ -196,7 +197,7 @@ void Function::matchPar(int &i,std::vector<Token> &tokens)//实际上是由march
 }
 
 
-void Function::call(std::vector<Token> &tokens,Environment* env){
+std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
     tokens.erase(tokens.begin());//去掉函数名
 
     //现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
@@ -223,6 +224,13 @@ void Function::call(std::vector<Token> &tokens,Environment* env){
     }
 
     //现在应该设置跳转，即一个跳出的if...goto...，一个用于跳回的label
+    tacs.push_back({"if_goto","true","",start_label});
+    std::string label = newTempLabel();
+    tacs.push_back({"label","","",label});
+    return_labels = label;
+
+    return return_value;
+
     
 
 

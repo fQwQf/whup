@@ -17,9 +17,11 @@ class Function {
 
     std::vector<std::string> return_labels; //返回时需要跳转回去的标签
 
+    std::string return_value; //储存返回值的临时变量
+
     public:
         Function(std::vector<Token> &tokens);
-        void call(std::vector<Token> &tokens,Environment* env);
-        void Function::matchPar(int &i,std::vector<Token> &tokens);
+        std::string call(std::vector<Token> &tokens,Environment* env);
+        void matchPar(int &i,std::vector<Token> &tokens);
 
 };
