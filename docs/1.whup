@@ -4,4 +4,5 @@ function add(a:int, b:int):int {
 };
 m=3;
 n=2;
-add(m,n);
+q=add(m,n);
+print (q);

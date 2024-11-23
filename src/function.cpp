@@ -121,19 +121,19 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
         // 接下来要按照逗号和冒号来分割参数
         while (tokens[0].type != SYMBOL || tokens[0].value != ")")
         {
-            params_name.push_back({tokens[0].value, ""});
+            std::string param_name=tokens[0].value;
             tokens.erase(tokens.begin());
             if (tokens[0].type == SYMBOL && tokens[0].value == ",")
             {
                 params_type.push_back("auto");
-                params_name.back().second = newTempVar("auto");
+                params_name.push_back({param_name, newTempVar("auto")});
                 tokens.erase(tokens.begin());
             }
             else if (tokens[0].type == SYMBOL && tokens[0].value == ":")
             {
                 tokens.erase(tokens.begin());
                 params_type.push_back(tokens[0].value);
-                params_name.back().second = newTempVar(tokens[0].value);
+                params_name.push_back({param_name, newTempVar(tokens[0].value)});
 
                 tokens.erase(tokens.begin(), tokens.begin() + 1);
             }
@@ -208,6 +208,7 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
     int last_comma = 0;
     int param_num = 0;
     tokens.erase(tokens.begin());
+    
     for (int i = 0; i < tokens.size(); i++)
     {
         matchPar(i, tokens);
@@ -217,7 +218,8 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
             last_comma = i+1;
             Expr* expression = new Expr(subtokens,env);
             tacs.push_back({"=",env->get_var(expression->getTacResult()),"",params_name[param_num].second});
-            param_num++;
+            std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
+            param_num+=1;
         }
         if (tokens[i].type == SYMBOL && tokens[i].value == ")")
         {
@@ -239,6 +241,23 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 }
 
 void Function::generate(){
+    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 3);//去掉: type {
+    body_tokens.pop_back();//去掉 }
+
+    std::cout << "Function: " << name << std::endl;
+    std::cout << "Params: " << std::endl;
+    for (auto &param : params_name)
+    {
+        std::cout << "  " << param.first << " " << param.second << std::endl;
+    }
+    std::cout << "Return type: " << return_type << std::endl;
+    std::cout << "Body: " << std::endl;
+    for (auto &token : body_tokens)
+    {
+        std::cout << "  " << token.value;
+    }
+
+
     function_ret_label = end_label;
     tacs.push_back({"label","","",start_label});
     new Block(body_tokens,env);
