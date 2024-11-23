@@ -17,10 +17,12 @@ add_library(lexer SHARED src/lexer.cpp)
 add_library(extractor SHARED src/extractor.cpp)
 add_library(generator SHARED src/generator.cpp)
 add_library(io SHARED src/io.cpp)
+add_library(check SHARED src/check.cpp)
 
 target_link_libraries(expression PUBLIC parser)
 target_link_libraries(block PUBLIC parser expression lexer)
 target_link_libraries(generator PUBLIC parser)
+target_link_libraries(check PUBIC lexer)
 
 add_executable(whupc src/whupc.cpp)
 
