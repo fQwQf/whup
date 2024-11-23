@@ -1,5 +1,6 @@
 function add(a:int, b:int) : int {
     f = a+b;
+    f = f+m;
     return f;
 };
 m=3;

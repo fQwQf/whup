@@ -55,6 +55,8 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             std::cout << "find IDENTIFIER!";
             if(E_expr[0].processed = true){
                 tac.result = E_expr[0].value;
+                std::cout << "result: " << tac.result << std::endl;
+                std::cout << "processed: " << E_expr[0].processed << std::endl;
                 return;
             }
             tac.result = env->get_var(E_expr[0].value);

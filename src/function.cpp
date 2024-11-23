@@ -171,11 +171,15 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
         {
             for (int i = 0; i < params_name.size(); i++)
             {
-                if (token.value == params_name[i].first && token.type == IDENTIFIER)
+                if (token.value == params_name[i].first)
                 {
                     token.value = params_name[i].second;
                     token.processed = true;
+                    std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
                     break;
+                }
+                else{
+                    token.processed = false;
                 }
             }
         }

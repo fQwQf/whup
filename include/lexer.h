@@ -17,7 +17,7 @@ struct Token {
     TokenType type;
     std::string value;
     int line_number;//记录行号，便于定位错误
-    bool processed = 0;//标记是否已经经过处理
+    bool processed = false;//标记是否已经经过处理
 
     Token(TokenType type, const std::string& value, int line_number);
     Token();
