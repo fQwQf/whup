@@ -1,9 +1,9 @@
 function add(a:int, b:int) : int {
     f = a+b;
-    f = f+m;
+    f = f + m;
     return f;
 };
 m=3;
 n=2;
-q=add(m,n);
+q=add(m,n+2);
 print (q);

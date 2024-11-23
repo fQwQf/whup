@@ -105,7 +105,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     start_label = newTempLabel();
     end_label = newTempLabel();
     jump_in_label = newTempVar("string");
-    this->env = new Environment(*env);//函数自己的环境
+    this->env = new Environment(env);//函数自己的环境
 
     tokens.erase(tokens.begin()); // 删除第一个token，即function关键字
     name = tokens[0].value;
@@ -232,7 +232,7 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
             std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
             last_comma = i+1;
             Expr* expression = new Expr(subtokens,env);
-            tacs.push_back({"=",env->get_var(expression->getTacResult()),"",params_name[param_num].second});
+            tacs.push_back({"=",expression->getTacResult(),"",params_name[param_num].second});
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num+=1;
