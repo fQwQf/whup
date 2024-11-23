@@ -1,5 +1,4 @@
 function add(a:int, b:int) : int {
-    var f;
     f = a+b;
     return f;
 };

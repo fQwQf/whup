@@ -14,6 +14,10 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 	if(env->get_var(var.value)=="null"){
 		env->insert_var(var.value);
 		env->change_type_var(var.value,expr->return_type());
+
+		std::cout << "var " << var.value << " declared automatically" << std::endl;
+		std::cout << "var " << var.value << " type is " << expr->return_type() << std::endl;
+		
 	}else{
 		env->change_type_var(var.value,expr->return_type());
 	}

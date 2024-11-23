@@ -164,7 +164,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
 
     // 这里分析函数体
     // 函数体分析可以直接继承Block,因为函数体就是一段代码块
-    // 只需要对Token进行修改，改变其中的参数名即可，改成专用参数名
+    // 只需要对Token进行修改，改变其中的参数名即可，改成env处理后的
     for (auto &token : tokens)
     {
         if (token.type == IDENTIFIER)
@@ -254,7 +254,7 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 
 void Function::generate(){
 
-    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 3);//去掉: type {
+    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1);//去掉: type {
     body_tokens.pop_back();//去掉 }
 
     std::cout << "Function: " << name << std::endl;
@@ -269,6 +269,7 @@ void Function::generate(){
     {
         std::cout << "  " << token.value;
     }
+    std::cout << std::endl;
 
 
     function_ret_label = end_label;
@@ -288,15 +289,3 @@ void Function::generate(){
 std::string Function::get_return_value(){
     return return_value;
 }
-
-/*class FunctionBlock : public Block{
-    Environment* env;//在全局Environment声明函数，函数所在Block的环境就是全局环境;对象内同理
-    
-
-    public:
-    FunctionBlock(std::vector<Token> tokens,Environment* env){
-        this->env = env;
-        function_blocks.push_back(this);
-    };
-
-};*/
