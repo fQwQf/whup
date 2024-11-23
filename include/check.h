@@ -1,37 +1,37 @@
 #include"whupc.h"
-#include"lexer.h"
+// #include"lexer.h"
 
 //定义Error类及数组，用于存储所有错误
 struct Error {
     int line;
     std::string message;
 };
-std::vector<Error> errors; // 存储错误信息
+
 
 //检查句法是否正确
 class checkSyntax
 {
 public:
     //检查标识符是否合法
-    void checkID(Token token);
+    static void checkID(Token token);
 
     //检查变量是否未声明
-    void checkVar(std::vector<Token>code);
+    static void checkVar(std::vector<Token>code);
 
-}checkSyntax;
+};
 
 //用于检查括号的类
 class checkBrackets
 {
 public:
     //检查小括号是否匹配
-    void checkPar(std::vector<Token>code);
+    static void checkPar(std::vector<Token>code);
     //检查中括号是否匹配
-    void checkBracket(std::vector<Token>code);
+    static void checkBracket(std::vector<Token>code);
     //检查大括号是否匹配
-    void checkBrace(std::vector<Token>code);
+    static void checkBrace(std::vector<Token>code);
 
-}checkBrackets;
+};
 
 class CheckSemicolon 
 {

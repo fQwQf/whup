@@ -1,5 +1,6 @@
 #include "check.h"
-#include "lexer.h"
+
+static std::vector<Error> errors; // 存储错误信息
 
 void checkSyntax::checkID(Token token)
 {
