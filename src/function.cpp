@@ -93,6 +93,7 @@ myFunction(1,);  // 错误
 */
 
 std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
+std::string function_return_value;//同理
 
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
@@ -104,7 +105,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     start_label = newTempLabel();
     end_label = newTempLabel();
     jump_in_label = newTempVar("string");
-    this->env = env;
+    this->env = new Environment(*env);//函数自己的环境
 
     tokens.erase(tokens.begin()); // 删除第一个token，即function关键字
     name = tokens[0].value;
@@ -142,7 +143,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     }
 
     // 这里分析返回类型
-    if (tokens[0].type == IDENTIFIER && tokens[0].value == ":")
+    if (tokens[0].type == SYMBOL && tokens[0].value == ":")
     {
         tokens.erase(tokens.begin());
         return_type = tokens[0].value;
@@ -151,7 +152,14 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     }
     else
     {
-        return_type = "auto";
+        std::cout << "No return type for function " << name << std::endl;
+    }
+
+    //现在登记参数
+    for (int param_num = 0; param_num < params_name.size(); param_num++)
+    {
+        env->insert_var(params_name[param_num].first);
+        env->change_type_var(params_name[param_num].first, params_type[param_num]);
     }
 
     // 这里分析函数体
@@ -203,8 +211,11 @@ void Function::matchPar(int &i,std::vector<Token> &tokens)//实际上是由march
 std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
     tokens.erase(tokens.begin());//去掉函数名
 
+
+
     //现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
     //实际上这一块和block扫描statement的逻辑类似，所以我直接把block拿过来修改一下就成了🙂‍↕️
+    //要把形参在local_env中登记
     int last_comma = 0;
     int param_num = 0;
     tokens.erase(tokens.begin());
@@ -219,6 +230,7 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
             Expr* expression = new Expr(subtokens,env);
             tacs.push_back({"=",env->get_var(expression->getTacResult()),"",params_name[param_num].second});
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
+
             param_num+=1;
         }
         if (tokens[i].type == SYMBOL && tokens[i].value == ")")
@@ -241,6 +253,7 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 }
 
 void Function::generate(){
+
     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 3);//去掉: type {
     body_tokens.pop_back();//去掉 }
 
@@ -259,6 +272,7 @@ void Function::generate(){
 
 
     function_ret_label = end_label;
+    function_return_value = return_value;
     tacs.push_back({"label","","",start_label});
     new Block(body_tokens,env);
 

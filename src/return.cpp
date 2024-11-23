@@ -1,23 +1,26 @@
 #include "return.h"
+#include "expression.h"
 
 extern std::string function_ret_label;     // 函数返回标签，可用于检测是否在处理函数。
+extern std::string function_return_value;
+
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 
 Return::Return(Environment *env)
 {
-    this->env = env;
-    tacs.push_back({"if_goto", "1", "", function_ret_label}); // 如果当前在处理函数，则跳转到函数返回标签
+    tacs.push_back({"if_goto", "true", "", function_ret_label}); // 如果当前在处理函数，则跳转到函数返回标签
 }
 
 Return::Return(std::vector<Token> tokens, Environment *env)
 {
     this->env = env;
-    if (tokens.size() != 2)
-    {
-        std::cout << "return 语句格式错误" << std::endl;
+    tokens.erase(tokens.begin()); // 删除 "return" 关键字
+    if(tokens.size() == 1){
+        tacs.push_back({"=", env->get_var(env->get_var(tokens[0].value)), "", function_return_value});
+    }else{
+        Expr* expr = new Expr(tokens, env);
+        tacs.push_back({"=", env->get_var(expr->getTacResult()), "", function_return_value});
     }
-    else
-    {
-    }
-    tacs.push_back({"return", "", "", function_ret_label}); // 生成返回语句
+    
+    tacs.push_back({"if_goto", "true", "", function_ret_label}); // 生成返回语句
 }

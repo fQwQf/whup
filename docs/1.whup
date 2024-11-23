@@ -1,6 +1,6 @@
-function add(a:int, b:int):int {
-    m = a+b;
-    return m;
+function add(a:int, b:int) : int {
+    f = a+b;
+    return f;
 };
 m=3;
 n=2;
