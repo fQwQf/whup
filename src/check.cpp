@@ -132,21 +132,21 @@ void CheckSemicolon::checkLine(const std::string& line, int lineNumber)
     }
     // 如果行没有以分号结尾且不是块结构，报错
     if (!endsWithSemicolon(trimmedLine) && !isBlockStructure(trimmedLine)) {
-        errors.push_back({lineNumber, "Missing semicolon at the end of the line"});
+        errors.push_back({lineNumber, "Error: Missing semicolon at the end of the line "});
     }
 }
 
-bool CheckSemicolon::endsWithSemicolon(const std::string& line) const 
+bool CheckSemicolon::endsWithSemicolon(const std::string& line) 
 {
     return !line.empty() && line.back() == ';';
 }
 
-bool CheckSemicolon::isBlockStructure(const std::string& line) const 
+bool CheckSemicolon::isBlockStructure(const std::string& line) 
 {
     return line.find("{") != std::string::npos || line.find("}") != std::string::npos;
 }
 
-std::string CheckSemicolon::trim(const std::string& str) const 
+std::string CheckSemicolon::trim(const std::string& str) 
 {
     size_t first = str.find_first_not_of(" \t");
     if (first == std::string::npos) 

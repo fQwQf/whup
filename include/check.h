@@ -37,20 +37,20 @@ class CheckSemicolon
 {
 public:
     // 检查代码中的分号
-    void checkCode(const std::string& code);
+    static void checkCode(const std::string& code);
 
     // 检查某一行的分号(主要的检查函数)
-    void checkLine(const std::string& line, int lineNumber);
+    static void checkLine(const std::string& line, int lineNumber);
 
 private:
     // 检查是否以分号结尾
-    bool endsWithSemicolon(const std::string& line) const ;
+    static bool endsWithSemicolon(const std::string& line);
 
     // 判断是否是块结构
-    bool isBlockStructure(const std::string& line) const ;
+    static bool isBlockStructure(const std::string& line) ;
 
     // 去掉行首和行尾的空白字符
-    std::string trim(const std::string& str) const ;
+    static std::string trim(const std::string& str) ;
 
 };
 

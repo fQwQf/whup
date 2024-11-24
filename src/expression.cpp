@@ -1,4 +1,5 @@
 #include "expression.h"
+#include "check.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
@@ -234,6 +235,9 @@ void Expr::expr()
     // 前面均没扫到说明全部被括号包裹
     // 去掉首尾括号并重新调用expr（）
     std::cout << "find par" << std::endl;
+
+    //检查是否出现错误
+    printErrors();
 
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());

@@ -28,6 +28,8 @@ void If::martchPar(int& i, std::vector<Token>code)
 {
 	//检查小括号是否正确
     checkBrackets::checkPar(code);
+	//检查是否出现错误
+    // printErrors();
 
 	if (code[i].value == "(")
 	{
@@ -54,6 +56,8 @@ void If::martchBrace(int& i, std::vector<Token>code)
 {
 	//检查大括号是否正确
     checkBrackets::checkBrace(code);
+	//检查是否出现错误
+    // printErrors();
 
 	if (code[i].value == "{")
 	{

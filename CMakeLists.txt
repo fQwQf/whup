@@ -19,11 +19,11 @@ add_library(generator SHARED src/generator.cpp)
 add_library(io SHARED src/io.cpp)
 add_library(check SHARED src/check.cpp)
 
-target_link_libraries(expression PUBLIC parser)
-target_link_libraries(block PUBLIC parser expression lexer)
+target_link_libraries(expression PUBLIC parser check)
+target_link_libraries(block PUBLIC parser expression lexer check)
 target_link_libraries(generator PUBLIC parser)
-target_link_libraries(check PUBIC lexer)
+target_link_libraries(check PUBLIC lexer)
 
 add_executable(whupc src/whupc.cpp)
 
-target_link_libraries(whupc PUBLIC block parser expression lexer extractor generator io)
+target_link_libraries(whupc PUBLIC block parser expression lexer extractor generator io check)

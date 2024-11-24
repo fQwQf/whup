@@ -7,6 +7,8 @@ extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 Print::Print(std::vector<Token> &tokens,Environment* env) {
     //检查括号是否正确
     checkBrackets::checkPar(tokens);
+    //检查是否出现错误
+    // printErrors();
     
     //去掉头尾的括号和print关键字
     tokens.erase(tokens.begin());
