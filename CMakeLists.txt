@@ -10,7 +10,7 @@ file(GLOB LIBS "src/*.cpp")
 
 #将所有.cpp文件添加到库列表中
 
-add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp src/break.cpp src/continue.cpp)
+add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp src/break.cpp src/continue.cpp src/class.cpp src/object.cpp)
 add_library(expression SHARED src/expression.cpp)
 add_library(parser SHARED src/parser.cpp)
 add_library(lexer SHARED src/lexer.cpp)

@@ -1,4 +1,12 @@
-while(1<2)
+class A
 {
-    continue;
+    var a;
+};
+class B
+{
+    var b;
+};
+class C
+{
+    var c;
 };
