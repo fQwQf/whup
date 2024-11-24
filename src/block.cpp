@@ -9,10 +9,11 @@
 #include "return.h"
 #include "function.h"
 #include "whup_parser.h"
-
+#include"class.h"
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+
 
 
 //跳过大括号
@@ -159,6 +160,10 @@ void Block::generate(std::vector<Token> subtokens)
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="function")
     {
         new Function(subtokens,env);
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
+    {
+        new Class(subtokens);
     }
     else
     {

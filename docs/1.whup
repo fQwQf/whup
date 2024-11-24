@@ -11,5 +11,7 @@ function fib(a:int) : int {
     };
     return ret;
 };
-a=10;
-print(fib(a));
+m=3;
+n=2;
+q=add(m,n+2);
+print (q);
