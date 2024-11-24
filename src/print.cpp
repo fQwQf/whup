@@ -11,12 +11,19 @@ Print::Print(std::vector<Token> &tokens,Environment* env) {
 
     Expr* expr = new Expr(tokens,env);
 
-    if (expr->return_type() == "bool")
+    if (tokens.size() == 1 && tokens[0].type == IDENTIFIER)
     {
-        tacs.push_back({"print", expr->getTacResult(), "", "bool"});
+        tacs.push_back({"print", env->get_var(tokens[0].value), "", ""});
     }
     else
     {
-        tacs.push_back({"print", expr->getTacResult(), "", ""});
+        if (expr->return_type() == "bool")
+        {
+            tacs.push_back({"print", expr->getTacResult(), "", "bool"});
+        }
+        else
+        {
+            tacs.push_back({"print", expr->getTacResult(), "", ""});
+        }
     }
 }

@@ -15,6 +15,7 @@ private:
     std::vector<Token> E_expr;
     ThreeAddressCode tac; // 三地址码输出
 
+    //创建左右子节点
     Expr* left;
     Expr* right;
 
@@ -22,14 +23,18 @@ private:
 
     void matchPar(int& i);//用来跳过括号内容
 public:
+    //构造函数用以初始化expression类，传入参数为token集合和env
     Expr(const std::vector<Token>& expr,Environment* env);
 
-    void expr(); // 合并对expr的所有处理,将得到的三地址码栈压入总栈
+    // 合并对expr的所有处理,将得到的三地址码栈压入总栈
+    void expr(); 
+
     std::string getTacResult()
     {
         return tac.result;
     }
 
+    //设置函数让expr指向下一个env
     void setEnv(Environment* env);
 
     std::string return_type();

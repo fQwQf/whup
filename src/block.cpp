@@ -6,14 +6,22 @@
 #include"while.h"
 #include"break.h"
 #include"continue.h"
+#include "return.h"
+#include "function.h"
+#include "whup_parser.h"
 #include"class.h"
+
+extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
+extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+
+
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
 {
     if (tokens[i].value == "{")
     {
-        int leftPar = 1;
+        int leftPar = 1;//甚至par都没有改成brace
         int rightPar = 0; // 分别记录已经读取的左大括号右大括号的个数,当相等时即可结束
         while (leftPar != rightPar)
         {
@@ -32,47 +40,45 @@ void Block::matchBrace(int &i,std::vector<Token> &tokens)
     }
 }
 
-// 以分号为分隔扫描
 Block::Block(std::vector<Token> tokens, Environment *e)
 {
     this->env = new Environment(e);
 
-    int last_semicolon = 0;
-
-    for (int i = 0; i < tokens.size(); i++)
-    {
-        matchBrace(i, tokens);
-        if (tokens[i].type == SYMBOL && tokens[i].value == ";")
-        {
-            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
-            last_semicolon = i+1;
-            for (auto i : subtokens){
-                std::cout << i.value ;
-            }
-            generate(subtokens);
-            std::cout << "generate" << std::endl;
-        }
-    }
+    block(tokens);
 }
 
-//你是不是觉得这样重载构造函数很没必要？
-//有这种感觉就对了，其实我是为了水代码量。
-//如果不是还有基本道德底线，我甚至连generate()都要展开。(′д｀σ)σ
-Block::Block(std::vector<Token> tokens)
+Block::Block(std::vector<Token> tokens)//这个是全局block
 {
     this->env = new Environment();
 
+    block(tokens);
+
+    tacs.push_back(ThreeAddressCode{"if_goto", "true", "", "end_of_file"});
+
+    for (auto &i : functions){
+        i.second->generate();
+    }
+}
+
+// 以分号为分隔扫描
+void Block::block(std::vector<Token> tokens)
+{
     int last_semicolon = 0;
 
     for (int i = 0; i < tokens.size(); i++)
     {
-        //打印出所有Token
-        //debug时可能有用
-        //std::cout << tokens[i].value;
+        
         matchBrace(i, tokens);
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
+            //打印出所有Token
+            //debug时可能有用
+            //for(auto &i:subtokens){
+            //    std::cout << i.value << " ";
+            //}
+            //std::cout << std::endl;
+            
             last_semicolon = i+1;
             generate(subtokens);
         }
@@ -82,13 +88,29 @@ Block::Block(std::vector<Token> tokens)
 // 根据首token传入对应的类的构造函数中。
 void Block::generate(std::vector<Token> subtokens)
 {
-    if (subtokens.empty())
-        return; 
 
-    if (subtokens[0].type == IDENTIFIER)
+
+    if (subtokens.empty())
+        return;
+
+    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "(")
     {
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
+    }
+    else if(subtokens[0].type == IDENTIFIER && subtokens[1].value == "(")
+    {
+        if (functions.find(subtokens[0].value) == functions.end())
+        {
+            std::cout << "Function " << subtokens[0].value << " not found" << std::endl;
+        }
+        else
+        {
+            Function *func = functions[subtokens[0].value];
+            func->call(subtokens, env);
+            std::cout << "call function: " << subtokens[0].value << std::endl;
+            return;
+        }
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
@@ -116,12 +138,35 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Continue(env);
     }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="return")
+    {
+        if (function_ret_label == "")
+        {
+            std::cout << "error:unexpected return" << std::endl;
+            exit(1);
+        }
+        else
+        {
+            if (subtokens.size() == 1)
+            {
+                new Return(env);
+            }
+            else
+            {
+                new Return(subtokens, env);
+            }
+        }
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="function")
+    {
+        new Function(subtokens,env);
+    }
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
     {
         new Class(subtokens);
     }
     else
     {
-        std::cout << "error" << std::endl;
+        std::cout << "error:unexpected token" << std::endl;
     }
 }

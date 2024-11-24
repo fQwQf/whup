@@ -1,13 +1,16 @@
 #include "expression.h"
+#include "function.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
+extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+
 
 // 从右至左对输入进行遍历，扫描以下运算符，从下向上
 /*
-** | 幂运算
-*, /, % | 乘，除，取余
-+, - | 加和减
+    ** 表示 幂运算
+    *  , /, % 表示 乘，除，取余
+    +, - 表示 加和减
 */
 // 返回扫描到的符号，并创建左右子树，以左边和右边的所有token传入所有构造
 // 对于小括号的实现：可以增加一层扫描括号，并且在前两层调用一个略去括号的函数
@@ -42,15 +45,20 @@ void Expr::setEnv(Environment *env)
 
 Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 {
-
+    
     this->setEnv(env);
     if (expr.size() == 1)
     { // 只有一个元素
-        
 
         if (expr[0].type == IDENTIFIER)
         {
             std::cout << "find IDENTIFIER!";
+            if(E_expr[0].processed == true){
+                tac.result = E_expr[0].value;
+                std::cout << "result: " << tac.result << std::endl;
+                std::cout << "processed: " << E_expr[0].processed << std::endl;
+                return;
+            }
             tac.result = env->get_var(E_expr[0].value);
             std::cout << "result: " << tac.result << std::endl;
         }
@@ -59,7 +67,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             std::cout << "find STRING!";
             tac.result = "\"" + E_expr[0].value + "\"";
             std::cout << "result: " << tac.result << std::endl;
-        } 
+        }
         else if (expr[0].type == NUMBER)
         {
             std::cout << "find NUMBER!";
@@ -68,11 +76,20 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
+    if (expr[0].type == IDENTIFIER && expr[1].type == SYMBOL && expr[1].value == "(" && expr[expr.size() - 1].type == SYMBOL && expr[expr.size() - 1].value == ")"){
+        Function* func = functions[expr[0].value];
+        std::vector<Token> expression = expr;
+        func->call(expression,env);
+        tac.result = func->get_return_value();
+        std::cout << "call function: " << expr[0].value << std::endl;
+        return;
+    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
 } // 用表达式词法单元串初始化
 
+//返回token类型的函数
 std::string Expr::return_type()
 {
     if (E_expr.size() == 1 && E_expr[0].type == IDENTIFIER)
@@ -95,6 +112,8 @@ std::string Expr::return_type()
         return "number";
     }
 }
+
+//合并对expr的所有处理,将得到的三地址码栈压入总栈
 void Expr::expr()
 {
     std::cout << "expr scan start!" << "size:";
@@ -102,7 +121,7 @@ void Expr::expr()
     // 扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--)
     {
-        matchPar(i);
+        matchPar(i);//扫描括号符号
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "||" || E_expr[i].type == KEYWORD && E_expr[i].value == "or")
         {
             std::cout << "find ||" << std::endl;

@@ -1,8 +1,10 @@
 #include "generator.h"
 #include "whup_parser.h"
+#include "function.h"
 
 extern std::vector<ThreeAddressCode> tacs;
 extern std::unordered_map<std::string, std::string> var_declares; // 存储将放入c++中变量名和类型的哈希表
+
 
 /*
 代码生成器
@@ -70,7 +72,7 @@ std::string generator()
         }
     }
 
-    code = "#include <bits/stdc++.h>\n#ifdef _WIN32\n#include \"windows.h\"\n#endif\nusing namespace std;\nint main()\n{\n#ifdef _WIN32\nSetConsoleOutputCP(CP_UTF8);\n#endif\n" + code + "\nreturn 0;\n\n}";
+    code = "#include <bits/stdc++.h>\n#ifdef _WIN32\n#include \"windows.h\"\n#endif\nusing namespace std;\nint main()\n{\n#ifdef _WIN32\nSetConsoleOutputCP(CP_UTF8);\n#endif\n" + code + "\nend_of_file:\nreturn 0;\n\n}";
 
     return code;
 }
