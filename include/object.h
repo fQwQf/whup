@@ -6,6 +6,10 @@
 #include"whup_parser.h"
 #endif
 
+#ifndef CLASSFUNCTION_H_
+#include"classfunction.h"
+#endif
+
 #ifndef OBJECT_H_
 #define OBJECT_H_
 //创建对象实例
@@ -19,7 +23,7 @@ class Object
     void var_declare(std::vector<Token> tokens);//变量声明
     void function_declare(std::vector<Token> tokens);//函数声明
     void generator(std::vector<Token>subtoken);//整合变量声明与函数声明//其实没有必要但好看
-    void Object::matchBrace(int &i,std::vector<Token> &tokens);
+    void matchBrace(int &i,std::vector<Token> &tokens);
     std::unordered_map<std::string,ClassFunction*> function_table;//函数表//<函数名，函数指针>
 };
 

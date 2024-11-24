@@ -1,13 +1,9 @@
-
-class A
+class T
 {
     var a;
+    function myFunction1(var1:int,var2:int):int{
+        return var1+var2+a;
+    };
 };
-class B
-{
-    var b;
-};
-class C
-{
-    var c;
-};
+T test;
+test->myFunction1(1,1);

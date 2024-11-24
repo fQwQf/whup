@@ -8,6 +8,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 	var = code[0];
 	code.erase(code.begin());
 	code.erase(code.begin()); // 两次处理将等号和等号左侧变量消去
+	std::cout<<std::endl;
 	expr = new Expr(code,env);
 
 	//检查左边是否声明，未声明则自动声明

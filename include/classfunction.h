@@ -5,7 +5,8 @@
 #ifndef PARSER_H_
 #include"whup_parser.h"
 #endif
-
+#ifndef CLASSFUNCTION_H_
+#define CLASSFUNCTION_H_
 //基本上是对function的重复，只是多了一个Object_env并插入新的实例表
 class ClassFunction
 {
@@ -37,3 +38,4 @@ class ClassFunction
         void generate();//生成函数代码
         std::string get_return_value();
 };
+#endif

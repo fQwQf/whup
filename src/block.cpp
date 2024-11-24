@@ -101,8 +101,14 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens.empty())
         return;
 
-    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "("&&subtokens[1].type!=IDENTIFIER)
+    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "("&&subtokens[1].type!=IDENTIFIER&&subtokens[1].value!="->")
     {
+        std::cout<<"assign begin"<<std::endl;
+        for(auto&i:subtokens)
+        {
+            std::cout<<i.value<<" ";
+        }
+        std::cout<<std::endl;
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
     }
@@ -177,20 +183,25 @@ void Block::generate(std::vector<Token> subtokens)
     {
         std::string className=subtokens[0].value;
         std::string objectName=subtokens[1].value;
+        std::cout<<"new object "<<objectName<<std::endl;
         new Object(className,objectName,env);
+        std::cout<<"new object "<<objectName<<" success"<<std::endl;
     }
-    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value==".")
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value=="->")
     {
+        std::cout<<"in the call"<<std::endl;
         Object* thisObject=object_table[subtokens[0].value];
         std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
         std::string functionName=subtokens[2].value;
+
+        
 
         if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         {
             std::cout<<"not found classfunction"<<functionName;
             exit(1);
         }
-
+        std::cout<<functionName<<" call begin"<<std::endl;
         thisFunctionTable[functionName]->call(subtokens,this->env);
     }
     else

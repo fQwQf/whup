@@ -46,6 +46,7 @@ void Object::generator(std::vector<Token>subtokens)
     if(subtokens[0].type==KEYWORD&&subtokens[0].value=="var")
     {
         var_declare(subtokens);
+        std::cout<<"var "<<subtokens[1].value<<" declare success"<<std::endl;
     }
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="function")
     {

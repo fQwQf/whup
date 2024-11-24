@@ -1,8 +1,8 @@
 #include"classfunction.h"
 #include"expression.h"
 
-std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
-std::string function_return_value;//同理
+extern std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
+extern std::string function_return_value;//同理
 extern std::vector<ThreeAddressCode> tacs;
 
 //处理类函数声明时，需要传入类函数表和类环境
@@ -80,18 +80,22 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
                 if (token.value == params_name[i].first)
                 {
                     token.value = params_name[i].second;
-                    // token.processed = true;
+                    token.processed = true;
                     std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
                     break;
                 }
                 else{
-                    // token.processed = false;
+                     token.processed = false;
                 }
             }
         }
     }
 
     this->body_tokens = tokens;
+    for(auto&i:body_tokens)
+    {
+        std::cout<<i.value<<" ";
+    }
 }
 
 void ClassFunction::matchPar(int &i,std::vector<Token> &tokens)//实际上是由marchBrace改过来的
@@ -120,9 +124,13 @@ void ClassFunction::matchPar(int &i,std::vector<Token> &tokens)//实际上是由
 
 //与普通函数相比调用的时候，要多一步对实例名的识别，这样才能找到对应的函数表
 std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
-
-    tokens.erase(tokens.begin(),tokens.begin()+3);//去掉实例名，".",和函数名
-
+    std::cout<<"call function "<<name<<std::endl;
+    for(auto&i:tokens)
+    {
+        std::cout<<i.value<<" ";
+    }
+    std::cout<<std::endl;
+    tokens.erase(tokens.begin(),tokens.begin()+3);//去掉实例名，"->",和函数名
 
 
     //现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
@@ -162,6 +170,7 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
     tacs.push_back({"label","","",label});
     return_labels.push_back(label);
 
+    std::cout<<"call function "<<name<<" success"<<std::endl;
     return return_value;
 
 

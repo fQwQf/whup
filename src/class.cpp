@@ -11,6 +11,12 @@ Class::Class(std::vector<Token> code)
     if (class_table.find(className) == class_table.end())
     {
         class_table[className] = std::vector<Token>(code.begin() + index, code.end() - 1);
+        std::cout<<"add class "<<className<<std::endl;
+        std::cout<<"class body is "<<std::endl;
+        for(auto &i:class_table[className])
+        {
+            std::cout<<i.value<<" ";
+        }
     }
     else
     {
