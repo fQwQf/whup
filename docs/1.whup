@@ -1,9 +1,13 @@
-function add(a:int, b:int) : int {
-    f = a+b;
-    f = f + m;
-    return f;
+
+class A
+{
+    var a;
 };
-m=3;
-n=2;
-q=add(m,n+2);
-print (q);
+class B
+{
+    var b;
+};
+class C
+{
+    var c;
+};

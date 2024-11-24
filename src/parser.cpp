@@ -145,3 +145,14 @@ std::string Environment::get_type_var(std::string name){
     }
     return "notfound";
 }
+
+
+Environment* Environment::backToGlobal()
+{
+    Environment*tempptr=this;
+    while(tempptr->parent!=nullptr)
+    {
+        tempptr=tempptr->parent;
+    }
+    return tempptr;
+}
