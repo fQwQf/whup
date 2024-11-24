@@ -1,7 +1,8 @@
 #include"object.h"
 #include"var.h"
+#include"classfunction.h"
 extern std::unordered_map<std::string,std::vector<Token>>class_table;
-std::vector<std::unordered_map<std::string,function*>*> all_Object_function_table;
+std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
 //引入一个全局的向量，来储存所有对象的函数表指针，以便在函数调用时查找函数
 std::unordered_map<std::string,Object*>object_table;
 //引入一个全局的实例表，记录实例名与其Object的对应关系，主要是为了得到Object的函数表的信息
@@ -37,8 +38,7 @@ void Object::var_declare(std::vector<Token>subtokens)
 void Object::function_declare(std::vector<Token>subtokens)
 {
     //与普通function的区别在于，将函数插入实例的函数表
-    subtokens.erase(subtokens.begin());//去掉function
-    this->function_table[subtokens[0].value]=;
+    new ClassFunction(subtokens,Object_env,this->function_table);
 }
 
 void Object::generator(std::vector<Token>subtokens)
@@ -73,4 +73,8 @@ Object::Object(std::string className,std::string objectName,Environment*env)
             generator(subtokens);
         }
     }
+
+    //将函数表插入全局函数表
+    all_Object_function_table.push_back(this->function_table);
 }
+
