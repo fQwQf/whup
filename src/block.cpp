@@ -10,11 +10,12 @@
 #include "function.h"
 #include "whup_parser.h"
 #include"class.h"
-
+#include"object.h"
+#include"classfunction.h"
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
-
-
+extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
+extern std::unordered_map<std::string,Object*>object_table;
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -58,6 +59,13 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     for (auto &i : functions){
         i.second->generate();
     }
+    for(auto&funcTable:all_Object_function_table)
+    {
+        for(auto&i:funcTable)
+        {
+            i.second->generate();
+        }
+    }
 }
 
 // 以分号为分隔扫描
@@ -93,7 +101,7 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens.empty())
         return;
 
-    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "(")
+    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "("&&subtokens[1].type!=IDENTIFIER)
     {
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
@@ -164,6 +172,26 @@ void Block::generate(std::vector<Token> subtokens)
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
     {
         new Class(subtokens);
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER)
+    {
+        std::string className=subtokens[0].value;
+        std::string objectName=subtokens[1].value;
+        new Object(className,objectName,env);
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value==".")
+    {
+        Object* thisObject=object_table[subtokens[0].value];
+        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        std::string functionName=subtokens[2].value;
+
+        if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        {
+            std::cout<<"not found classfunction"<<functionName;
+            exit(1);
+        }
+
+        thisFunctionTable[functionName]->call(subtokens,this->env);
     }
     else
     {
