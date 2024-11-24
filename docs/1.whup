@@ -1,9 +1,15 @@
-function add(a:int, b:int) : int {
-    f = a+b;
-    f = f + m;
-    return f;
+function fib(a:int) : int {
+    var ret;
+    var r1;
+    var r2;
+    if(a==1 || a == 2){
+        ret = 1;
+    }else{
+        r1 = fib(a-1);
+        r2 = fib(a-2);
+        ret = r1 + r2;
+    };
+    return ret;
 };
-m=3;
-n=2;
-q=add(m,n+2);
-print (q);
+a=10;
+print(fib(a));
