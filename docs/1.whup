@@ -1,17 +1,12 @@
 function fib(a:int) : int {
-    var ret;
-    var r1;
-    var r2;
+
     if(a==1 || a == 2){
-        ret = 1;
+        return 1 ;
     }else{
-        r1 = fib(a-1);
-        r2 = fib(a-2);
-        ret = r1 + r2;
+        return fib(a-1) + fib(a-2);
     };
-    return ret;
 };
 m=3;
 n=2;
-q=add(m,n+2);
+q=fib(3);
 print (q);

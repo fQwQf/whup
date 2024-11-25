@@ -161,10 +161,10 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Function(subtokens,env);
     }
-    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
+    /*else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
     {
         new Class(subtokens);
-    }
+    }*/
     else
     {
         std::cout << "error:unexpected token" << std::endl;

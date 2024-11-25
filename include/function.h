@@ -5,7 +5,6 @@
 //这是对函数声明的识别，会将函数名与参数存入哈希表，并且将函数体压入function_tacs
 class Function {
     std::string name;
-    std::string return_type;
     
     std::string body;
     std::vector<std::pair<std::string,std::string>> params_name;//形参名,分别为原形参名和生成的专用形参名
@@ -24,6 +23,8 @@ class Function {
     Environment* env;//必然是全局的
 
     public:
+        std::string return_type;
+
         Function(std::vector<Token> &tokens,Environment* env);
         std::string call(std::vector<Token> &tokens,Environment* env);
         void matchPar(int &i,std::vector<Token> &tokens);

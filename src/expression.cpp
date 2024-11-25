@@ -80,7 +80,9 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         Function* func = functions[expr[0].value];
         std::vector<Token> expression = expr;
         func->call(expression,env);
-        tac.result = func->get_return_value();
+        std::string temp = newTempVar(func->return_type);
+        tacs.push_back({ "=", func->get_return_value(), "", temp });
+        tac.result = temp;
         std::cout << "call function: " << expr[0].value << std::endl;
         return;
     }

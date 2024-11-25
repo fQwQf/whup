@@ -105,7 +105,7 @@ class Environment{
 
 
     //为了使类的实例在某个Block内声明时一定查找到全局变量，设计一个得到全局Env的函数
-    Environment* Environment::backToGlobal();
+    Environment* backToGlobal();
 };
 
 #endif
