@@ -1,9 +1,14 @@
 class T
 {
-    var a;
-    function myFunction1(var1:int,var2:int):int{
-        return var1+var2+a;
+    var a=1;
+    function T():int
+    {
+        a="hello";
+    };
+    function f():int
+    {
+        print(a);
     };
 };
-T test;
-test->myFunction1(1,1);
+T test();
+test->T();

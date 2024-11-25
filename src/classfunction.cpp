@@ -123,6 +123,7 @@ void ClassFunction::matchPar(int &i,std::vector<Token> &tokens)//实际上是由
 
 
 //与普通函数相比调用的时候，要多一步对实例名的识别，这样才能找到对应的函数表
+//现在希望call对构造函数进行特殊处理，需要在其中添加一些判断语句
 std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
     std::cout<<"call function "<<name<<std::endl;
     for(auto&i:tokens)
@@ -130,8 +131,14 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
         std::cout<<i.value<<" ";
     }
     std::cout<<std::endl;
-    tokens.erase(tokens.begin(),tokens.begin()+3);//去掉实例名，"->",和函数名
 
+    if(tokens[1].type==SYMBOL&&tokens[1].value=="->")
+    tokens.erase(tokens.begin(),tokens.begin()+3);//去掉实例名，"->",和函数名
+    else
+    {
+        tokens.erase(tokens.begin(),tokens.begin()+2);
+    }
+    
 
     //现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
     //实际上这一块和block扫描statement的逻辑类似，所以我直接把block拿过来修改一下就成了🙂‍↕️
@@ -139,11 +146,14 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
     int last_comma = 0;
     int param_num = 0;
     tokens.erase(tokens.begin());
-    
 
     
     for (int i = 0; i < tokens.size(); i++)
     {
+        if(tokens[0].value==")"){
+        std::cout<<"no params"<<std::endl;
+        break;
+        }
         matchPar(i, tokens);
         if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
         {
@@ -175,6 +185,8 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
 
 
 }
+
+
 
 
 void ClassFunction::generate(){

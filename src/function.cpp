@@ -226,6 +226,11 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
     
     for (int i = 0; i < tokens.size(); i++)
     {
+        //处理没有参数的情况
+        if(tokens[0].value==")"){
+        std::cout<<"no params"<<std::endl;
+        break;
+        }
         matchPar(i, tokens);
         if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
         {

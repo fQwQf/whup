@@ -179,12 +179,30 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Class(subtokens);
     }
-    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER)
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value!="(")
     {
         std::string className=subtokens[0].value;
         std::string objectName=subtokens[1].value;
         std::cout<<"new object "<<objectName<<std::endl;
         new Object(className,objectName,env);
+        std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="(")
+    {
+        //构造函数，创建对象的同时调用构造函数
+        std::string className=subtokens[0].value;
+        std::string objectName=subtokens[1].value;
+        std::cout<<"new object "<<objectName<<std::endl;
+        Object*thisObject=new Object(className,objectName,env);
+        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        std::string functionName=className;
+        if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        {
+            std::cout<<"not found classfunction"<<functionName;
+            exit(1);
+        }
+        std::cout<<functionName<<" call begin"<<std::endl;
+        thisFunctionTable[functionName]->call(subtokens,this->env);
         std::cout<<"new object "<<objectName<<" success"<<std::endl;
     }
     else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value=="->")

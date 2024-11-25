@@ -32,6 +32,15 @@ void Object::matchBrace(int &i,std::vector<Token> &tokens)
 //两个核心功能
 void Object::var_declare(std::vector<Token>subtokens)
 {
+    // for(int i=1;i<subtokens.size();i++)//i=1是因为第一个是var
+    // {
+    //     if()
+    //     if(subtokens[i].type==IDENTIFIER&&subtokens[i+1].value=="=")
+    //     {
+    //         subtokens.insert(subtokens.begin()+i+1,Token{SYMBOL,"=",subtokens[i].line_number});
+    //         subtokens.insert(subtokens.begin()+i+2,Token{NUMBER,"0",subtokens[i].line_number});
+    //     }
+    // }
     new Var(subtokens,Object_env);
     //与Var类的构造函数相同，将变量声明插入实例的符号表
 }
@@ -75,6 +84,7 @@ Object::Object(std::string className,std::string objectName,Environment*env)
         }
     }
 
+    
     //将函数表插入全局函数表
     all_Object_function_table.push_back(this->function_table);
 }
