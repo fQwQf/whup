@@ -24,6 +24,7 @@ class Object
     void function_declare(std::vector<Token> tokens);//函数声明
     void generator(std::vector<Token>subtoken);//整合变量声明与函数声明//其实没有必要但好看
     void matchBrace(int &i,std::vector<Token> &tokens);
+    
     std::unordered_map<std::string,ClassFunction*> function_table;//函数表//<函数名，函数指针>
 };
 
