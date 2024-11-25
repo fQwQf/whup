@@ -1,8 +1,9 @@
 #include"object.h"
 #include"var.h"
 #include"classfunction.h"
-extern std::unordered_map<std::string,std::vector<Token>>class_table;
-std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
+#include"class.h"
+extern std::unordered_map<std::string,Class*>class_table;
+std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;  
 //引入一个全局的向量，来储存所有对象的函数表指针，以便在函数调用时查找函数
 std::unordered_map<std::string,Object*>object_table;
 //引入一个全局的实例表，记录实例名与其Object的对应关系，主要是为了得到Object的函数表的信息
@@ -68,8 +69,16 @@ Object::Object(std::string className,std::string objectName,Environment*env)
     this->Object_env=new Environment(env->backToGlobal());//一方面创造新的符号表，另一方面用全局环境来做初始化
     object_table[objectName]=this;//将实例插入实例表
 
-    std::vector<Token> tokens=class_table[className];//通过className，在类表中找到对应的声明语句
+    std::vector<Token> tokens=class_table[className]->getStatements();//通过className，在类表中找到对应的声明语句
     //接下来按分号为间隔扫描得到独立语句
+
+    std::cout<<"get statments!"<<std::endl;
+    for(auto&i:tokens)
+    {
+        std::cout<<i.value<<" ";
+    }
+    std::cout<<std::endl;
+
     int last_semicolon = 0;
 
     for (int i = 0; i < tokens.size(); i++)

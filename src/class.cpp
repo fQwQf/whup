@@ -1,16 +1,14 @@
 #include"class.h"
 //全局的类表
-std::unordered_map<std::string,Class*> class_table;//类表//<类名，类指针>
+std::unordered_map<std::string,Class*> class_table;
 Class::Class(std::vector<Token> code)
 {
     int index = 1; // 略过 'class'
     std::string className = code[index].value;
     index++; index++; // 略过类名和 '{'
-    while (code[index].value != "}")
-    {
-        statements.push_back(code[index]);
-        index++;
-    }
+
+    statements=std::vector<Token>(code.begin()+index,code.end());
+
     // 检查类是否已存在
     if (class_table.find(className) == class_table.end())
     {

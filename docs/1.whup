@@ -3,6 +3,14 @@ class T
     var a=1;
     function f():int
     {
+        a=2;
+    };
+    function p():int
+    {
         print(a);
     };
 };
+
+T test;
+test->f();
+test->p();
