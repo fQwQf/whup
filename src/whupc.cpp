@@ -52,7 +52,7 @@ int main(int n, const char *arg[])
     //使用得到的token集合进行语法分析，生成一个中间表示
     Block block(tokens);
 
-    //进行expression的语法错误检查
+    //进行expression的语法错误检查，并输出错误信息
     printErrors();
 
     //生成目标代码

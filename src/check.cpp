@@ -14,16 +14,13 @@ void checkSyntax::checkID(Token token)
     }
 }
 
-// void checkSyntax::checkVar(std::vector<Token>code)
-// {
-//     for(auto c:code)
-//     {
-//         if (!var_table.find(c.value)) 
-//         {
-//             errors.push_back({ c.line_number, "Error: Unrecognized token '" + c.value + "' at line " });
-//         }
-//     }
-// }
+void checkSyntax::checkVar(std::string name,Environment *env,int line_number)
+{
+    if ("null"==env->get_var(name)) 
+    {
+        errors.push_back({ line_number, "Error: Unrecognized token '" + name + "' at line " });
+    }
+}
 
 void checkBrackets::checkPar(std::vector<Token>code)
 {

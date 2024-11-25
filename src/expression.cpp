@@ -52,6 +52,9 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         if (expr[0].type == IDENTIFIER)
         {
             std::cout << "find IDENTIFIER!";
+            //检查变量是否已经声明
+            checkSyntax::checkVar(E_expr[0].value,env,E_expr[0].line_number);
+            
             tac.result = env->get_var(E_expr[0].value);
             std::cout << "result: " << tac.result << std::endl;
         }

@@ -15,7 +15,8 @@ class Var{
     public:
     Var(std::vector<Token> tokens,Environment* env);
 
-    //分别是有类型和没有类型的变量声明
+    //分别是有类型的变量声明
     void var(Environment* env, std::string type, std::string name);
+    //没有类型的变量声明
     void var(Environment* env, std::string name);
 };

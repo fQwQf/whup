@@ -22,7 +22,7 @@ add_library(check SHARED src/check.cpp)
 target_link_libraries(expression PUBLIC parser check)
 target_link_libraries(block PUBLIC parser expression lexer check)
 target_link_libraries(generator PUBLIC parser)
-target_link_libraries(check PUBLIC lexer)
+target_link_libraries(check PUBLIC lexer parser)
 
 add_executable(whupc src/whupc.cpp)
 

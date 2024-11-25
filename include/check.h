@@ -16,7 +16,7 @@ public:
     static void checkID(Token token);
 
     //检查变量是否未声明
-    static void checkVar(std::vector<Token>code);
+    static void checkVar(std::string name,Environment *env,int line_number);
 
 };
 
