@@ -1,5 +1,4 @@
 function fib(a:int) : int {
-
     if(a==1 || a == 2){
         return 1 ;
     }else{
@@ -8,5 +7,5 @@ function fib(a:int) : int {
 };
 m=3;
 n=2;
-q=fib(3);
+q=fib(5);
 print (q);

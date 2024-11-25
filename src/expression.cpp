@@ -119,7 +119,13 @@ std::string Expr::return_type()
 void Expr::expr()
 {
     std::cout << "expr scan start!" << "size:";
-    std::cout << E_expr.size() << std::endl;
+    std::cout << E_expr.size() <<  "  ";
+    for (auto &i : E_expr){
+        std::cout << i.value << " ";
+    }
+    std::cout << std::endl;
+
+    
     // 扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--)
     {

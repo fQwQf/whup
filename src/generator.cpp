@@ -35,7 +35,7 @@ std::string generator()
         {
             code += i.result + " = " + i.arg1 + ";\n";
         }
-        else if (!std::isdigit(i.op[0]) && !std::isalpha(i.op[0]))
+        else if (!std::isdigit(i.op[0]) && !std::isalpha(i.op[0]) && i.op !="")
         {
             if (i.op == "%")
             {
@@ -69,10 +69,12 @@ std::string generator()
             {
                 code += "cout << " + i.arg1 + " << endl;\n";
             }
+        }else{
+            code += i.result + ";\n";
         }
     }
 
-    code = "#include <bits/stdc++.h>\n#ifdef _WIN32\n#include \"windows.h\"\n#endif\nusing namespace std;\nint main()\n{\n#ifdef _WIN32\nSetConsoleOutputCP(CP_UTF8);\n#endif\n" + code + "\nend_of_file:\nreturn 0;\n\n}";
+    code = "#include <bits/stdc++.h>\n#ifdef _WIN32\n#include \"windows.h\"\n#endif\nusing namespace std;\nint main()\n{\nstack<string> jump_label;\n#ifdef _WIN32\nSetConsoleOutputCP(CP_UTF8);\n#endif\n" + code + "\nend_of_file:\nreturn 0;\n\n}";
 
     return code;
 }
