@@ -85,6 +85,7 @@ std::string Environment::get_var(std::string name)
     {
         if (parent == nullptr)
         {
+            std::cout << "Variable "+name+" not found,return null" << std::endl;
             return "null";
         }
         else
