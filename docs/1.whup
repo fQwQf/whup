@@ -1,17 +1,8 @@
-function fib(a:int) : int {
-    var ret;
-    var r1;
-    var r2;
-    if(a==1 || a == 2){
-        ret = 1;
-    }else{
-        r1 = fib(a-1);
-        r2 = fib(a-2);
-        ret = r1 + r2;
+class T
+{
+    var a=1;
+    function f():int
+    {
+        print(a);
     };
-    return ret;
 };
-m=3;
-n=2;
-q=add(m,n+2);
-print (q);
