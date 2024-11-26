@@ -10,8 +10,11 @@ class If
 	Environment* If_Env;
 public:
 	If(std::vector<Token>, Environment*);
+	//匹配小括号的函数
 	void martchPar(int& i, std::vector<Token>code);
+	//匹配大括号的函数
 	void martchBrace(int& i, std::vector<Token>code);
 
+	//匹配if else是否符合语法规则
 	bool martchIfElse(int& i, std::vector<Token>code);//1表示继续，0表示else后不再有if
 };

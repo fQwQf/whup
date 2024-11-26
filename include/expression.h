@@ -29,6 +29,7 @@ public:
     // 合并对expr的所有处理,将得到的三地址码栈压入总栈
     void expr(); 
 
+    //返回计算结果的函数
     std::string getTacResult()
     {
         return tac.result;

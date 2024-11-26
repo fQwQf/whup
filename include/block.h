@@ -23,6 +23,7 @@ public:
     //以分号为分隔扫描
     Block(std::vector<Token> tokens, Environment* env);
     Block(std::vector<Token> tokens);
+    void block(std::vector<Token> tokens);
 
     //跳过大括号
     void matchBrace(int &i,std::vector<Token> &tokens);

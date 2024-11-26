@@ -1,7 +1,7 @@
 /*
-词法分析器将输入的字符串中的词素转化为词法单元。词素是单词，符号，数字等。  
-变量作用域在词法分析器中处理，具体方法是对不同作用域的变量名在词法分析中进行区分。  
-词法分析器输出结果应包含代码所在行，便于调试。  
+词法分析器将输入的字符串中的词素转化为词法单元。词素是单词，符号，数字等。
+变量作用域在词法分析器中处理，具体方法是对不同作用域的变量名在词法分析中进行区分。
+词法分析器输出结果应包含代码所在行，便于调试。
 */
 #include <iostream>
 #include <string>
@@ -16,7 +16,7 @@
 
 
 
-Token::Token(TokenType type, const std::string& value, int line_number) 
+Token::Token(TokenType type, const std::string& value, int line_number)
         : type(type), value(value), line_number(line_number) {};
 
 Token::Token(): type(TokenType::EOF_TOKEN), value(""), line_number(0) {};

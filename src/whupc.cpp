@@ -3,6 +3,7 @@
 #include "whup_io.h"
 #include "extractor.h"
 #include "generator.h"
+#include "check.h"
 
 #ifdef _WIN32
 #include "windows.h"
@@ -19,7 +20,7 @@ int main(int n, const char *arg[])
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     #endif
-    
+
     if(n==1){
         std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
         return 0;
@@ -34,18 +35,25 @@ int main(int n, const char *arg[])
     }else{
         out = "out.cpp";
     }
-    
+
     //用io类读取输入文件内容到字符串expression中
     IO io(extractor.get_input_file(), out);
     std::string expression = io.read();
 
+    //进行expression的句法错误分析
+    CheckSemicolon::checkCode(expression);
+    printErrors();
+
     //进行词法分析
-    Lexer lexer(expression);   
+    Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 
     //使用得到的token集合进行语法分析，生成一个中间表示
     Block block(tokens);
+
+    //进行expression的语法错误检查，并输出错误信息
+    printErrors();
 
     //生成目标代码
     std::string code = generator();
@@ -54,7 +62,7 @@ int main(int n, const char *arg[])
     io.write(code);
 
     std::cout << "Generate code to " << out << std::endl;
-    std::cout << "Done!ヾ(•ω•`)o" << std::endl;
+    std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
     return 0;
 }
