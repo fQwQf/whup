@@ -3,6 +3,9 @@
 #include <bits/stdc++.h>
 #include"whupc.h"
 
+/*
+    类表，用于储存所有类的定义
+*/
 
 class Class
 {

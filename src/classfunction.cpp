@@ -1,9 +1,10 @@
 #include"classfunction.h"
 #include"expression.h"
-
+#include"class.h"
 extern std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 extern std::string function_return_value;//同理
 extern std::vector<ThreeAddressCode> tacs;
+extern std::unordered_map<std::string,Class*> class_table;
 
 void ClassFunction::matchPar(int &i,std::vector<Token> &tokens)//实际上是由marchBrace改过来的
 {
@@ -68,7 +69,8 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
     if(tokens[i].type==IDENTIFIER&&tokens[i+1].type==SYMBOL&&tokens[i+1].value=="(")
     {
         name=tokens[i].value;
-         function_table[name] = this;//将函数插入类函数表//这里与普通函数不同，普通函数是插入全局函数表
+        if(class_table.find(name)==class_table.end())//因为构造函数与类名相同，所以这里要判断是否是构造函数
+            function_table[name] = this;//将函数插入类函数表//这里与普通函数不同，普通函数是插入全局函数表
         i++;
     }
 

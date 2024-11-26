@@ -206,13 +206,14 @@ void Block::generate(std::vector<Token> subtokens)
         Object*thisObject=new Object(className,objectName,env);
         std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
         std::string functionName=className;
-        if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
-        {
-            std::cout<<"not found classfunction"<<functionName;
-            exit(1);
-        }
+        // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        // {
+        //     std::cout<<"not found classfunction"<<functionName;
+        //     exit(1);
+        // }
         std::cout<<functionName<<" call begin"<<std::endl;
-        thisFunctionTable[functionName]->call(subtokens,this->env);
+        // thisFunctionTable[functionName]->call(subtokens,this->env);
+        thisObject->myConstructor->call(subtokens,this->env);
         std::cout<<"new object "<<objectName<<" success"<<std::endl;
     }
     else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value=="->")

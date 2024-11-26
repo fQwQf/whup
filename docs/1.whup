@@ -4,8 +4,8 @@ class Person
     var name;
     Person(x:int,y:string)
     {
-        age=x;
-        name=y;
+        name=x;
+        age=y;
         print("create successfully!!!");
     };
     function f()
