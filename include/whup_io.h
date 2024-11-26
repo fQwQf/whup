@@ -16,5 +16,7 @@ public:
 
     //将out_file内容写入output
     void write(std::string output);
+
+    std::string read_line(int line);
     
 };
