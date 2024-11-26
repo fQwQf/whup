@@ -1,10 +1,18 @@
-class Test
+class Person
 {
-    var a;
-    function f(x:int):int
+    var age;
+    var name;
+    Person(x:int,y:string)
     {
-        a=x;
+        age=x;
+        name=y;
+        print("create successfully!!!");
+    };
+    function f()
+    {
+        print(name);
     };
 };
-Test t;
-t->f(1);
+
+Person p1(18,"nihao");
+p1->f();

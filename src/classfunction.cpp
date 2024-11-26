@@ -299,6 +299,7 @@ void ClassFunction::bodyTokens(std::vector<Token>&tokens)
     }
 
     this->body_tokens = tokens;
+    std::cout<<this->name<<" body tokens:"<<std::endl;
     for(auto&i:body_tokens)
     {
         std::cout<<i.value<<" ";

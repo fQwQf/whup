@@ -51,6 +51,18 @@ void Object::function_declare(std::vector<Token>subtokens)
     new ClassFunction(subtokens,Object_env,this->function_table);
 }
 
+void Object::constuctor_declare(std::vector<Token>subtokens)
+{
+    //构造函数的声明
+    myConstructor=new ClassFunction(subtokens,Object_env,this->function_table);
+}
+
+
+
+
+
+
+//generator函数，用来整合变量声明与函数声明
 void Object::generator(std::vector<Token>subtokens)
 {
     if(subtokens[0].type==KEYWORD&&subtokens[0].value=="var")
@@ -61,6 +73,17 @@ void Object::generator(std::vector<Token>subtokens)
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="function")
     {
         function_declare(subtokens);
+        std::cout<<"function "<<subtokens[1].value<<" declare success"<<std::endl;
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[0].value==Class_name)
+    {
+        //构造函数
+        constuctor_declare(subtokens);
+        std::cout<<"constructor declare success"<<std::endl;
+    }
+    else
+    {
+        std::cout<<"error: unknown statement"<<std::endl;
     }
 }
 
@@ -68,7 +91,8 @@ Object::Object(std::string className,std::string objectName,Environment*env)
 {
     this->Object_env=new Environment(env->backToGlobal());//一方面创造新的符号表，另一方面用全局环境来做初始化
     object_table[objectName]=this;//将实例插入实例表
-
+    this->Object_name=objectName;
+    this->Class_name=className;
     std::vector<Token> tokens=class_table[className]->getStatements();//通过className，在类表中找到对应的声明语句
     //接下来按分号为间隔扫描得到独立语句
 

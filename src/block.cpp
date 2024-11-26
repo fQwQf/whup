@@ -59,6 +59,15 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     for (auto &i : functions){
         i.second->generate();
     }
+
+    //先将各个实例的构造函数函数体生成出来
+    //这个过程中会将所有数据成员的类型确定下来
+    //避免其他成员函数中使用的变量未确定类型，导致函数体中出现null
+    for(auto&object:object_table)
+    {
+        object.second->myConstructor->generate();
+    }
+
     for(auto&funcTable:all_Object_function_table)
     {
         for(auto&i:funcTable)
