@@ -32,7 +32,7 @@ class Person
     function f()
     {
         print(name);
-    };
+    }; 
 };
 
 Person p1(18,"nihao");
