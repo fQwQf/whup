@@ -1,16 +1,10 @@
-class T
+class Test
 {
-    var a=1;
-    function f():int
+    var a;
+    function f(x:int):int
     {
-        a=2;
-    };
-    function p():int
-    {
-        print(a);
+        a=x;
     };
 };
-
-T test;
-test->f();
-test->p();
+Test t;
+t->f(1);

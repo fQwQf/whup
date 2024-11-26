@@ -80,12 +80,13 @@ void Block::block(std::vector<Token> tokens)
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
-            //打印出所有Token
-            //debug时可能有用
-            //for(auto &i:subtokens){
+            // 打印出所有Token
+            // debug时可能有用
+            // std::cout<<"subtokens:"<<std::endl;
+            // for(auto &i:subtokens){
             //    std::cout << i.value << " ";
-            //}
-            //std::cout << std::endl;
+            // }
+            // std::cout << std::endl;
             
             last_semicolon = i+1;
             generate(subtokens);

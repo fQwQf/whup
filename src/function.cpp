@@ -284,6 +284,8 @@ void Function::generate(){
     function_ret_label = end_label;
     function_return_value = return_value;
     tacs.push_back({"label","","",start_label});
+    
+    //Block能否识别临时变量？
     new Block(body_tokens,env);
 
     //以下是跳转区
@@ -298,3 +300,6 @@ void Function::generate(){
 std::string Function::get_return_value(){
     return return_value;
 }
+
+
+

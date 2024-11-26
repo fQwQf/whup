@@ -5,9 +5,9 @@ Class::Class(std::vector<Token> code)
 {
     int index = 1; // 略过 'class'
     std::string className = code[index].value;
-    index++; index++; // 略过类名和 '{'
+    index++;index++;  // 略过类名
 
-    statements=std::vector<Token>(code.begin()+index,code.end());
+    statements=std::vector<Token>(code.begin()+index,code.end()-1);
 
     // 检查类是否已存在
     if (class_table.find(className) == class_table.end())

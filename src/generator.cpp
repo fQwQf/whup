@@ -23,6 +23,11 @@ std::string generator()
         {
             code += "string " + i.first + ";\n";
         }
+        // else if(i.second=="null")//禁止没有类型的变量使用
+        // {
+        //     std::cout<<i.first<<"undefined type!!!"<<std::endl;
+        //     exit(1);
+        // }
         else
         {
             code += i.second + " " + i.first + ";\n";
