@@ -18,8 +18,9 @@ struct Token {
     std::string value;
     int line_number;//记录行号，便于定位错误
     bool processed = false;//标记是否已经经过处理
+    std::string file_name;
 
-    Token(TokenType type, const std::string& value, int line_number);
+    Token(TokenType type, const std::string& value, int line_number,std::string file_name);
     Token();
 };
 
@@ -28,13 +29,14 @@ struct Token {
 class Lexer {
 
 public:
-    Lexer(const std::string &input);
+    Lexer(const std::string &input,std::string file_name);
 
     //核心功能函数，将input转化为一系列token的集合
     std::vector<Token> tokenize();
 
 private:
     std::string input;
+    std::string file_name;
     size_t pos;//当前解析位置的索引
     int line;//当前解析位置的行号
 
