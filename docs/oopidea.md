@@ -1,5 +1,24 @@
 # 类的概述：
 
+
+
+## 会用到的结构：
+
+1.类表，<classname,Class*> 目前只储存了声明语句
+
+2.实例表<objectname,Object*> 储存所有的实例
+
+3.实例的函数表<classFunctionName,ClassFunction*> 每一个实例都拥有自己的函数表，在调用时根据实例名得到该函数表，在根据函数名在表中查找到函数
+
+4.实例的符号表<string,string> 每一个实例都拥有自己的符号表，用来记录数据成员。
+  在whup中该符号表是不可以被用户直接访问的，因为我们默认所有数据成员都是private的
+  该符号表在成员函数中是可以访问的。
+
+
+## 实现过程：
+
+eg:
+```c++
 class Person
 {
     var age;
@@ -18,22 +37,7 @@ class Person
 
 Person p1(18,"nihao");
 p1->f();
-
-
-## 会用到的结构：
-
-1.类表，<classname,Class*> 目前只储存了声明语句
-
-2.实例表<objectname,Object*> 储存所有的实例
-
-3.实例的函数表<classFunctionName,ClassFunction*> 每一个实例都拥有自己的函数表，在调用时根据实例名得到该函数表，在根据函数名在表中查找到函数
-
-4.实例的符号表<string,string> 每一个实例都拥有自己的符号表，用来记录数据成员。
-  在whup中该符号表是不可以被用户直接访问的，因为我们默认所有数据成员都是private的
-  该符号表在成员函数中是可以访问的。
-
-
-## 实现过程：
+```
 
 1.声明时，由class关键字开启声明
 
