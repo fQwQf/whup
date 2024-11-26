@@ -7,22 +7,26 @@
 #include "lexer.h"
 #endif
 
-std::string newTempVar();
+//创建新的临时变量
+std::string newTempVar(std::string type);
+//创建新的临时标签
 std::string newTempLabel();
 
 /*
 *结构：三地址码
-*
+*result = arg1 op arg2 ;
 *储存四个字符串，分别代表运算符，操作数1，操作数2，结果
 */
 struct ThreeAddressCode {
     std::string op;   // 操作符
-    std::string arg1;
-    std::string arg2;
-    std::string result;
+    std::string arg1;   //变量1
+    std::string arg2;   //变量2
+    std::string result; //存储结果的变量
 };
 
 /*
+*创建环境类
+*
 *定义一个符号表类，具有链表结构，有一个指向父符号表的指针。
 *叫environment是为了致敬龙书。  
 *内部有一个private的unordered_map，用来存储变量名，类型。  
@@ -38,16 +42,19 @@ struct ThreeAddressCode {
 class Environment{
     private:
 
+    //以哈希表创建符号表，用于存储变量名及其类型
     std::unordered_map<std::string,std::string> var_table;
-    Environment* parent;
+    Environment* parent;//指向父环境的指针
     int id;
     static int i;
 
 
     public:
 
-    /*构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
-    传入一个指向父环境的指针，或者不传入。*/
+    /*
+    构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
+    传入一个指向父环境的指针，或者不传入(不传入一般表示根节点)。
+    */
     Environment(Environment* p);
     Environment();
 
@@ -84,6 +91,18 @@ class Environment{
      *  t 新的变量类型
      */
     void change_type_var(std::string name,std::string t);
+
+    /**
+     * 函数名：get_type_var
+     *
+     * 该函数用于在变量表中查找指定名称的变量类型。
+     * 如果当前作用域中不存在该变量，则会递归地在父作用域中查找。
+     *
+     * 参数： 
+     *  name 要查找的变量的名称
+     */
+    std::string get_type_var(std::string name);
+
 };
 
 #endif

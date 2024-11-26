@@ -2,6 +2,10 @@
 #include"assign.h"
 #include"var.h"
 #include"print.h"
+#include"if.h"
+#include"while.h"
+#include"break.h"
+#include"continue.h"
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -28,20 +32,24 @@ void Block::matchBrace(int &i,std::vector<Token> &tokens)
 }
 
 // 以分号为分隔扫描
-Block::Block(std::vector<Token> tokens, Environment *env)
+Block::Block(std::vector<Token> tokens, Environment *e)
 {
-    this->env = new Environment(env);
+    this->env = new Environment(e);
 
     int last_semicolon = 0;
 
     for (int i = 0; i < tokens.size(); i++)
     {
         matchBrace(i, tokens);
-        if (tokens[i].type == SYMBOL || tokens[i].value == ";")
+        if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
-            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i - 1);
-            last_semicolon += 1;
+            std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
+            last_semicolon = i+1;
+            for (auto i : subtokens){
+                std::cout << i.value ;
+            }
             generate(subtokens);
+            std::cout << "generate" << std::endl;
         }
     }
 }
@@ -60,7 +68,7 @@ Block::Block(std::vector<Token> tokens)
         //打印出所有Token
         //debug时可能有用
         //std::cout << tokens[i].value;
-
+        matchBrace(i, tokens);
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
@@ -79,16 +87,36 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens[0].type == IDENTIFIER)
     {
         new Assign(subtokens,env);
-        //std::cout << "assign" << std::endl;
+        std::cout << "assign generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
         new Var(subtokens,env);
-        //std::cout << "var" << std::endl;
+        std::cout << "var generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
     {
         new Print(subtokens,env);
-        //std::cout << "print" << std::endl;
+        std::cout << "print generate" << std::endl;
+    }
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="if")
+    {
+        new If(subtokens,env);
+    }
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="while")
+    {
+        new While(subtokens,env);
+    }
+    else if(subtokens[0].type==KEYWORD && subtokens[0].value=="break")
+    {
+        new Break(env);
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="continue")
+    {
+        new Continue(env);
+    }
+    else
+    {
+        std::cout << "error" << std::endl;
     }
 }

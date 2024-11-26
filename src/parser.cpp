@@ -7,16 +7,16 @@ std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c+
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
+int global_env_id = 0;  //全局EnvironmentID计数器
 
-
-std::string newTempVar() {
+std::string newTempVar(std::string type) {
     std::string t = "t" + std::to_string(++tempVarCounter);
-    var_declares[t] = "float";
+    var_declares[t] = type;
     return t;
 }
 
 std::string newTempLabel() {
-    return "t" + std::to_string(++tempLabelCounter);
+    return "l" + std::to_string(++tempLabelCounter);
 }
 
 
@@ -34,14 +34,20 @@ std::string newTempLabel() {
 *- change_type_var：修改一个变量的类型。   
 */
 
-/*构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
-传入一个指向父环境的指针，或者不传入。*/
+/*
+构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
+传入一个指向父环境的指针，或者不传入(不传入一般表示根节点)。
+*/
 Environment::Environment(Environment *p) : parent(p)
 {
-    id = Environment::i;
-    Environment::i++;
+    id = global_env_id;
+    global_env_id++;
+    
 }
-Environment::Environment() : parent(nullptr) {}
+Environment::Environment() : parent(nullptr) {
+    id = global_env_id;
+    global_env_id++;
+}
 
 /**
  * 简介： 向变量表中插入一个新变量。
@@ -118,5 +124,21 @@ void Environment::change_type_var(std::string name, std::string t)
     return;
 }
 
-int Environment::i = 0;
-
+std::string Environment::get_type_var(std::string name){
+    if (var_table.find(name) != var_table.end())
+    {
+        return var_table[name];
+    }
+    else
+    {
+        if (parent == nullptr)
+        {
+            return "notfound";
+        }
+        else
+        {
+            return parent->get_var(name);
+        }
+    }
+    return "notfound";
+}
