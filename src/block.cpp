@@ -16,7 +16,7 @@ extern std::unordered_map<std::string, Function*> functions;  // 存储函数名
 
 
 
-//跳过大括号
+//匹配大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
 {
     if (tokens[i].value == "{")
