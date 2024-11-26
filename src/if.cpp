@@ -22,6 +22,7 @@ bool If::martchIfElse(int&i,std::vector<Token>code)
 		else if (code[i].value == "{")
 			return 0;
 	}
+	return 0;//不加这个会报warning
 }
 
 void If::martchPar(int& i, std::vector<Token>code)
@@ -108,7 +109,7 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 		{
 			//不做默认处理，可拓展
 		}
-		
+
 
 		//记录一个block
 		int Block_begin = pos;

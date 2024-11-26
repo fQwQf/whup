@@ -20,7 +20,7 @@ int main(int n, const char *arg[])
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     #endif
-    
+
     if(n==1){
         std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
         return 0;
@@ -35,7 +35,7 @@ int main(int n, const char *arg[])
     }else{
         out = "out.cpp";
     }
-    
+
     //用io类读取输入文件内容到字符串expression中
     IO io(extractor.get_input_file(), out);
     std::string expression = io.read();
@@ -45,7 +45,7 @@ int main(int n, const char *arg[])
     printErrors();
 
     //进行词法分析
-    Lexer lexer(expression);   
+    Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 
@@ -62,7 +62,7 @@ int main(int n, const char *arg[])
     io.write(code);
 
     std::cout << "Generate code to " << out << std::endl;
-    std::cout << "Done!ヾ(•ω•`)o" << std::endl;
+    std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
     return 0;
 }

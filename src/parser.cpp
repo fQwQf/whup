@@ -1,9 +1,12 @@
 #include <bits/stdc++.h>
 #include "whup_parser.h"
+#include "function.h"
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
 std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
+std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
@@ -22,16 +25,16 @@ std::string newTempLabel() {
 
 /*
 *定义一个符号表类，具有链表结构，有一个指向父符号表的指针。
-*叫environment是为了致敬龙书。  
-*内部有一个private的unordered_map，用来存储变量名，类型。  
+*叫environment是为了致敬龙书。
+*内部有一个private的unordered_map，用来存储变量名，类型。
 *每个新增的对象都有一个独特的id。
 *除此之外应该还有函数表和类表，不过之后再说
 *
-*具有以下几个方法：  
+*具有以下几个方法：
 *
-*- insert_var：插入一个变量名，默认类型null。  
-*- get_var：查找一个变量名，返回类型。  
-*- change_type_var：修改一个变量的类型。   
+*- insert_var：插入一个变量名，默认类型null。
+*- get_var：查找一个变量名，返回类型。
+*- change_type_var：修改一个变量的类型。
 */
 
 /*
@@ -42,7 +45,7 @@ Environment::Environment(Environment *p) : parent(p)
 {
     id = global_env_id;
     global_env_id++;
-    
+
 }
 Environment::Environment() : parent(nullptr) {
     id = global_env_id;
@@ -82,6 +85,7 @@ std::string Environment::get_var(std::string name)
     {
         if (parent == nullptr)
         {
+            std::cout << "Variable "+name+" not found,return null" << std::endl;
             return "null";
         }
         else
@@ -148,4 +152,15 @@ std::string Environment::get_type_var(std::string name){
         }
     }
     return "notfound";
+}
+
+
+Environment* Environment::backToGlobal()
+{
+    Environment*tempptr=this;
+    while(tempptr->parent!=nullptr)
+    {
+        tempptr=tempptr->parent;
+    }
+    return tempptr;
 }
