@@ -76,16 +76,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
-    if (expr[0].type == IDENTIFIER && expr[1].type == SYMBOL && expr[1].value == "(" && expr[expr.size() - 1].type == SYMBOL && expr[expr.size() - 1].value == ")"){
-        Function* func = functions[expr[0].value];
-        std::vector<Token> expression = expr;
-        func->call(expression,env);
-        std::string temp = newTempVar(func->return_type);
-        tacs.push_back({ "=", func->get_return_value(), "", temp });
-        tac.result = temp;
-        std::cout << "call function: " << expr[0].value << std::endl;
-        return;
-    }
+    
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
@@ -254,6 +245,17 @@ void Expr::expr()
             return;
         };
     };
+
+    if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
+        Function* func = functions[E_expr[0].value];
+        std::vector<Token> E_expression = E_expr;
+        func->call(E_expression,env);
+        std::string temp = newTempVar(func->return_type);
+        tacs.push_back({ "=", func->get_return_value(), "", temp });
+        tac.result = temp;
+        std::cout << "call function: " << E_expr[0].value << std::endl;
+        return;
+    }
 
     // 前面均没扫到说明全部被括号包裹
     // 去掉首尾括号并重新调用expr（）

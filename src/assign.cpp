@@ -27,7 +27,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 
 void Assign::assign()
 {
-	tacs.push_back({ "","",expr->getTacResult(),env->get_var(var.value)});
+	tacs.push_back({ "=",expr->getTacResult(),"",env->get_var(var.value)});
 }
 
 void Assign::setEnv(Environment* env)
