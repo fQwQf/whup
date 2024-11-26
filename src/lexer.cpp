@@ -16,12 +16,12 @@
 
 
 
-Token::Token(TokenType type, const std::string& value, int line_number)
-        : type(type), value(value), line_number(line_number) {};
+Token::Token(TokenType type, const std::string& value, int line_number,std::string file_name)
+        : type(type), value(value), line_number(line_number) ,file_name(file_name){};
 
 Token::Token(): type(TokenType::EOF_TOKEN), value(""), line_number(0) {};
 
-Lexer::Lexer(const std::string &input) : input(input), pos(0), line(1) {}
+Lexer::Lexer(const std::string &input,std::string file_name) : input(input), pos(0), line(1) ,file_name(file_name) {}
 
 
 
@@ -62,9 +62,9 @@ Token Lexer::read_keyword_or_identifier() {
         result += next();
     }
     if (is_keyword(result)) {
-        return Token(TokenType::KEYWORD, result, line);
+        return Token(TokenType::KEYWORD, result, line, file_name);
     }
-    return Token(TokenType::IDENTIFIER, result, line);
+    return Token(TokenType::IDENTIFIER, result, line, file_name);
 }
 
 Token Lexer::read_number() {
@@ -72,7 +72,7 @@ Token Lexer::read_number() {
     while (std::isdigit(peek()) || peek() == '.') {
         result += next();
     }
-    return Token(TokenType::NUMBER, result, line);
+    return Token(TokenType::NUMBER, result, line, file_name);
 }
 
 Token Lexer::read_string_1() {
@@ -82,7 +82,7 @@ Token Lexer::read_string_1() {
         result += next();
     }
     if (peek() == '"') next();
-    return Token(TokenType::STRING, result, line);
+    return Token(TokenType::STRING, result, line, file_name);
 }
 
 Token Lexer::read_string_2() {
@@ -92,7 +92,7 @@ Token Lexer::read_string_2() {
         result += next();
     }
     if (peek() == '\'') next();
-    return Token(TokenType::SYMBOL, result, line);
+    return Token(TokenType::SYMBOL, result, line, file_name);
 }
 
 Token Lexer::read_symbol() {
@@ -100,7 +100,7 @@ Token Lexer::read_symbol() {
     if (is_symbol_set(result + peek())){
         result += next();
     };
-    return Token(TokenType::SYMBOL, result, line);
+    return Token(TokenType::SYMBOL, result, line, file_name);
 }
 
 std::vector<Token> Lexer::tokenize() {
@@ -109,7 +109,7 @@ std::vector<Token> Lexer::tokenize() {
         skip_whitespace();
         skip_comment();
         if (peek() == '\0') {
-            tokens.push_back(Token(TokenType::EOF_TOKEN, "end_of_file", line));
+            tokens.push_back(Token(TokenType::EOF_TOKEN, "end_of_file", line, file_name));
             break;
         } else if (peek() == '{') {
             tokens.push_back(read_symbol());
