@@ -2,6 +2,8 @@
 #include "function.h"
 #include"classfunction.h"
 #include"object.h"
+#include "check.h"
+
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
@@ -60,6 +62,10 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
                 std::cout << "processed: " << E_expr[0].processed << std::endl;
                 return;
             }
+          
+            //检查变量是否已经声明
+            checkSyntax::checkVar(E_expr[0].value,env,E_expr[0].line_number);
+          
             tac.result = env->get_var(E_expr[0].value);
             std::cout << "result: " << tac.result << std::endl;
         }
@@ -130,7 +136,13 @@ std::string Expr::return_type()
 void Expr::expr()
 {
     std::cout << "expr scan start!" << "size:";
-    std::cout << E_expr.size() << std::endl;
+    std::cout << E_expr.size() <<  "  ";
+    for (auto &i : E_expr){
+        std::cout << i.value << " ";
+    }
+    std::cout << std::endl;
+
+    
     // 扫描逻辑或
     for (int i = E_expr.size() - 1; i > 0; i--)
     {
@@ -260,9 +272,23 @@ void Expr::expr()
         };
     };
 
+    if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
+        Function* func = functions[E_expr[0].value];
+        std::vector<Token> E_expression = E_expr;
+        func->call(E_expression,env);
+        std::string temp = newTempVar(func->return_type);
+        tacs.push_back({ "=", func->get_return_value(), "", temp });
+        tac.result = temp;
+        std::cout << "call function: " << E_expr[0].value << std::endl;
+        return;
+    }
+
     // 前面均没扫到说明全部被括号包裹
     // 去掉首尾括号并重新调用expr（）
     std::cout << "find par" << std::endl;
+
+    //检查是否出现错误
+    printErrors();
 
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());

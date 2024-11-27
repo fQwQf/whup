@@ -3,6 +3,7 @@
 #include "whup_io.h"
 #include "extractor.h"
 #include "generator.h"
+#include "check.h"
 
 #ifdef _WIN32
 #include "windows.h"
@@ -39,6 +40,10 @@ int main(int n, const char *arg[])
     IO io(extractor.get_input_file(), out);
     std::string expression = io.read();
 
+    //进行expression的句法错误分析
+    CheckSemicolon::checkCode(expression);
+    printErrors();
+
     //进行词法分析
     Lexer lexer(expression);
     std::vector<Token> tokens = lexer.tokenize();
@@ -46,6 +51,9 @@ int main(int n, const char *arg[])
 
     //使用得到的token集合进行语法分析，生成一个中间表示
     Block block(tokens);
+
+    //进行expression的语法错误检查，并输出错误信息
+    printErrors();
 
     //生成目标代码
     std::string code = generator();

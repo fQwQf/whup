@@ -17,7 +17,7 @@ extern std::unordered_map<std::string, Function*> functions;  // 存储函数名
 extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
 extern std::unordered_map<std::string,Object*>object_table;
 
-//跳过大括号
+//匹配大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
 {
     if (tokens[i].value == "{")
@@ -185,7 +185,7 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Function(subtokens,env);
     }
-    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
+    /*else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
     {
         new Class(subtokens);
     }

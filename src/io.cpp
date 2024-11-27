@@ -20,8 +20,10 @@ IO::~IO()
 std::string IO::read()
 {
     std::string line,temp;
-    while (in >> temp){
-        line += temp + " ";
+    char ch;
+    //以逐个的字符形式读取文件，能够保留原有格式（包括空格和换行符），便于代码检查
+    while (in.get(ch)){
+        line += ch;
     };
     return line;
 }

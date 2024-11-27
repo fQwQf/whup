@@ -251,10 +251,22 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 
     //现在应该设置跳转，即一个跳出的if...goto...，一个用于跳回的label
     std::string label = newTempLabel();
-    tacs.push_back({"=","\""+label+"\"","",jump_in_label});
+    //std::string label2 = newTempLabel();
+
+
+    //为了处理递归函数，如果识别到jump_in_label有值，就不改变
+    //tacs.push_back({"if_goto",jump_in_label+"!=\"\"","",label2});
+
+    tacs.push_back({"","","","jump_label.push(\""+label+"\")"});
+
+    //tacs.push_back({"label","","",label2});
+
     tacs.push_back({"if_goto","true","",start_label});
     tacs.push_back({"label","","",label});
     return_labels.push_back(label);
+
+    //跳转回来后将jump_in_label置为空
+    tacs.push_back({"","","","jump_label.pop()"});
 
     return return_value;
 
@@ -290,6 +302,7 @@ void Function::generate(){
 
     //以下是跳转区
     tacs.push_back({"label","","",end_label});
+    tacs.push_back({"=","jump_label.top()","",jump_in_label});
     for(auto i:return_labels){
         std::string bool_var = newTempVar("bool");
         tacs.push_back({"==",jump_in_label,"\""+i+"\"",bool_var});

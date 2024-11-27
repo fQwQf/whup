@@ -1,4 +1,5 @@
 #include"if.h"
+#include "check.h"
 /*呃呃写完发现好像不用block，expr数组，在new临时变量IBT和IET时就已经把tac压入搭配tacs中了
 不过作为一种记录过程的方式，也许可以利于拓展（？）*/
 
@@ -23,8 +24,14 @@ bool If::martchIfElse(int&i,std::vector<Token>code)
 	}
 	return 0;//不加这个会报warning
 }
+
 void If::martchPar(int& i, std::vector<Token>code)
 {
+	//检查小括号是否正确
+    checkBrackets::checkPar(code);
+	//检查是否出现错误
+    // printErrors();
+
 	if (code[i].value == "(")
 	{
 		int leftPar = 1;
@@ -45,8 +52,14 @@ void If::martchPar(int& i, std::vector<Token>code)
 		}
 	}
 }
+
 void If::martchBrace(int& i, std::vector<Token>code)
 {
+	//检查大括号是否正确
+    checkBrackets::checkBrace(code);
+	//检查是否出现错误
+    // printErrors();
+
 	if (code[i].value == "{")
 	{
 		int leftBrace = 1;
@@ -73,9 +86,11 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	//临时变量用来在扫描过程中把code分别储存
 	std::vector<std::vector<Token>>If_Expr_temps;
 	std::vector<std::vector<Token>>If_Block_temps;
+
 	//用一个label数组来记录生成了多少个Block并接收对应的label
 	std::vector<std::string>If_Block_labelArr;
 	std::string If_endLabel=newTempLabel();
+	
 	int pos = 0;
 	while (pos < code.size())//做一次扫描的同时将code分别储存到各个expr和block中（以token形式）后续在进行tacs操作
 	{
