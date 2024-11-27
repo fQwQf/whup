@@ -16,3 +16,7 @@ class Person
 
 Person p1(18,"nihao");
 p1->f();
+
+function add(a:int,b:int):int{
+
+}
