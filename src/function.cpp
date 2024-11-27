@@ -104,7 +104,6 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
 {
     start_label = newTempLabel();
     end_label = newTempLabel();
-    jump_in_label = newTempVar("string");
     this->env = new Environment(env);//函数自己的环境
 
     tokens.erase(tokens.begin()); // 删除第一个token，即function关键字

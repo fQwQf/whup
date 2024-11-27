@@ -18,8 +18,6 @@ class Function {
 
     std::string return_value; //储存返回值的临时变量
 
-    std::string jump_in_label;//储存储存跳入标签的临时变量的变量
-
     Environment* env;//必然是全局的
 
     public:

@@ -57,7 +57,6 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
 {
     start_label = newTempLabel();
     end_label = newTempLabel();
-    jump_in_label = newTempVar("string");
     this->ClassFunction_env = new Environment(env);//函数自己的环境,且用类的环境初始化，要用类的环境来处理参数
 
     int i=0;
@@ -74,7 +73,7 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
         i++;
     }
 
-// //1.形参处理    
+    //1.形参处理    
     int beginFolPara=i;
     matchPar(i,tokens);
     std::vector<Token>folmalParaTokens=std::vector<Token>(tokens.begin()+beginFolPara,tokens.begin()+i+1);
