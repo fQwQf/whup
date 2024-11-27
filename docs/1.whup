@@ -1,18 +1,9 @@
-class Person
+var i=0;
+var num=0;
+while(i<5)
 {
-    var age;
-    var name;
-    Person(x:int,y:string)
-    {
-        name=x;
-        age=y;
-        print("create successfully!!!");
-    };
-    function f()
-    {
-        print(name);
-    };
+    num=num+i;
+    i=i+1;
 };
 
-Person p1(18,"nihao");
-p1->f();
+print(num);
