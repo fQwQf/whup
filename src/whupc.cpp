@@ -6,6 +6,8 @@
 #include "check.h"
 #include"execute.h"
 #include<unordered_map>
+#include "lexer.h"
+
 #ifdef _WIN32
 #include "windows.h"
 #endif
@@ -43,11 +45,11 @@ int main(int n, const char *arg[])
     std::string expression = io.read();
 
     //进行expression的句法错误分析
-    CheckSemicolon::checkCode(expression);
+    CheckSemicolon::checkCode(expression,extractor.get_input_file());
     printErrors();
 
     //进行词法分析
-    Lexer lexer(expression);
+    Lexer lexer(expression,extractor.get_input_file());
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 

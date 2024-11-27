@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var i=0;
 var num=0;
 while(i<5)
@@ -7,3 +8,11 @@ while(i<5)
 };
 
 print(num);
+=======
+var a = 1;
+while(a<5)
+{ 
+    print(a);
+    a++;
+}
+>>>>>>> 6b27b72f8ada87ab2753ca2222ae91c219b4c5a5

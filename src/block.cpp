@@ -166,7 +166,7 @@ void Block::generate(std::vector<Token> subtokens)
     {
         if (function_ret_label == "")
         {
-            std::cout << "error:unexpected return" << std::endl;
+            std::cout << "unexpected return" << std::endl;
             exit(1);
         }
         else
@@ -235,6 +235,6 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else
     {
-        std::cout << "error:unexpected token" << std::endl;
+        std::cout << "unexpected token" << std::endl;
     }
 }

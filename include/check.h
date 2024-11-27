@@ -1,9 +1,10 @@
 #include"whupc.h"
-// #include"lexer.h"
+#include"lexer.h"
 
 //定义Error类及数组，用于存储所有错误
 struct Error {
-    int line;
+    Token token;
+    //int line;
     std::string message;
 };
 
@@ -16,7 +17,7 @@ public:
     static void checkID(Token token);
 
     //检查变量是否未声明
-    static void checkVar(std::string name,Environment *env,int line_number);
+    static void checkVar(std::string name,Environment *env,int line_number,Token token);
 
 };
 
@@ -37,10 +38,10 @@ class CheckSemicolon
 {
 public:
     // 检查代码中的分号
-    static void checkCode(const std::string& code);
+    static void checkCode(const std::string& code,std::string file_name);
 
     // 检查某一行的分号(主要的检查函数)
-    static void checkLine(const std::string& line, int lineNumber);
+    static void checkLine(const std::string& line,const std::string& nextline,int lineNumber,std::string file_name);
 
 private:
     // 检查是否以分号结尾
