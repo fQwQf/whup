@@ -8,7 +8,7 @@ class Function {
     
     std::string body;
     std::vector<std::pair<std::string,std::string>> params_name;//形参名,分别为原形参名和生成的专用形参名
-    std::vector<std::string> params_type;
+    std::vector<std::string> params_type;//形参类型
     std::string end_label; //函数结束标签
     std::string start_label; //函数开始标签
 

@@ -37,10 +37,12 @@ void IO::write(std::string output)
 std::string IO::read_line(int line)
 {
 	//line行数限制 1 - lines
- 
 	std::string line_value;
-	for (int i=1;i<=line;i++)  //行0 - 行lines对应strvect[0] - strvect[lines]
+    
+    //行0 - 行lines对应strvect[0] - strvect[lines]
+	for (int i=1;i<=line;i++)  
 	{
+        //读取line次，最终实现读取到line行并将其内容存入line_value
 		std::getline(in, line_value, '\n');
 	}
 	return line_value;
