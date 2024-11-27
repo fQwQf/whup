@@ -140,13 +140,8 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
     this->realPara(realParaTokens,env);
 //
 
-    //现在应该设置跳转，即一个跳出的if...goto...，一个用于跳回的label
-    std::string label = newTempLabel();
-    tacs.push_back({"=","\""+label+"\"","",jump_in_label});
-    tacs.push_back({"if_goto","true","",start_label});
-    tacs.push_back({"label","","",label});
-    return_labels.push_back(label);
-
+    tacs.push_back({"call",start_label,"",""});
+    
     std::cout<<"call function "<<name<<" success"<<std::endl;
     return return_value;
 
@@ -183,11 +178,7 @@ void ClassFunction::generate(){
 
     //以下是跳转区
     tacs.push_back({"label","","",end_label});
-    for(auto i:return_labels){
-        std::string bool_var = newTempVar("bool");
-        tacs.push_back({"==",jump_in_label,"\""+i+"\"",bool_var});
-        tacs.push_back({"if_goto",bool_var,"",i});
-    }
+    tacs.push_back({"return","","",""});
 }
 
 std::string ClassFunction::get_return_value(){

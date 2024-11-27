@@ -250,7 +250,6 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 
     tacs.push_back({"call",start_label,"",""});
     
-
     return return_value;
 
 
@@ -285,17 +284,10 @@ void Function::generate(){
 
     //以下是跳转区
     tacs.push_back({"label","","",end_label});
-    tacs.push_back({"=","jump_label.top()","",jump_in_label});
-    for(auto i:return_labels){
-        std::string bool_var = newTempVar("bool");
-        tacs.push_back({"==",jump_in_label,"\""+i+"\"",bool_var});
-        tacs.push_back({"if_goto",bool_var,"",i});
-    }
+    tacs.push_back({"return","","",""});
+
 }
 
 std::string Function::get_return_value(){
     return return_value;
 }
-
-
-
