@@ -79,12 +79,18 @@ std::string Environment::get_var(std::string name)
 {
     if (var_table.find(name) != var_table.end())
     {
+        // if(var_table[name]=="null")//用来禁止未确定类型的变量被使用
+        // {
+        //     std::cout << "Variable "+name+" not define type" << std::endl;
+        //     exit(1);
+        // }
         return name + '_' + std::to_string(id) + '_' + var_table[name];
     }
     else
     {
         if (parent == nullptr)
         {
+
             std::cout << "Variable "+name+" not found,return null" << std::endl;
             return "null";
         }
@@ -144,11 +150,21 @@ std::string Environment::get_type_var(std::string name){
     {
         if (parent == nullptr)
         {
+            if(var_declares.find(name)!=var_declares.end())
+            {
+                std::cout<<"find "<<name<<" in var_declares"<<std::endl;
+                return var_declares[name];
+            }
+            // else
+            // {
+            //     std::cout << "Variable "+name+" not define type" << std::endl;
+            //     exit(1);
+            // }
             return "notfound";
         }
         else
         {
-            return parent->get_var(name);
+            return parent->get_type_var(name);
         }
     }
     return "notfound";

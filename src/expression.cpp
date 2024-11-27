@@ -1,11 +1,13 @@
 #include "expression.h"
 #include "function.h"
+#include"classfunction.h"
+#include"object.h"
 #include "check.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
-
+extern std::unordered_map<std::string, Object*> object_table;  // 存储对象名和对应的对象指针哈希表
 
 // 从右至左对输入进行遍历，扫描以下运算符，从下向上
 /*
@@ -81,7 +83,26 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
-    
+    if (expr[0].type == IDENTIFIER && expr[1].type == SYMBOL && expr[1].value == "(" && expr[expr.size() - 1].type == SYMBOL && expr[expr.size() - 1].value == ")"){
+        Function* func = functions[expr[0].value];
+        std::vector<Token> expression = expr;
+        func->call(expression,env);
+        tac.result = func->get_return_value();
+        std::cout << "call function: " << expr[0].value << std::endl;
+        return;
+    }
+    if(expr[0].type==IDENTIFIER&&expr[1].value=="->"){
+        std::string objectName = expr[0].value;
+        std::string functionName = expr[2].value;
+        std::vector<Token> expression = expr;
+        Object* object = object_table[objectName];
+        std::unordered_map<std::string,ClassFunction*> function_table = object->function_table;
+        ClassFunction* object_function = function_table[functionName];
+        object_function->call(expression,env);
+        tac.result =object_function->get_return_value();
+        std::cout << "call function: " << expr[0].value << std::endl;
+        return;
+    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();

@@ -226,6 +226,11 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
     
     for (int i = 0; i < tokens.size(); i++)
     {
+        //处理没有参数的情况
+        if(tokens[0].value==")"){
+        std::cout<<"no params"<<std::endl;
+        break;
+        }
         matchPar(i, tokens);
         if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
         {
@@ -291,6 +296,8 @@ void Function::generate(){
     function_ret_label = end_label;
     function_return_value = return_value;
     tacs.push_back({"label","","",start_label});
+    
+    //Block能否识别临时变量？
     new Block(body_tokens,env);
 
     //以下是跳转区
@@ -306,3 +313,6 @@ void Function::generate(){
 std::string Function::get_return_value(){
     return return_value;
 }
+
+
+

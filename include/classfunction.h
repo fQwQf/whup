@@ -5,7 +5,8 @@
 #ifndef PARSER_H_
 #include"whup_parser.h"
 #endif
-
+#ifndef CLASSFUNCTION_H_
+#define CLASSFUNCTION_H_
 //基本上是对function的重复，只是多了一个Object_env并插入新的实例表
 class ClassFunction
 {
@@ -26,7 +27,7 @@ class ClassFunction
 
     std::string jump_in_label;//储存储存跳入标签的临时变量的变量
 
-    Environment* ClassFunction_env;//必然是全局的
+    Environment* ClassFunction_env;//是某个类的实例的
 
     public:
         //由于是类函数，所以需要传入类函数表
@@ -34,6 +35,16 @@ class ClassFunction
         ClassFunction(std::vector<Token> &tokens,Environment* env,std::unordered_map<std::string,ClassFunction*>& function_table);
         std::string call(std::vector<Token> &tokens,Environment* env);
         void matchPar(int &i,std::vector<Token> &tokens);
+        void matchBrace(int &i,std::vector<Token>&tokens);
         void generate();//生成函数代码
         std::string get_return_value();
+
+
+
+        //下面拟进行模块化处理
+        void folmalPara(std::vector<Token>&tokens);
+        void returnType(std::vector<Token>&tokens);
+        void bodyTokens(std::vector<Token>&tokens);
+        void realPara(std::vector<Token>&tokens,Environment*env);
 };
+#endif

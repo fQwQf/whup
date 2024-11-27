@@ -1,2 +1,18 @@
-var a = "Hello ";
-print(a+"whUP");
+class Person
+{
+    var age;
+    var name;
+    Person(x:int,y:string)
+    {
+        name=x;
+        age=y;
+        print("create successfully!!!");
+    };
+    function f()
+    {
+        print(name);
+    };
+};
+
+Person p1(18,"nihao");
+p1->f();
