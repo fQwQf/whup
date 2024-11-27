@@ -41,7 +41,7 @@ public:
     static void checkCode(const std::string& code,std::string file_name);
 
     // 检查某一行的分号(主要的检查函数)
-    static void checkLine(const std::string& line, int lineNumber,std::string file_name);
+    static void checkLine(const std::string& line,const std::string& nextline,int lineNumber,std::string file_name);
 
 private:
     // 检查是否以分号结尾

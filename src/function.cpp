@@ -122,8 +122,9 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
         // 接下来要按照逗号和冒号来分割参数
         while (tokens[0].type != SYMBOL || tokens[0].value != ")")
         {
-            std::string param_name=tokens[0].value;
+            std::string param_name=tokens[0].value;//读取参数名
             tokens.erase(tokens.begin());
+            //识别参数类型和是否为多个同类型参数
             if (tokens[0].type == SYMBOL && tokens[0].value == ",")
             {
                 params_type.push_back("auto");
