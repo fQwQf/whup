@@ -215,8 +215,6 @@ void Function::matchPar(int &i,std::vector<Token> &tokens)//实际上是由march
 std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
     tokens.erase(tokens.begin());//去掉函数名
 
-
-
     //现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
     //实际上这一块和block扫描statement的逻辑类似，所以我直接把block拿过来修改一下就成了🙂‍↕️
     //要把形参在local_env中登记
@@ -249,24 +247,8 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
         }
     }
 
-    //现在应该设置跳转，即一个跳出的if...goto...，一个用于跳回的label
-    std::string label = newTempLabel();
-    //std::string label2 = newTempLabel();
-
-
-    //为了处理递归函数，如果识别到jump_in_label有值，就不改变
-    //tacs.push_back({"if_goto",jump_in_label+"!=\"\"","",label2});
-
-    tacs.push_back({"","","","jump_label.push(\""+label+"\")"});
-
-    //tacs.push_back({"label","","",label2});
-
-    tacs.push_back({"if_goto","true","",start_label});
-    tacs.push_back({"label","","",label});
-    return_labels.push_back(label);
-
-    //跳转回来后将jump_in_label置为空
-    tacs.push_back({"","","","jump_label.pop()"});
+    tacs.push_back({"call",start_label,"",""});
+    
 
     return return_value;
 
