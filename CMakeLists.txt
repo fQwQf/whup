@@ -20,8 +20,6 @@ target_link_libraries(block PUBLIC parser lexer check)
 target_link_libraries(generator PUBLIC parser)
 target_link_libraries(check PUBLIC lexer parser io)
 
-
 add_executable(whupc src/whupc.cpp)
 
 target_link_libraries(whupc PUBLIC block parser lexer extractor generator io check)
-
