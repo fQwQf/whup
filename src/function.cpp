@@ -150,96 +150,18 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
         }
         tokens.erase(tokens.begin());
     }*/
-   //1.形参处理    
-    int beginFolPara=i;
-    matchPar(i,tokens);
-    std::vector<Token>folmalParaTokens=std::vector<Token>(tokens.begin()+beginFolPara,tokens.begin()+i+1);
-    //连着（）一起传入，感觉更规范一点，或者说更清晰？
-    this->folmalPara(folmalParaTokens);
-    i++;//离开括号
+    //1.形参处理    
+    folmalPara(tokens);
 
+    //2.分析返回类型
+    returnType(tokens);
 
-    // 这里分析返回类型
-    if (tokens[0].type == SYMBOL && tokens[0].value == ":")
-    {
-        tokens.erase(tokens.begin());
-        return_type = tokens[0].value;
-        return_value = newTempVar(return_type);
-        tokens.erase(tokens.begin());
-    }
-    else
-    {
-        std::cout << "No return type for function " << name << std::endl;
-    }
+    //3.分析函数体
+    bodyTokens(tokens);
 
-    //现在登记参数
-    for (int param_num = 0; param_num < params_name.size(); param_num++)
-    {
-        env->insert_var(params_name[param_num].first);
-        env->change_type_var(params_name[param_num].first, params_type[param_num]);
-    }
-
-    // 这里分析函数体
-    // 函数体分析可以直接继承Block,因为函数体就是一段代码块
-    // 只需要对Token进行修改，改变其中的参数名即可，改成env处理后的
-    for (auto &token : tokens)
-    {
-        if (token.type == IDENTIFIER)
-        {
-            for (int i = 0; i < params_name.size(); i++)
-            {
-                if (token.value == params_name[i].first)
-                {
-                    token.value = params_name[i].second;
-                    token.processed = true;
-                    std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
-                    break;
-                }
-                else{
-                    token.processed = false;
-                }
-            }
-        }
-    }
-
-    this->body_tokens = tokens;
 }
 
-void Function::bodyTokens(std::vector<Token>&tokens)
-{
-    //3.函数体处理
-    // 这里分析函数体
-    // 函数体分析可以直接继承Block,因为函数体就是一段代码块
-    // 只需要对Token进行修改，改变其中的参数名即可，改成env处理后的
-    //注意包含括号
-    int i=0;
-    for (auto &token : tokens)
-    {
-        if (token.type == IDENTIFIER)
-        {
-            for (int i = 0; i < params_name.size(); i++)
-            {
-                if (token.value == params_name[i].first)
-                {
-                    token.value = params_name[i].second;//这里的params_name[i].second是形参对应的临时变量名
-                    token.processed = true;
-                    std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
-                    break;
-                }
-                else{
-                     token.processed = false;
-                }
-            }
-        }
-    }
 
-    this->body_tokens = tokens;
-    std::cout<<this->name<<" body tokens:"<<std::endl;
-    for(auto&i:body_tokens)
-    {
-        std::cout<<i.value<<" ";
-    }
-}
 
 
 void Function::matchPar(int &i,std::vector<Token> &tokens)//实际上是由marchBrace改过来的
@@ -308,7 +230,38 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 
 }
 
+void Function::generate(){
 
+    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1);//去掉: type {
+    body_tokens.pop_back();//去掉 }
+
+    std::cout << "Function: " << name << std::endl;
+    std::cout << "Params: " << std::endl;
+    for (auto &param : params_name)
+    {
+        std::cout << "  " << param.first << " " << param.second << std::endl;
+    }
+    std::cout << "Return type: " << return_type << std::endl;
+    std::cout << "Body: " << std::endl;
+    for (auto &token : body_tokens)
+    {
+        std::cout << "  " << token.value;
+    }
+    std::cout << std::endl;
+
+
+    function_ret_label = end_label;
+    function_return_value = return_value;
+    tacs.push_back({"label","","",start_label});
+    
+    //Block能否识别临时变量？
+    new Block(body_tokens,env);
+
+    //以下是跳转区
+    tacs.push_back({"label","","",end_label});
+    tacs.push_back({"return","","",""});
+
+}
 
 ////////////////////////////////
 //尝试对classfunction进行模块化//
@@ -348,6 +301,7 @@ void Function::folmalPara(std::vector<Token>&tokens)
         }
         //tokens.erase(tokens.begin());
         i++;
+        
     }
 
     //现在登记参数
@@ -356,7 +310,8 @@ void Function::folmalPara(std::vector<Token>&tokens)
         env->insert_var(params_name[param_num].first);
         env->change_type_var(params_name[param_num].first, params_type[param_num]);
     }
-//
+    
+    tokens.erase(tokens.begin(),tokens.begin()+i);
 }
 
 
@@ -379,6 +334,9 @@ void Function::returnType(std::vector<Token>&tokens)
     {
         std::cout << "No return type for function " << name << std::endl;
     }
+
+    tokens.erase(tokens.begin(),tokens.begin()+i);
+
 //
 }
 
@@ -424,41 +382,44 @@ void Function::realPara(std::vector<Token>&tokens,Environment*env)
             break;
         }
     }
+
 //
 }
 
-
-void Function::generate(){
-
-    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1);//去掉: type {
-    body_tokens.pop_back();//去掉 }
-
-    std::cout << "Function: " << name << std::endl;
-    std::cout << "Params: " << std::endl;
-    for (auto &param : params_name)
+void Function::bodyTokens(std::vector<Token>&tokens)
+{
+    //3.函数体处理
+    // 这里分析函数体
+    // 函数体分析可以直接继承Block,因为函数体就是一段代码块
+    // 只需要对Token进行修改，改变其中的参数名即可，改成env处理后的
+    //注意包含括号
+    int i=0;
+    for (auto &token : tokens)
     {
-        std::cout << "  " << param.first << " " << param.second << std::endl;
+        if (token.type == IDENTIFIER)
+        {
+            for (int i = 0; i < params_name.size(); i++)
+            {
+                if (token.value == params_name[i].first)
+                {
+                    token.value = params_name[i].second;//这里的params_name[i].second是形参对应的临时变量名
+                    token.processed = true;
+                    std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
+                    break;
+                }
+                else{
+                     token.processed = false;
+                }
+            }
+        }
     }
-    std::cout << "Return type: " << return_type << std::endl;
-    std::cout << "Body: " << std::endl;
-    for (auto &token : body_tokens)
+
+    this->body_tokens = tokens;
+    std::cout<<this->name<<" body tokens:"<<std::endl;
+    for(auto&i:body_tokens)
     {
-        std::cout << "  " << token.value;
+        std::cout<<i.value<<" ";
     }
-    std::cout << std::endl;
-
-
-    function_ret_label = end_label;
-    function_return_value = return_value;
-    tacs.push_back({"label","","",start_label});
-    
-    //Block能否识别临时变量？
-    new Block(body_tokens,env);
-
-    //以下是跳转区
-    tacs.push_back({"label","","",end_label});
-    tacs.push_back({"return","","",""});
-
 }
 
 std::string Function::get_return_value(){

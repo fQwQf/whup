@@ -8,9 +8,12 @@
 #ifndef CLASSFUNCTION_H_
 #define CLASSFUNCTION_H_
 
+#include "function.h"
+
+
 
 //基本上是对function的重复，只是多了一个Object_env并插入新的实例表
-class ClassFunction
+class ClassFunction : public Function
 {
     std::string name;
     std::string return_type;
@@ -25,7 +28,7 @@ class ClassFunction
 
     std::string return_value; //储存返回值的临时变量
 
-    Environment* ClassFunction_env;//是某个类的实例的
+    Environment* env;//是某个类的实例的
 
     public:
         //由于是类函数，所以需要传入类函数表

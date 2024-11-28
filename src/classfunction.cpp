@@ -57,7 +57,7 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
 {
     start_label = newTempLabel();
     end_label = newTempLabel();
-    this->ClassFunction_env = new Environment(env);//函数自己的环境,且用类的环境初始化，要用类的环境来处理参数
+    this->env = new Environment(env);//函数自己的环境,且用类的环境初始化，要用类的环境来处理参数
 
     int i=0;
     if(tokens[0].type==KEYWORD&&tokens[0].value=="function")//若是function关键字，则跳过
@@ -173,7 +173,7 @@ void ClassFunction::generate(){
     function_ret_label = end_label;
     function_return_value = return_value;
     tacs.push_back({"label","","",start_label});
-    new Block(body_tokens,ClassFunction_env);
+    new Block(body_tokens,env);
 
     //以下是跳转区
     tacs.push_back({"label","","",end_label});
@@ -228,13 +228,14 @@ void ClassFunction::folmalPara(std::vector<Token>&tokens)
         }
         //tokens.erase(tokens.begin());
         i++;
+        
     }
 
     //现在登记参数
     for (int param_num = 0; param_num < params_name.size(); param_num++)
     {
-        ClassFunction_env->insert_var(params_name[param_num].first);
-        ClassFunction_env->change_type_var(params_name[param_num].first, params_type[param_num]);
+        env->insert_var(params_name[param_num].first);
+        env->change_type_var(params_name[param_num].first, params_type[param_num]);
     }
 //
 }
