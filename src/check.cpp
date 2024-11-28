@@ -23,95 +23,118 @@ void checkSyntax::checkVar(std::string name,Environment *env,int line_number,Tok
     }
 }
 
-void checkBrackets::checkPar(std::vector<Token>code)
+void checkBrackets::checkPar(std::string code,std::string file_name)
 {
-    int line_number=0;
-    std::stack<char> brackets;
-    for (auto c : code) 
+    std::istringstream codeStream(code);//将code按行分块
+    std::string line;//记录每一行的内容
+    int lineNumber = 0;
+    std::stack<int> brackets;
+    while(std::getline(codeStream, line))
     {
-        if (c.value == "(") 
+        lineNumber++;
+        for (auto c : line) 
         {
-            brackets.push('(');
-            line_number=c.line_number;
-        } 
-        else if (c.value == ")") 
-        {
-            //检测到')'，若栈不为空，则缺少'('，报错
-            if (brackets.empty()) 
+            if (c == '(') 
             {
-                
-                errors.push_back({ c, "Unmatched ')' at line " });
+                brackets.push(lineNumber);
+                // line_number=c.line_number;
+            }        
+            else if (c == ')') 
+            {
+                //检测到')'，若栈不为空，则缺少'(',报错
+                if (brackets.empty()) 
+                {
+                    Token token(SYMBOL,"",lineNumber,file_name);
+                    errors.push_back({ token, "Unmatched ')' at line " });
+                }
+            brackets.pop();//'('出栈
             }
-        brackets.pop();//'('出栈
         }
     }
 
-    //若全部读取后栈不为空，则缺少'('，报错
+    //若全部读取后栈不为空，则缺少')'，报错
     if (!brackets.empty()) 
     {
-        errors.push_back({ code[code.size()-1], "Unmatched '(' at line " });
+        Token token(SYMBOL,"",brackets.top(),file_name);
+        errors.push_back({ token , "Unmatched '(' at line " });
     }
 
     return ;
 }
 
-void checkBrackets::checkBracket(std::vector<Token>code)
+void checkBrackets::checkBracket(std::string code,std::string file_name)
 {
-    int line_number=0;
-    std::stack<char> brackets;
-    for (auto c : code) 
+    std::istringstream codeStream(code);//将code按行分块
+    std::string line;//记录每一行的内容
+    int lineNumber = 0;
+    std::stack<int> brackets;
+    while(std::getline(codeStream, line))
     {
-        if (c.value == "[") 
+        lineNumber++;
+        for (auto c : line) 
         {
-            brackets.push('[');
-            line_number=c.line_number;
-        } 
-        else if (c.value == "]") 
-        {
-            //检测到']'，若栈不为空，则缺少'['，报错
-            if (brackets.empty()) 
+            if (c == '[') 
             {
-                errors.push_back({ c, "Unmatched ']' at line " });
+                brackets.push(lineNumber);
+                // line_number=c.line_number;
+            }        
+            else if (c == ']') 
+            {
+                //检测到']'，若栈不为空，则缺少'[',报错
+                if (brackets.empty()) 
+                {
+                    Token token(SYMBOL,"",lineNumber,file_name);
+                    errors.push_back({ token, "Unmatched ']' at line " });
+                }
+            brackets.pop();//'['出栈
             }
-        brackets.pop();//'['出栈
         }
     }
 
     //若全部读取后栈不为空，则缺少']'，报错
     if (!brackets.empty()) 
     {
-        errors.push_back({ code[code.size()-1], "Unmatched '[' at line " });
+        Token token(SYMBOL,"",brackets.top(),file_name);
+        errors.push_back({ token , "Unmatched '[' at line " });
     }
 
     return ;
 }
 
-void checkBrackets::checkBrace(std::vector<Token>code)
+void checkBrackets::checkBrace(std::string code,std::string file_name)
 {
-    int line_number=0;
-    std::stack<char> brackets;
-    for (auto c : code) 
+    std::istringstream codeStream(code);//将code按行分块
+    std::string line;//记录每一行的内容
+    int lineNumber = 0;
+    std::stack<int> brackets;
+    while(std::getline(codeStream, line))
     {
-        if (c.value == "{") 
+        lineNumber++;
+        for (auto c : line) 
         {
-            brackets.push('{');
-            line_number=c.line_number;
-        } 
-        else if (c.value == "}") 
-        {
-            //检测到'}'，若栈不为空，则缺少'{',报错
-            if (brackets.empty()) 
+            if (c == '{') 
             {
-                errors.push_back({ c, "Unmatched '}' at line " });
+                brackets.push(lineNumber);
+                // line_number=c.line_number;
+            }        
+            else if (c == '}') 
+            {
+                //检测到'}'，若栈不为空，则缺少'{',报错
+                if (brackets.empty()) 
+                {
+                    Token token(SYMBOL,"",lineNumber,file_name);
+                    errors.push_back({ token, "Unmatched '}' at line " });
+                }
+            brackets.pop();//'{'出栈
             }
-        brackets.pop();//'{'出栈
         }
     }
 
     //若全部读取后栈不为空，则缺少'}'，报错
     if (!brackets.empty()) 
     {
-        errors.push_back({ code[code.size()-1], "Unmatched '{' at line " });
+        Token token(SYMBOL,"",brackets.top(),file_name);
+        errors.push_back({ token , "Unmatched '{' at line " });
     }
 
     return ;

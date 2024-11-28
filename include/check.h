@@ -26,11 +26,11 @@ class checkBrackets
 {
 public:
     //检查小括号是否匹配
-    static void checkPar(std::vector<Token>code);
+    static void checkPar(std::string code,std::string file_name);
     //检查中括号是否匹配
-    static void checkBracket(std::vector<Token>code);
+    static void checkBracket(std::string code,std::string file_name);
     //检查大括号是否匹配
-    static void checkBrace(std::vector<Token>code);
+    static void checkBrace(std::string code,std::string file_name);
 
 };
 

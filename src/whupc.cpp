@@ -43,6 +43,12 @@ int main(int n, const char *arg[])
 
     //进行expression的句法错误分析
     CheckSemicolon::checkCode(expression,extractor.get_input_file());
+    //printErrors();
+
+    //先对tokens进行统一的括号错误检查
+    checkBrackets::checkPar(expression,extractor.get_input_file());
+    checkBrackets::checkBracket(expression,extractor.get_input_file());
+    checkBrackets::checkBrace(expression,extractor.get_input_file());
     printErrors();
 
     //进行词法分析

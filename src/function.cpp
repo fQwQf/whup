@@ -124,7 +124,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
         {
             std::string param_name=tokens[0].value;//读取参数名
             tokens.erase(tokens.begin());
-            //识别参数类型和是否为多个同类型参数
+            // 如果是逗号，那么参数为自动生成类型
             if (tokens[0].type == SYMBOL && tokens[0].value == ",")
             {
                 params_type.push_back("auto");

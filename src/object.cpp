@@ -55,16 +55,21 @@ void Object::generator(std::vector<Token>subtokens)
 
 Object::Object(std::string className,std::string objectName,Environment*env)
 {
-    this->Object_env=new Environment(env->backToGlobal());//一方面创造新的符号表，另一方面用全局环境来做初始化
+    //一方面创造新的符号表，另一方面用全局环境来做初始化
+    this->Object_env=new Environment(env->backToGlobal());
     object_table[objectName]=this;//将实例插入实例表
 
-    std::vector<Token> tokens=class_table[className];//通过className，在类表中找到对应的声明语句
+    //通过className，在类表中找到对应的声明语句
+    std::vector<Token> tokens=class_table[className];
+
     //接下来按分号为间隔扫描得到独立语句
     int last_semicolon = 0;
 
     for (int i = 0; i < tokens.size(); i++)
     {
+        //可改变i的值，记录tokens括号内的token最终索引
         matchBrace(i, tokens);
+
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
