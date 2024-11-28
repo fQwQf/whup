@@ -33,14 +33,24 @@ bool isNumberString(std::string s)
         return *p==0;
     }
 }
-
-
-void execute(std::vector<ThreeAddressCode>tacs)
+void setLabel(std::vector<ThreeAddressCode>tacs)
 {
     for(int i=0;i<tacs.size();i++)
     {
-        ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
+        if(tacs[i].op=="label")
+        {
+            labelMap[tacs[i].result]=i;
+        }
+    }
+}
 
+void execute(std::vector<ThreeAddressCode> tacs)
+{
+    setLabel(tacs);
+    for(int i=0;i<tacs.size();i++)
+    {
+        ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
+        // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.op=="=")
         {
             if(isString(tac))
@@ -119,7 +129,7 @@ void execute(std::vector<ThreeAddressCode>tacs)
         {
             i=labelMap[tac.result];
         }
-        else if(tac.op=="if")
+        else if(tac.op=="if_goto")
         {
             if(runtimeEnv_number[tac.arg1])
             {
