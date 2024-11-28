@@ -142,17 +142,65 @@ bool Lexer::is_symbol_set(const std::string& word) {
 
 std::unordered_set<std::string> Lexer::keywords() const {
     return {
-        "int", "char", "float", "double", "bool", "void",
-        "if", "else", "for", "while", "return","switch","function",
-        "let","var","const","break","continue","case", "true",
-        "false","null","new","delete","this","class","import","function",
-        "not","and","or","print","input"
-    };
+        "int",
+        "char",
+        "float",
+        "double",
+        "bool",
+        "void",
+        "if", 
+        "else", 
+        "for", 
+        "while", 
+        "return", 
+        "switch", 
+        "function",
+        "let", 
+        "var", 
+        "const", 
+        "break", 
+        "continue", 
+        "case", 
+        "true",
+        "false", 
+        "null", 
+        "new", 
+        "delete", 
+        "this", 
+        "class", 
+        "import", 
+        "function",
+        "not", 
+        "and", 
+        "or", 
+        "print", 
+        "input"};
 }
 
 std::unordered_set<std::string> Lexer::symbol_sets() const {
     return {
-        "++","--","+=","-=","*=","/=","%=","&=","|=","^=","<<=",">>=",
-        "==","!=",">=","<=","&&","||","**","->","::","<<",">>"
+        "++",
+        "--",
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "%=",
+        "&=",
+        "|=",
+        "^=",
+        "<<=",
+        ">>=",
+        "==",
+        "!=",
+        ">=",
+        "<=",
+        "&&",
+        "||",
+        "**",
+        "->",
+        "::",
+        "<<",
+        ">>"
     };
 }

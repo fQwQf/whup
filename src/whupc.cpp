@@ -37,7 +37,7 @@ int main(int n, const char *arg[])
     if(extractor.get_output_file() != ""){
         out = extractor.get_output_file();
     }else{
-        out = "out.cpp";
+        out = "out.hust";
     }
 
     //用io类读取输入文件内容到字符串expression中
@@ -60,10 +60,14 @@ int main(int n, const char *arg[])
     printErrors();
 
     //生成目标代码
-    std::string code = generator();
+    //std::string code = generator();
 
     //将目标代码写入输出文件
-    io.write(code);
+    //io.writeTAC(tacs);
+
+    io.writeTAC(tacs);
+
+
 
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
