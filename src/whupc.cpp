@@ -57,10 +57,14 @@ int main(int n, const char *arg[])
     printErrors();
 
     //生成目标代码
-    std::string code = generator();
+    //std::string code = generator();
 
     //将目标代码写入输出文件
+    //io.writeTAC(tacs);
+
     io.writeTAC(tacs);
+
+
 
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
