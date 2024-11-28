@@ -106,16 +106,29 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     end_label = newTempLabel();
     this->env = new Environment(env);//函数自己的环境
 
-    tokens.erase(tokens.begin()); // 删除第一个token，即function关键字
+    /*tokens.erase(tokens.begin()); // 删除第一个token，即function关键字
     name = tokens[0].value;
-    tokens.erase(tokens.begin());
+    tokens.erase(tokens.begin());*/
 
-    functions[name] = this;
+    int i=0;
+    if(tokens[0].type==KEYWORD&&tokens[0].value=="function")//若是function关键字，则跳过
+    {
+        i++;
+    }
+
+    if(tokens[i].type==IDENTIFIER&&tokens[i+1].type==SYMBOL&&tokens[i+1].value=="(")
+    {
+        name=tokens[i].value;
+        functions[name] = this;//将函数插入类函数表//这里与普通函数不同，普通函数是插入全局函数表
+        i++;
+    }
+
+    //functions[name] = this;
     std::cout << "Function name: " << name << std::endl;
 
     // 现在开始分析形参
     // TODO:如果这里发现错误如首token不是括号，抛出异常
-    if (tokens[0].type == SYMBOL && tokens[0].value == "(")
+    /*if (tokens[0].type == SYMBOL && tokens[0].value == "(")
     {
         tokens.erase(tokens.begin());
         // 接下来要按照逗号和冒号来分割参数
@@ -124,23 +137,27 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
             std::string param_name=tokens[0].value;//读取参数名
             tokens.erase(tokens.begin());
             //识别参数类型和是否为多个同类型参数
-            if (tokens[0].type == SYMBOL && tokens[0].value == ",")
-            {
-                params_type.push_back("auto");
-                params_name.push_back({param_name, newTempVar("auto")});
-                tokens.erase(tokens.begin());
-            }
-            else if (tokens[0].type == SYMBOL && tokens[0].value == ":")
+            if (tokens[0].type == SYMBOL && tokens[0].value == ":")
             {
                 tokens.erase(tokens.begin());
                 params_type.push_back(tokens[0].value);
                 params_name.push_back({param_name, newTempVar(tokens[0].value)});
 
                 tokens.erase(tokens.begin(), tokens.begin() + 1);
+            }else{
+                std::cout << "Error: no type";//后面再统一抛出
             }
         }
         tokens.erase(tokens.begin());
-    }
+    }*/
+   //1.形参处理    
+    int beginFolPara=i;
+    matchPar(i,tokens);
+    std::vector<Token>folmalParaTokens=std::vector<Token>(tokens.begin()+beginFolPara,tokens.begin()+i+1);
+    //连着（）一起传入，感觉更规范一点，或者说更清晰？
+    this->folmalPara(folmalParaTokens);
+    i++;//离开括号
+
 
     // 这里分析返回类型
     if (tokens[0].type == SYMBOL && tokens[0].value == ":")
@@ -187,6 +204,43 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
 
     this->body_tokens = tokens;
 }
+
+void Function::bodyTokens(std::vector<Token>&tokens)
+{
+    //3.函数体处理
+    // 这里分析函数体
+    // 函数体分析可以直接继承Block,因为函数体就是一段代码块
+    // 只需要对Token进行修改，改变其中的参数名即可，改成env处理后的
+    //注意包含括号
+    int i=0;
+    for (auto &token : tokens)
+    {
+        if (token.type == IDENTIFIER)
+        {
+            for (int i = 0; i < params_name.size(); i++)
+            {
+                if (token.value == params_name[i].first)
+                {
+                    token.value = params_name[i].second;//这里的params_name[i].second是形参对应的临时变量名
+                    token.processed = true;
+                    std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
+                    break;
+                }
+                else{
+                     token.processed = false;
+                }
+            }
+        }
+    }
+
+    this->body_tokens = tokens;
+    std::cout<<this->name<<" body tokens:"<<std::endl;
+    for(auto&i:body_tokens)
+    {
+        std::cout<<i.value<<" ";
+    }
+}
+
 
 void Function::matchPar(int &i,std::vector<Token> &tokens)//实际上是由marchBrace改过来的
 {
@@ -253,6 +307,126 @@ std::string Function::call(std::vector<Token> &tokens,Environment* env){//返回
 
 
 }
+
+
+
+////////////////////////////////
+//尝试对classfunction进行模块化//
+////////////////////////////////
+
+//将括号一起传入
+void Function::folmalPara(std::vector<Token>&tokens)
+{
+//1.形参处理
+    // 现在开始分析形参
+    // TODO:如果这里发现错误如首token不是括号，抛出异常
+    int i=0;
+
+    if (tokens[0].type == SYMBOL && tokens[0].value == "(")
+    {
+        //tokens.erase(tokens.begin());
+        i++;
+
+        // 接下来要按照逗号和冒号来分割参数
+        while (tokens[i].type != SYMBOL || tokens[i].value != ")")
+        {
+            std::string param_name=tokens[i].value;
+            //tokens.erase(tokens.begin());
+            i++;
+            if (tokens[i].type == SYMBOL && tokens[i].value == ":")
+            {
+                //tokens.erase(tokens.begin());
+                i++;
+                params_type.push_back(tokens[i].value);
+                params_name.push_back({param_name, newTempVar(tokens[i].value)});
+
+                //tokens.erase(tokens.begin(), tokens.begin() + 1);
+                i++;
+            }else{
+                std::cout << "Error: no type for parameter " << param_name ;
+            }
+        }
+        //tokens.erase(tokens.begin());
+        i++;
+    }
+
+    //现在登记参数
+    for (int param_num = 0; param_num < params_name.size(); param_num++)
+    {
+        env->insert_var(params_name[param_num].first);
+        env->change_type_var(params_name[param_num].first, params_type[param_num]);
+    }
+//
+}
+
+
+//完全可以根据函数定义是否有返回值来判断是否调用这个函数
+//有的化接受“：type”这种形式，没有的话直接跳过
+void Function::returnType(std::vector<Token>&tokens)
+{
+    //2.函数返回值处理
+    // 这里分析返回类型
+    int i=0;
+    if (tokens[0].type == SYMBOL && tokens[0].value == ":")
+    {
+        i++;
+        return_type = tokens[i].value;
+        return_value = newTempVar(return_type);
+        i++;
+        //得到return_type和return_value
+    }
+    else
+    {
+        std::cout << "No return type for function " << name << std::endl;
+    }
+//
+}
+
+void Function::realPara(std::vector<Token>&tokens,Environment*env)
+{
+    //仍然将整个括号传入
+    if(tokens[0].value!="(")
+    {
+        std::cout<<"error: not a function"<<std::endl;
+        return;
+    }
+    int index=1;
+    //5.实参处理
+    //现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
+    //实际上这一块和block扫描statement的逻辑类似，所以我直接把block拿过来修改一下就成了🙂‍↕️
+    //要把形参在local_env中登记
+    int last_comma = index;
+    int param_num = 0;
+
+    
+    for (int i = index; i < tokens.size(); i++)
+    {
+        if(tokens[index].value==")"){
+        std::cout<<"no params"<<std::endl;
+        break;
+        }
+        matchPar(i, tokens);
+        if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
+        {
+            std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
+            last_comma = i+1;
+            Expr* expression = new Expr(subtokens,env);
+            std::cout<<"pass value success!!!"<<std::endl;
+            tacs.push_back({"=",expression->getTacResult(),"",params_name[param_num].second});
+            std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
+
+            param_num+=1;
+        }
+        //呃呃有点没懂
+        if (tokens[i].type == SYMBOL && tokens[i].value == ")")
+        {
+            tokens.erase(tokens.begin(),tokens.begin() + i);//检测到括号，则删除括号及括号之前的所有内容
+            break;
+        }
+    }
+//
+}
+
 
 void Function::generate(){
 

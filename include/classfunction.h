@@ -23,8 +23,6 @@ class ClassFunction
 
     std::vector<Token> body_tokens;//函数体
 
-    std::vector<std::string> return_labels; //返回时需要跳转回去的标签
-
     std::string return_value; //储存返回值的临时变量
 
     Environment* ClassFunction_env;//是某个类的实例的

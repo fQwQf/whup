@@ -14,8 +14,6 @@ class Function {
 
     std::vector<Token> body_tokens;//函数体
 
-    std::vector<std::string> return_labels; //返回时需要跳转回去的标签
-
     std::string return_value; //储存返回值的临时变量
 
     Environment* env;//必然是全局的
@@ -26,8 +24,15 @@ class Function {
         Function(std::vector<Token> &tokens,Environment* env);
         std::string call(std::vector<Token> &tokens,Environment* env);
         void matchPar(int &i,std::vector<Token> &tokens);
+        void matchBrace(int &i,std::vector<Token>&tokens);
         void generate();//生成函数代码
         std::string get_return_value();
+
+        //下面拟进行模块化处理
+        void folmalPara(std::vector<Token>&tokens);
+        void returnType(std::vector<Token>&tokens);
+        void bodyTokens(std::vector<Token>&tokens);
+        void realPara(std::vector<Token>&tokens,Environment*env);
 
 };
 
