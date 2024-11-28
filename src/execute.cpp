@@ -3,6 +3,7 @@
 
 extern std::vector<ThreeAddressCode>tacs;//全局的三地址码
 extern std::unordered_map<std::string,std::string>var_declares;
+extern std::string newTempLabel();
 std::stack<std::string>labelStack;
 
 std::unordered_map<std::string,float>runtimeEnv_number;//
@@ -121,16 +122,20 @@ void execute(std::vector<ThreeAddressCode> tacs)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]&&runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="label")//label什么也不干，只是记录自己的索引
-        {
-            labelMap[tac.result]=i;
-        }
+        // else if(tac.op=="label")//label什么也不干，只是记录自己的索引
+        // {
+        //     labelMap[tac.result]=i;
+        // }
         else if(tac.op=="goto")
         {
             i=labelMap[tac.result];
         }
         else if(tac.op=="if_goto")
         {
+            if(tac.result=="end_of_file")
+            {
+                return;
+            }
             if(runtimeEnv_number[tac.arg1])
             {
                 i=labelMap[tac.result];
@@ -186,8 +191,10 @@ void execute(std::vector<ThreeAddressCode> tacs)
         }
         else if(tac.op=="call")
         {
+            std::string temp=newTempLabel();
+            labelMap[temp]=i;
+            labelStack.push(temp);
             i=labelMap[tac.arg1];
-            labelStack.push(tac.arg1);
         }
         else if(tac.op=="return")
         {

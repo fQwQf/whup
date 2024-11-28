@@ -1,25 +1,7 @@
-class Person
+function f()
 {
-    var age;
-    var name;
-    Person(x:int,y:string)
-    {
-        name=x;
-        age=y;
-        print("create successfully!!!");
-    };
-    function f()
-    {
-        print(name);
-    };
+    print(666);
+    return;
 };
 
-Person p1(18,"nihao");
-p1->f();
-
-function add(a:int,b:int):int{
-    return a+b;
-};
-
-d = add(2,3);
-print(d);
+f();
