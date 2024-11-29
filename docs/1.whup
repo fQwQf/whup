@@ -1,3 +1,9 @@
-var a = 1;
-print(a);
-
+function foo(t : int) {
+	if(t < 0)
+    {
+        return;
+    };
+	print(1+1);
+	foo(t-1);
+};
+foo(10);

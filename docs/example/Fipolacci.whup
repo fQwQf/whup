@@ -1,0 +1,10 @@
+function fipolacci(a:number):number{
+    if(a==1 || a==2){
+        return 1;
+    }else{
+        return fipolacci(a-1)+fipolacci(a-2);
+    };
+};
+
+d = fipolacci(9);
+print(d);

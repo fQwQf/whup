@@ -4,6 +4,8 @@
 #include "extractor.h"
 #include "generator.h"
 #include "check.h"
+#include"execute.h"
+#include<unordered_map>
 #include "lexer.h"
 
 #ifdef _WIN32
@@ -15,7 +17,8 @@
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern std::vector<std::pair<std::string, std::string>> var_declares;//存储变量的声明信息
 extern int tempVarCounter;  // 临时变量计数器
-
+extern void execute(std::vector<ThreeAddressCode>tacs);
+extern std::unordered_map<std::string,float>runtimeEnv_number;//
 int main(int n, const char *arg[])
 {
     #ifdef _WIN32
@@ -34,7 +37,7 @@ int main(int n, const char *arg[])
     if(extractor.get_output_file() != ""){
         out = extractor.get_output_file();
     }else{
-        out = "out.cpp";
+        out = "out.hust";
     }
 
     //用io类读取输入文件内容到字符串expression中
@@ -57,13 +60,20 @@ int main(int n, const char *arg[])
     printErrors();
 
     //生成目标代码
-    std::string code = generator();
+    //std::string code = generator();
 
     //将目标代码写入输出文件
-    io.write(code);
+    //io.writeTAC(tacs);
+
+    io.writeTAC(tacs);
+
+
 
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
+    execute(tacs);
+
+    std::cout<<"Execute success!"<<std::endl;
     return 0;
 }
