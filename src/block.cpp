@@ -174,10 +174,12 @@ void Block::generate(std::vector<Token> subtokens)
             if (subtokens.size() == 1)
             {
                 new Return(env);
+                std::cout << "find return!" << std::endl;
             }
             else
             {
                 new Return(subtokens, env);
+                std::cout << "find return!" << std::endl;
             }
         }
     }

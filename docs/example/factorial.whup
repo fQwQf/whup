@@ -1,4 +1,4 @@
-function factorial(a:int):int{
+function factorial(a:number):number{
     if(a==1 || a==0){
         return 1;
     }else{

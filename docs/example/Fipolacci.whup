@@ -1,4 +1,4 @@
-function fipolacci(a:int):int{
+function fipolacci(a:number):number{
     if(a==1 || a==2){
         return 1;
     }else{
