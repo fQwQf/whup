@@ -1,10 +1,10 @@
-function fib(a:int):int{
-    if(a==1 || a==2){
+function fac(a:int):int{
+    if(a==1 || a==0){
         return 1;
     }else{
-        return fib(a-1)+fib(a-2);
+        return a * fac(a-1);
     };
 };
 
-d = fib(9);
+d = fac(5);
 print(d);
