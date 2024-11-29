@@ -29,5 +29,5 @@ Return::Return(std::vector<Token> tokens, Environment *env)
         tacs.push_back({"=", expr->getTacResult(), "", function_return_value});
     }
     
-    tacs.push_back({"if_goto", "true", "", function_ret_label}); // 生成返回语句
+    tacs.push_back({"return", "", "", ""}); // 生成返回语句
 }

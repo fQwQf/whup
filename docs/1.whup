@@ -1,27 +1,10 @@
-class Person
-{
-    var age;
-    var name;
-    Person(x:int,y:string)
-    {
-        name=x;
-        age=y;
-        print("create successfully!!!");
-    };
-    function f()
-    {
-        print(age);
+function fib(a:int):int{
+    if(a==1 || a==2){
+        return 1;
+    }else{
+        return fib(a-1)+fib(a-2);
     };
 };
 
-Person p1(18,"nihao");
-p1->f();
-
-function add(a:int,b:int):int{
-    return a+b;
-};
-
-d = add(2,3);
+d = fib(9);
 print(d);
-
-print("hello world");

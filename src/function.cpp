@@ -78,6 +78,9 @@ std::string Function::call(std::vector<Token> &tokens, Environment *env)
     }
     std::cout << std::endl;
 
+    //参数入栈
+    push_real_para(env);
+
     // 现在开始处理参数，具体来说，根据逗号，将参数分为多个subtokens，然后传入expression，最后将结果赋给形参
     // 实际上这一块和block扫描statement的逻辑类似，所以我直接把block拿过来修改一下就成了🙂‍↕️
     // 要把形参在local_env中登记
@@ -97,30 +100,52 @@ std::string Function::call(std::vector<Token> &tokens, Environment *env)
     return return_value;
 }
 
+void Function::push_real_para(Environment *env)
+{
+    if (env->isGlobal())
+    { //如果在全局环境中调用，则不需要保存栈帧
+        return;
+    }
+    else
+    {
+        for (auto &i : params_name)
+        {
+            tacs.push_back({"push", i.second, "", ""});
+        }
+    }
+}
+
 void Function::call_with_stack_frame(Environment *env)
 {
     
 
     if (env->isGlobal())
-    { // 如果在全局环境中调用，则不需要保存栈帧
+    { //如果在全局环境中调用，则不需要保存栈帧
         tacs.push_back({"call", start_label, "", ""});
         return;
     }
     else
     {
         std::vector<std::string> stack_frame;
-        //将形参加入栈帧
-        for (auto &i : params_name)
-        {
-            stack_frame.push_back(i.second);
-        }
+        
+        //参数会在调用时改变，应该提前压入
+
         //将局部变量加入栈帧
         for (auto &i : env->var_table)
         {
             stack_frame.push_back(i.first);
         }
+
         //函数调用返回值加入栈帧
         stack_frame.insert(stack_frame.end(), env->return_var_list.begin(), env->return_var_list.end());
+
+        //输出函数调用返回值
+        std::cout << "env->return_var_list: ";
+        for (auto &i : env->return_var_list)
+        {
+            std::cout << i << " ";
+        }
+        std::cout << std::endl;
 
 
         //将栈帧压入栈中
@@ -133,6 +158,9 @@ void Function::call_with_stack_frame(Environment *env)
         //恢复栈帧
         for(int i=stack_frame.size()-1;i>=0;i--){
             tacs.push_back({"pop","","",stack_frame[i]});
+        }
+        for(int i=params_name.size()-1;i>=0;i--){
+            tacs.push_back({"pop","","",params_name[i].second});
         }
     }
 }
@@ -164,8 +192,7 @@ void Function::generate()
     // Block能否识别临时变量？
     new Block(body_tokens, env);
 
-    // 以下是跳转区
-    tacs.push_back({"label", "", "", end_label});
+    //如果之前没有return，则在最后自动return
     tacs.push_back({"return", "", "", ""});
 }
 

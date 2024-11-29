@@ -86,26 +86,6 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
-    if (expr[0].type == IDENTIFIER && expr[1].type == SYMBOL && expr[1].value == "(" && expr[expr.size() - 1].type == SYMBOL && expr[expr.size() - 1].value == ")"){
-        Function* func = functions[expr[0].value];
-        std::vector<Token> expression = expr;
-        func->call(expression,env);
-        tac.result = func->get_return_value();
-        std::cout << "call function: " << expr[0].value << std::endl;
-        return;
-    }
-    if(expr[0].type==IDENTIFIER&&expr[1].value=="->"){
-        std::string objectName = expr[0].value;
-        std::string functionName = expr[2].value;
-        std::vector<Token> expression = expr;
-        Object* object = object_table[objectName];
-        std::unordered_map<std::string,ClassFunction*> function_table = object->function_table;
-        ClassFunction* object_function = function_table[functionName];
-        object_function->call(expression,env);
-        tac.result =object_function->get_return_value();
-        std::cout << "call function: " << expr[0].value << std::endl;
-        return;
-    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
@@ -279,11 +259,22 @@ void Expr::expr()
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = functions[E_expr[0].value];
         std::vector<Token> E_expression = E_expr;
-        func->call(E_expression,env);
         std::string temp = newTempVar(func->return_type);
         this->env->insert_return_var(temp);
+        func->call(E_expression,env);
         tacs.push_back({ "=", func->get_return_value(), "", temp });
         tac.result = temp;
+        return;
+    }
+    if(E_expr[0].type==IDENTIFIER&&E_expr[1].value=="->"){
+        std::string objectName = E_expr[0].value;
+        std::string functionName = E_expr[2].value;
+        std::vector<Token> expression = E_expr;
+        Object* object = object_table[objectName];
+        std::unordered_map<std::string,ClassFunction*> function_table = object->function_table;
+        ClassFunction* object_function = function_table[functionName];
+        object_function->call(expression,env);
+        tac.result =object_function->get_return_value();
         std::cout << "call function: " << E_expr[0].value << std::endl;
         return;
     }
