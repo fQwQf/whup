@@ -51,7 +51,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
     for(int i=0;i<tacs.size();i++)
     {
         ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        //std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.op=="=")
         {
             if(isString(tac))

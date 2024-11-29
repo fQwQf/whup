@@ -275,11 +275,13 @@ void Expr::expr()
         };
     };
 
+    //这就是函数调用
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = functions[E_expr[0].value];
         std::vector<Token> E_expression = E_expr;
         func->call(E_expression,env);
         std::string temp = newTempVar(func->return_type);
+        this->env->insert_return_var(temp);
         tacs.push_back({ "=", func->get_return_value(), "", temp });
         tac.result = temp;
         std::cout << "call function: " << E_expr[0].value << std::endl;
