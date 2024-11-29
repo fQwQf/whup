@@ -1,7 +1,8 @@
 # WHUP
 
 ![WHUP](logo2.png)
-WHUP/ ˈdʌbljuː eɪtʃ ʌp /(WHUP: High-level Unified Programming)是门一种简洁的，拥有先编译后执行特性的强类型，静态类型编程语言。在这里，我们将实现能将其能编译成一种类似于汇编的，供虚拟机运行的中间代码HUST的编译器；以及一个模拟没有寄存器且堆可以直接通过变量名访问的计算机的虚拟机，运行HUST。  
+WHUP/ ˈdʌbljuː eɪtʃ ʌp /(WHUP: High-level Unified Programming)是门一种简洁的，拥有先编译后执行特性的强类型，静态类型编程语言。在这里，我们将实现能将其能编译成一种类似于汇编的，供虚拟机运行的中间代码HUST（Highly Usable Symbolic Technology
+）的编译器；以及一个模拟没有寄存器且堆可以直接通过变量名访问的计算机的虚拟机，运行HUST。  
 
 ## 关于logo
 
