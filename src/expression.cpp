@@ -273,10 +273,11 @@ void Expr::expr()
         Object* object = object_table[objectName];
         std::unordered_map<std::string,ClassFunction*> function_table = object->function_table;
         ClassFunction* object_function = function_table[functionName];
-        this->env->insert_return_var(object_function->get_return_value());
+        std::string temp = newTempVar(object_function->return_type);
+        this->env->insert_return_var(temp);
         object_function->call(expression,env);
-        tac.result =object_function->get_return_value();
-        std::cout << "call function: " << E_expr[0].value << std::endl;
+        tacs.push_back({ "=", object_function->get_return_value(), "", temp });
+        tac.result =temp;
         return;
     }
 
