@@ -2,6 +2,5 @@ function add(a:number,b:number):string{
     var c ="hghdsfhgghfdsgh";
     return c;
 };
-
-var c = 54378;
-print(c);
+(((
+return 

@@ -1,12 +1,17 @@
 # WHUP
 
 ![WHUP](logo2.png)
-WHUP/ ˈdʌbljuː eɪtʃ ʌp /(WHUP: High-level Unified Programming)是门一种简洁的，拥有先编译后执行特性的强类型，静态类型编程语言。在这里，我们将实现能将其能编译成一种类似于汇编的，供虚拟机运行的中间代码HUST（Highly Usable Symbolic Technology
-）的编译器；以及一个模拟没有寄存器且堆可以直接通过变量名访问的计算机的虚拟机，运行HUST。  
+WHUP/ ˈdʌbljuː eɪtʃ ʌp /(WHUP: High-level Unified Programming)是一个以WHU(Wholesome High-level Utility)编程语言为核心的项目。本项目将实现两种编程语言：WHU和HUST(Highly Usable Symbolic Technology
+)，以及几个相应的软件：WHUPC,WHUPVM和WHUPRUN。  
+WHU是门一种简洁的，拥有先编译后执行特性的强类型，静态类型高级编程语言。  
+HUST是一种可供WHUPVM虚拟机直接运行的低级语言。  
+WHUPC是能将高级语言WHU编译成低级语言HUST的编译器。  
+WHUPVM是一个模拟没有寄存器且堆可以直接通过变量名访问的计算机的虚拟机，可直接运行HUST。  
+WHUPRUN是WHUPC和WHUPVM的组合体，可直接运行WHU代码。  
 
 ## 关于logo
 
-logo左边的图形是w和u的结合，右边的图形由左边的旋转180°而来，同时也是h和p的结合。向上的箭头指的是whup里的"up"。同时该logo的形状像两个回形针，暗示了whup的语法如同用回形针固定文件一样，模块化程度高，使其可拓展性强。  
+logo左边的图形是w和u的结合，右边的图形由左边的旋转180°而来，同时也是h和p的结合。向上的箭头指的是whup里的"up"。同时该logo的形状像两个回形针，暗示了whup的两种语言的语法都如同用回形针固定文件一样，模块化程度高，使其可拓展性强。  
 
 ## 重要数据结构
 
