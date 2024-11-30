@@ -1,10 +1,5 @@
-function foo(t : int) {
-	if(t < 0)
-    {
-        return;
-    };
-	print(1+1);
-    print("foo!");
-	foo(t-1);
+function add(a:number,b:number):number{
+    return "hghdsfhgghfdsgh";
 };
-foo(10);
+
+print(add(1,2));
