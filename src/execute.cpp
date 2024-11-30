@@ -54,7 +54,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
         // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.op=="=")
         {
-            if(isString(tac))
+            if(isString(tac)||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
             {
                 runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1];
             }
