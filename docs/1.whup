@@ -1,2 +1,18 @@
-x="hello";
-print(x);
+class Test
+{
+    var a;
+    var b;
+    Test(x:int,y:int)
+    {
+        a=x;b=y;
+    };
+
+    function printTest()
+    {
+        print(a);
+        print(b);
+    };
+};
+
+Test t(10,20);
+t->printTest();
