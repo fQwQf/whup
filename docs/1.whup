@@ -1,7 +1,2 @@
-function f()
-{
-    print(666);
-    return;
-};
-
-f();
+var a="hello";
+print(a);
