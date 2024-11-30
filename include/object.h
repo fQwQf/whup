@@ -21,7 +21,8 @@ class Object
     
     
     public:
-    Object(std::string className,std::string objectName,Environment* env);//这里的指针式object所处的环境，用来回溯到全局环境
+    //这里的指针式object所处的环境，用来回溯到全局环境
+    Object(std::string className,std::string objectName,Environment* env);
     void var_declare(std::vector<Token> tokens);//变量声明
     void function_declare(std::vector<Token> tokens);//函数声明
     void constuctor_declare(std::vector<Token>);//构造函数声明

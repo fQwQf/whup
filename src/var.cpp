@@ -12,7 +12,8 @@ Var::Var(std::vector<Token> tokens,Environment* env)
     this->env = env;
     if (tokens.size() == 2){
         var(env, tokens[1].value);
-    }else if(tokens[2].value == ","){//同时声明多个变量
+    }else if(tokens[2].value == ","){
+        //同时声明多个变量
         for(int i=1;i<tokens.size();i += 2){
             var(env,tokens[i].value);
         }
