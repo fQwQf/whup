@@ -51,7 +51,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
     for(int i=0;i<tacs.size();i++)
     {
         ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        //std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.op=="=")
         {
             if(isString(tac))
@@ -143,7 +143,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
         }
         else if(tac.op=="print")
         {
-            if(var_declares[tac.arg1]=="string")
+            if(var_declares[tac.arg1]=="string"||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
             {
                 std::cout<<runtimeEnv_string[tac.arg1]<<std::endl;
             }
