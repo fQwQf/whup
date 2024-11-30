@@ -180,3 +180,19 @@ Environment* Environment::backToGlobal()
     }
     return tempptr;
 }
+
+void Environment::insert_return_var(std::string name){
+    return_var_list.push_back(name);
+}
+
+bool Environment::isGlobal()
+{
+    if(parent==nullptr)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

@@ -67,7 +67,7 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//è
 
     this->realPara(realParaTokens,env);
 
-    tacs.push_back({"call",start_label,"",""});
+    call_with_stack_frame(env);
     
     std::cout << "call function " << name << " success" << std::endl;
 
