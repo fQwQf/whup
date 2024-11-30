@@ -1,12 +1,15 @@
 #include "expression.h"
 #include "function.h"
+#include"classfunction.h"
+#include"object.h"
 #include "check.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
-
-
+extern std::unordered_map<std::string, Object*> object_table;  // 存储对象名和对应的对象指针哈希表
+extern std::unordered_map<std::string,float>runtimeEnv_number;//
+extern std::unordered_map<std::string,std::string>runtimeEnv_string;//
 // 从右至左对输入进行遍历，扫描以下运算符，从下向上
 /*
     ** 表示 幂运算
@@ -72,16 +75,19 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             std::cout << "find STRING!";
             tac.result = "\"" + E_expr[0].value + "\"";
             std::cout << "result: " << tac.result << std::endl;
+            runtimeEnv_string[tac.result]=tac.result;
+            std::cout<<runtimeEnv_string[tac.result]<<std::endl;
         }
         else if (expr[0].type == NUMBER)
         {
             std::cout << "find NUMBER!";
             tac.result = E_expr[0].value;
             std::cout << "result: " << tac.result << std::endl;
+
+            runtimeEnv_number[tac.result]=std::stoi(tac.result);//测试设置常量的思路
         }
         return;
     };
-    
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
@@ -251,14 +257,29 @@ void Expr::expr()
         };
     };
 
+    //这就是函数调用
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = functions[E_expr[0].value];
         std::vector<Token> E_expression = E_expr;
-        func->call(E_expression,env);
         std::string temp = newTempVar(func->return_type);
+        this->env->insert_return_var(temp);
+        func->call(E_expression,env);
         tacs.push_back({ "=", func->get_return_value(), "", temp });
         tac.result = temp;
-        std::cout << "call function: " << E_expr[0].value << std::endl;
+        return;
+    }
+    if(E_expr[0].type==IDENTIFIER&&E_expr[1].value=="->"){
+        std::string objectName = E_expr[0].value;
+        std::string functionName = E_expr[2].value;
+        std::vector<Token> expression = E_expr;
+        Object* object = object_table[objectName];
+        std::unordered_map<std::string,ClassFunction*> function_table = object->function_table;
+        ClassFunction* object_function = function_table[functionName];
+        std::string temp = newTempVar(object_function->return_type);
+        this->env->insert_return_var(temp);
+        object_function->call(expression,env);
+        tacs.push_back({ "=", object_function->get_return_value(), "", temp });
+        tac.result =temp;
         return;
     }
 

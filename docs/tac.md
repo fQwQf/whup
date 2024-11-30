@@ -17,7 +17,7 @@
 | + | arg1 | arg2 | result |
 | - | arg1 | arg2 | result |
 | * | arg1 | arg2 | result |
-......
+|......|......|......|......|
 
 效果：arg1和arg2进行运算，将结果赋给result。
 

@@ -10,15 +10,17 @@
 #include "function.h"
 #include "whup_parser.h"
 #include"class.h"
+#include"object.h"
+#include"classfunction.h"
 #include "check.h"
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
+extern std::unordered_map<std::string,Object*>object_table;
 extern std::vector<Error> errors; // 存储错误信息
 
-
-
-//匹配大括号
+//跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
 {
     if (tokens[i].value == "{")
@@ -55,10 +57,26 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 
     block(tokens);
 
-    tacs.push_back(ThreeAddressCode{"if_goto", "true", "", "end_of_file"});
+    tacs.push_back(ThreeAddressCode{"exit", "", "", ""});
 
     for (auto &i : functions){
         i.second->generate();
+    }
+
+    //先将各个实例的构造函数函数体生成出来
+    //这个过程中会将所有数据成员的类型确定下来
+    //避免其他成员函数中使用的变量未确定类型，导致函数体中出现null
+    for(auto&object:object_table)
+    {
+        object.second->myConstructor->generate();
+    }
+
+    for(auto&funcTable:all_Object_function_table)
+    {
+        for(auto&i:funcTable)
+        {
+            i.second->generate();
+        }
     }
 }
 
@@ -74,12 +92,13 @@ void Block::block(std::vector<Token> tokens)
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
-            //打印出所有Token
-            //debug时可能有用
-            //for(auto &i:subtokens){
+            // 打印出所有Token
+            // debug时可能有用
+            // std::cout<<"subtokens:"<<std::endl;
+            // for(auto &i:subtokens){
             //    std::cout << i.value << " ";
-            //}
-            //std::cout << std::endl;
+            // }
+            // std::cout << std::endl;
             
             last_semicolon = i+1;
             generate(subtokens);
@@ -95,8 +114,14 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens.empty())
         return;
 
-    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "(")
+    if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "("&&subtokens[1].type!=IDENTIFIER&&subtokens[1].value!="->")
     {
+        std::cout<<"assign begin"<<std::endl;
+        for(auto&i:subtokens)
+        {
+            std::cout<<i.value<<" ";
+        }
+        std::cout<<std::endl;
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
     }
@@ -152,10 +177,12 @@ void Block::generate(std::vector<Token> subtokens)
             if (subtokens.size() == 1)
             {
                 new Return(env);
+                std::cout << "find return!" << std::endl;
             }
             else
             {
                 new Return(subtokens, env);
+                std::cout << "find return!" << std::endl;
             }
         }
     }
@@ -163,10 +190,54 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Function(subtokens,env);
     }
-    /*else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="class")
     {
         new Class(subtokens);
-    }*/
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value!="(")
+    {
+        std::string className=subtokens[0].value;
+        std::string objectName=subtokens[1].value;
+        std::cout<<"new object "<<objectName<<std::endl;
+        new Object(className,objectName,env);
+        std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="(")
+    {
+        //构造函数，创建对象的同时调用构造函数
+        std::string className=subtokens[0].value;
+        std::string objectName=subtokens[1].value;
+        std::cout<<"new object "<<objectName<<std::endl;
+        Object*thisObject=new Object(className,objectName,env);
+        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        std::string functionName=className;
+        // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        // {
+        //     std::cout<<"not found classfunction"<<functionName;
+        //     exit(1);
+        // }
+        std::cout<<functionName<<" call begin"<<std::endl;
+        // thisFunctionTable[functionName]->call(subtokens,this->env);
+        thisObject->myConstructor->call(subtokens,this->env);
+        std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value=="->")
+    {
+        std::cout<<"in the call"<<std::endl;
+        Object* thisObject=object_table[subtokens[0].value];
+        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        std::string functionName=subtokens[2].value;
+
+        
+
+        if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        {
+            std::cout<<"not found classfunction"<<functionName;
+            exit(1);
+        }
+        std::cout<<functionName<<" call begin"<<std::endl;
+        thisFunctionTable[functionName]->call(subtokens,this->env);
+    }
     else
     {
         pushErrors(subtokens[0],"unexpected token "+subtokens[0].value);

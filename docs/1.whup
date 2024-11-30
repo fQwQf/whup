@@ -1,2 +1,8 @@
 var a = 1;
 return ;
+function add(a:number,b:number):number{
+    return "hghdsfhgghfdsgh";
+};
+
+print(add(1,2));
+
