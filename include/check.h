@@ -8,6 +8,7 @@ struct Error {
     std::string message;
 };
 
+void pushErrors(Token token, std::string message);
 
 //检查句法是否正确
 class checkSyntax

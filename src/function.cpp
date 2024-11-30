@@ -1,5 +1,6 @@
 #include "function.h"
 #include "expression.h"
+#include "check.h"
 
 /*
 ## 函数
@@ -92,6 +93,8 @@ myFunction(1,);  // 错误
 ```
 */
 
+extern std::vector<Error> errors;
+
 std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 std::string function_return_value;//同理
 
@@ -153,6 +156,7 @@ Function::Function(std::vector<Token> &tokens,Environment *env)
     }
     else
     {
+        pushErrors(tokens[0], "No return type for function " + name);
         std::cout << "No return type for function " << name << std::endl;
     }
 
