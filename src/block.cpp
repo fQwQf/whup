@@ -54,7 +54,7 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 
     block(tokens);
 
-    tacs.push_back(ThreeAddressCode{"if_goto", "true", "", "end_of_file"});
+    tacs.push_back(ThreeAddressCode{"exit", "", "", ""});
 
     for (auto &i : functions){
         i.second->generate();

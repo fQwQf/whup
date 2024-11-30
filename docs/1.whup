@@ -4,6 +4,7 @@ function foo(t : int) {
         return;
     };
 	print(1+1);
+    print("foo!");
 	foo(t-1);
 };
 foo(10);

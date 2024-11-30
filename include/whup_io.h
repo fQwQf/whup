@@ -24,10 +24,12 @@ public:
 
     std::string escapeQuotes(const std::string& str);
 
-    std::vector<std::string> splitCSVLine(const std::string& line);
+    std::vector<std::string> splitHUSTLine(const std::string& line);
 
     std::vector<ThreeAddressCode> readTAC();
 
+    std::string opTACtoHUST(const std::string& op);
 
+    std::string opHUSTtoTAC(const std::string& op);
     
 };
