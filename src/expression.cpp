@@ -75,6 +75,8 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             std::cout << "find STRING!";
             tac.result = "\"" + E_expr[0].value + "\"";
             std::cout << "result: " << tac.result << std::endl;
+            runtimeEnv_string[tac.result]=tac.result;
+            std::cout<<runtimeEnv_string[tac.result]<<std::endl;
         }
         else if (expr[0].type == NUMBER)
         {

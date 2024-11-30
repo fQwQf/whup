@@ -143,7 +143,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
         }
         else if(tac.op=="print")
         {
-            if(var_declares[tac.arg1]=="string")
+            if(var_declares[tac.arg1]=="string"||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
             {
                 std::cout<<runtimeEnv_string[tac.arg1]<<std::endl;
             }
