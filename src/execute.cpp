@@ -201,7 +201,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
             i=labelMap[labelStack.top()];
             labelStack.pop();
         }
-        else if(tac.op=="end_of_file")
+        else if(tac.op=="exit")
         {
             return;
         }
