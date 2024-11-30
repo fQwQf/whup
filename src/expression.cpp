@@ -102,18 +102,51 @@ std::string Expr::return_type()
     }
     else
     {
-        for (auto i : E_expr)
+        std::string type; // 返回类型
+        for (int i = 0; i < E_expr.size(); i++)
         {
-            if (i.type == STRING)
+            if (E_expr[i].type == NUMBER)
             {
-                return "string";
+                if (type != "string")
+                {
+                    type = "number";
+                }
             }
-            else if (i.type == SYMBOL && (i.value == "<" || i.value == "<=" || i.value == ">" || i.value == ">=" || i.value == "==" || i.value == "!="))
+            if (E_expr[i].type == STRING)
             {
-                return "bool";
+                type = "string";
+            }
+            else if (E_expr[i].type == SYMBOL && (E_expr[i].value == "<" || E_expr[i].value == "<=" || E_expr[i].value == ">" || E_expr[i].value == ">=" || E_expr[i].value == "==" || E_expr[i].value == "!="))
+            {
+                if (type != "string")
+                {
+                    type = "bool";
+                }
+            }
+            else if (E_expr[i].type == IDENTIFIER && E_expr[i + 1].value != "(")
+            {
+                if (type != "string")
+                {
+                    type = env->get_type_var(E_expr[i].value);
+                }
+            }
+            else if (E_expr[i].type == IDENTIFIER && E_expr[i + 1].value == "(")
+            {
+                Function *func = functions[E_expr[i].value];
+                if (func != nullptr)
+                {
+                    if (type != "string")
+                    {
+                        type = func->return_type;
+                    }
+                }
+                else
+                {
+                    // TODO:报错
+                }
             }
         }
-        return "number";
+        return type;
     }
 }
 
