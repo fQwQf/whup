@@ -329,7 +329,6 @@ function myFunction(var1,var2){
 变量和参数必须以一致的顺序出现。第一个变量就是第一个被传递的参数的给定的值，以此类推。  
 您必须在形参中指定参数类型。
 
-
 ```JavaScript
 function myFunction(var1: string, var2: number){
     print(var1 + string(var2));
