@@ -36,3 +36,5 @@ class ClassFunction : public Function
         void generate();//生成函数代码
         std::string get_return_value();//获取返回值 
 };
+
+#endif
