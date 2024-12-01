@@ -1,6 +1,7 @@
-function odd(x:int):int{
-    return odd(x);
+function odd(x:number , y:number):number{
+    return x+y;
 };
 
-c = odd(5);
+c = odd(5,7);
+print(c);
 print("hello");

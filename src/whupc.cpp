@@ -15,7 +15,6 @@
 
 
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
-extern std::vector<std::pair<std::string, std::string>> var_declares;//存储变量的声明信息
 extern int tempVarCounter;  // 临时变量计数器
 extern void execute(std::vector<ThreeAddressCode>tacs);
 extern std::unordered_map<std::string,float>runtimeEnv_number;//

@@ -38,7 +38,7 @@ print(d);
 斐波那契数列，递归实现。  
 输出：34
 
-## [汉诺塔](example/hanoi.whup)
+## [汉诺塔](example/Hanoi.whup)
 
 ```Javascript
 function Hanoi(n : number) {
