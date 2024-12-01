@@ -1,6 +1,2 @@
-function add(a:number,b:number):string{
-    var c ="hghdsfhgghfdsgh";
-    return c;
-};
-(((
-return 
+x="hello";
+print(x);
