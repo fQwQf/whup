@@ -12,10 +12,13 @@
 #include"class.h"
 #include"object.h"
 #include"classfunction.h"
+#include "check.h"
+
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
 extern std::unordered_map<std::string,Object*>object_table;
+extern std::vector<Error> errors; // 存储错误信息
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -166,8 +169,8 @@ void Block::generate(std::vector<Token> subtokens)
     {
         if (function_ret_label == "")
         {
-            std::cout << "unexpected return" << std::endl;
-            exit(1);
+            pushErrors(subtokens[0],"unexpected retrun");
+            // exit(1);
         }
         else
         {
@@ -237,6 +240,6 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else
     {
-        std::cout << "unexpected token" << std::endl;
+        pushErrors(subtokens[0],"unexpected token "+subtokens[0].value);
     }
 }

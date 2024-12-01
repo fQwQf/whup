@@ -1,5 +1,8 @@
 #include "function.h"
 #include "expression.h"
+#include "check.h"
+
+extern std::vector<Error> errors;
 
 std::string function_ret_label;    // 只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 std::string function_return_value; // 同理
@@ -231,7 +234,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
             }
             else
             {
-                std::cout << "Error: no type for parameter " << param_name;
+                pushErrors(tokens[0], "No return type for function " + name);
             }
         }
         // tokens.erase(tokens.begin());
@@ -265,7 +268,7 @@ void Function::returnType(std::vector<Token> &tokens)
     }
     else
     {
-        std::cout << "No return type for function " << name << std::endl;
+        pushErrors(tokens[0], "No return type for function " + name);
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
@@ -278,7 +281,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     // 仍然将整个括号传入
     if (tokens[0].value != "(")
     {
-        std::cout << "error: not a function" << std::endl;
+        pushErrors(tokens[0], "No return type for function " + name);
         return;
     }
     int index = 1;
@@ -293,7 +296,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     {
         if (tokens[index].value == ")")
         {
-            std::cout << "no params" << std::endl;
+            pushErrors(tokens[0], "no params " );
             break;
         }
         matchPar(i, tokens);

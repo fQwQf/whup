@@ -89,8 +89,7 @@ void Object::generator(std::vector<Token>subtokens)
 
 Object::Object(std::string className,std::string objectName,Environment*env)
 {
-    //一方面创造新的符号表，另一方面用全局环境来做初始化
-    this->Object_env=new Environment(env->backToGlobal());
+    this->Object_env=new Environment(env->backToGlobal());//一方面创造新的符号表，另一方面用全局环境来做初始化
     object_table[objectName]=this;//将实例插入实例表
     this->Object_name=objectName;
     this->Class_name=className;
@@ -108,9 +107,7 @@ Object::Object(std::string className,std::string objectName,Environment*env)
 
     for (int i = 0; i < tokens.size(); i++)
     {
-        //可改变i的值，记录tokens括号内的token最终索引
         matchBrace(i, tokens);
-
         if (tokens[i].type == SYMBOL && tokens[i].value == ";")
         {
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
