@@ -72,4 +72,8 @@ HUST是一种类似于汇编的，供虚拟机运行的中间代码。
 
 ## whup 语法规则
 
-请参考[grammar.md](/docs/grammar.md)。
+请参考[grammar.md](/docs/grammar.md)。  
+
+## 示例
+
+请参考[examples](/docs/example.md)。

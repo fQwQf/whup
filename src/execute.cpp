@@ -166,6 +166,12 @@ void execute(std::vector<ThreeAddressCode> tacs)
         }
         else if(tac.op=="push")
         {
+            if(functionStack_string.size() >= 10000 || functionStack_number.size() >= 10000){
+                std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : stack overflow!" << "\033[0m" << std::endl;
+
+                exit(1);
+            }
+
             if(isString(tac))
             {
                 std::string strPara=runtimeEnv_string[tac.arg1];

@@ -1,2 +1,6 @@
-x="hello";
-print(x);
+function odd(x:int):int{
+    return odd(x);
+};
+
+c = odd(5);
+print("hello");
