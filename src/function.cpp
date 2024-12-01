@@ -172,6 +172,11 @@ void Function::generate()
 {
 
     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
+    //防止不写冒号直接写返回值的情况
+    if(body_tokens[0].value=="{"){
+        body_tokens.erase(body_tokens.begin());
+    }
+
     body_tokens.pop_back();                                          // 去掉 }
 
     std::cout << "Function: " << name << std::endl;
@@ -219,6 +224,11 @@ void Function::folmalPara(std::vector<Token> &tokens)
         // 接下来要按照逗号和冒号来分割参数
         while (tokens[i].type != SYMBOL || tokens[i].value != ")")
         {
+            if (tokens[i].type == SYMBOL && tokens[i].value == ",")
+            {
+                // tokens.erase(tokens.begin());
+                i++;
+            }
             std::string param_name = tokens[i].value;
             // tokens.erase(tokens.begin());
             i++;
@@ -234,7 +244,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
             }
             else
             {
-                pushErrors(tokens[0], "No return type for function " + name);
+                pushErrors(tokens[0], "No type for parameter " + param_name);
             }
         }
         // tokens.erase(tokens.begin());
@@ -261,6 +271,8 @@ void Function::returnType(std::vector<Token> &tokens)
     if (tokens[0].type == SYMBOL && tokens[0].value == ":")
     {
         i++;
+        if(tokens[i].value=="{")
+            pushErrors(tokens[0], "Need return type before colon for function " + name);
         return_type = tokens[i].value;
         return_value = newTempVar(return_type);
         i++;
@@ -268,7 +280,10 @@ void Function::returnType(std::vector<Token> &tokens)
     }
     else
     {
-        pushErrors(tokens[0], "No return type for function " + name);
+        // return_type = "void";
+        // return_value = "";
+        if(tokens[i].value!="{")
+            pushErrors(tokens[0], "Missing colon before return type for function " + name);
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
@@ -281,7 +296,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     // 仍然将整个括号传入
     if (tokens[0].value != "(")
     {
-        pushErrors(tokens[0], "No return type for function " + name);
+        pushErrors(tokens[0], "Not a function ");
         return;
     }
     int index = 1;
@@ -296,7 +311,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     {
         if (tokens[index].value == ")")
         {
-            pushErrors(tokens[0], "no params " );
+            pushErrors(tokens[0], "No params " );
             break;
         }
         matchPar(i, tokens);

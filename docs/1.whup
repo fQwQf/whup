@@ -1,7 +1,10 @@
-function add(a:number,b:number):string{
-    var c ="hghdsfhgghfdsgh";
+function add(a:number,b:number):{
+    var c =a+b;
     return c;
 };
-
+function add(a:number,b:number)number{
+    var c =a+b;
+    return c;
+};
 var c = 54378;
 print(c);
