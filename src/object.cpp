@@ -4,7 +4,7 @@
 #include"class.h"
 extern std::unordered_map<std::string,Class*>class_table;
 extern std::vector<ThreeAddressCode>tacs;
-
+extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;  
 //引入一个全局的向量，来储存所有对象的函数表指针，以便在函数调用时查找函数
 std::unordered_map<std::string,Object*>object_table;
@@ -24,6 +24,29 @@ void Object::matchBrace(int &i,std::vector<Token> &tokens)
                 rightPar++;
             }
             else if (tokens[i].value == "{")
+            {
+                leftPar++;
+            }
+            else
+                continue;
+        }
+    }
+}
+
+void Object::matchPar(int &i,std::vector<Token> &tokens)
+{
+    if (tokens[i].value == "(")
+    {
+        int leftPar = 1;
+        int rightPar = 0; // 分别记录已经读取的左大括号右大括号的个数,当相等时即可结束
+        while (leftPar != rightPar)
+        {
+            ++i;
+            if (tokens[i].value == ")")
+            {
+                rightPar++;
+            }
+            else if (tokens[i].value == "(")
             {
                 leftPar++;
             }
@@ -57,6 +80,35 @@ void Object::constuctor_declare(std::vector<Token>subtokens)
 {
     //构造函数的声明
     myConstructor=new ClassFunction(subtokens,Object_env,this->function_table);
+    std::vector<Token>bodyTokens=myConstructor->getBodyTokens();
+
+    bodyTokens.erase(bodyTokens.begin());
+    bodyTokens.pop_back();
+
+    int last_semicolon = 0;
+
+    for (int i = 0; i < bodyTokens.size(); i++)
+    {
+        
+        matchBrace(i, bodyTokens);
+        if (bodyTokens[i].type == SYMBOL && bodyTokens[i].value == ";")
+        {
+            std::vector<Token> subtokens(bodyTokens.begin() + last_semicolon, bodyTokens.begin() + i);
+            // 打印出所有Token
+            // debug时可能有用
+            // std::cout<<"subtokens:"<<std::endl;
+            // for(auto &i:subtokens){
+            //    std::cout << i.value << " ";
+            // }
+            // std::cout << std::endl;
+            if(subtokens[1].value=="="&&Object_env->var_table.find(subtokens[0].value)!=Object_env->var_table.end())
+            {
+                Object_env->change_type_var(subtokens[0].value,var_declares[subtokens[2].value]);
+            }
+            last_semicolon = i+1;
+        }
+    }
+    
 }
 
 void Object::copy(Object*ptrObject)

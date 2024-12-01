@@ -53,21 +53,16 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 {
     this->env = new Environment();
 
+    
+
     block(tokens);
 
     tacs.push_back(ThreeAddressCode{"exit", "", "", ""});
 
-    for (auto &i : functions){
-        i.second->generate();
+    for(auto&object:object_table)
+    {
+        object.second->myConstructor->generate();
     }
-
-    //先将各个实例的构造函数函数体生成出来
-    //这个过程中会将所有数据成员的类型确定下来
-    //避免其他成员函数中使用的变量未确定类型，导致函数体中出现null
-    // for(auto&object:object_table)
-    // {
-    //     object.second->myConstructor->generate();
-    // }
 
     for(auto&funcTable:all_Object_function_table)
     {
@@ -76,6 +71,14 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
             i.second->generate();
         }
     }
+    for (auto &i : functions){
+        i.second->generate();
+    }
+
+    //先将各个实例的构造函数函数体生成出来
+    //这个过程中会将所有数据成员的类型确定下来
+    //避免其他成员函数中使用的变量未确定类型，导致函数体中出现null
+    
 }
 
 // 以分号为分隔扫描
@@ -257,13 +260,13 @@ void Block::generate(std::vector<Token> subtokens)
         // }
         std::cout<<functionName<<" call begin"<<std::endl;
         // thisFunctionTable[functionName]->call(subtokens,this->env);
-        thisObject->myConstructor->callInline(subtokens,this->env);
+        thisObject->myConstructor->call(subtokens,this->env);
 
         //可以理解为现在将构造函数的函数体内联
         //目的时为了更早确定数据成员的类型
         //否则在其他成员函数中使用数据成员时，可能会出现null
         //注：generate重载为内联形式
-        thisObject->myConstructor->generateInline();
+        // thisObject->myConstructor->generateInline();
         }
         else if(subtokens[2].value=="=")
         {

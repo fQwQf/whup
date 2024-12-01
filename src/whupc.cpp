@@ -70,8 +70,8 @@ int main(int n, const char *arg[])
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
-    execute(tacs);
+    // execute(tacs);
 
-    std::cout<<"Execute success!"<<std::endl;
+    // std::cout<<"Execute success!"<<std::endl;
     return 0;
 }

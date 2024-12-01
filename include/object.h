@@ -29,6 +29,7 @@ class Object
 
     void generator(std::vector<Token>subtoken);//整合变量声明与函数声明//其实没有必要但好看
     void matchBrace(int &i,std::vector<Token> &tokens);
+    void matchPar(int &i,std::vector<Token> &tokens);
     void copy(Object*ptrObject);//复制对象
     
     

@@ -1,22 +1,11 @@
 class Test
 {
     var a;
-    var b="hello";
     Test(x:int)
     {
         a=x;
     };
-
-    function f()
-    {
-        print(a);
-        print(b);
-    };
 };
-
 Test t(666);
 Test p=t;
-
-t->f();
-p->f();
 
