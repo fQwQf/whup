@@ -23,6 +23,6 @@ class ClassFunction : public Function
         //应该需要传引用，不然原来的函数表不会插入
         ClassFunction(std::vector<Token> &tokens,Environment* env,std::unordered_map<std::string,ClassFunction*>& function_table);
         std::string call(std::vector<Token> &tokens,Environment* env);
-        
+        std::string callInline(std::vector<Token> &tokens,Environment* env);
 };
 #endif

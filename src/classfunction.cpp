@@ -74,3 +74,31 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
     return return_value;
 }
 
+std::string ClassFunction::callInline(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
+    std::cout <<"call function " << name << std::endl;
+    for(auto&i:tokens)
+    {
+        std::cout << i.value << " ";
+    }
+    std::cout << std::endl;
+
+    int i=0;
+    if(tokens[1].type==SYMBOL&&tokens[1].value=="->"){
+        i+=3;
+    }
+    else{
+        i+=2;
+    }
+
+    //5.实参处理
+    int beginRealPara=i;
+    matchPar(i,tokens);
+    std::vector<Token>realParaTokens=std::vector<Token>(tokens.begin()+beginRealPara,tokens.begin()+i+1);
+
+    this->realPara(realParaTokens,env);
+
+    
+    std::cout << "call function " << name << " success" << std::endl;
+
+    return return_value;
+}

@@ -1,18 +1,22 @@
 class Test
 {
     var a;
-    var b;
-    Test(x:int,y:int)
+    var b="hello";
+    Test(x:int)
     {
-        a=x;b=y;
+        a=x;
     };
 
-    function printTest()
+    function f()
     {
         print(a);
         print(b);
     };
 };
 
-Test t(10,20);
-t->printTest();
+Test t(666);
+Test p=t;
+
+t->f();
+p->f();
+
