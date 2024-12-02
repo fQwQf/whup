@@ -1,4 +1,17 @@
 var i = 3;
 var sum=0;
-
-print(i*i<sum);
+while (i<=10000){
+    var isprime = 1;
+    var b=2;
+    while( b*b <= i){
+        if (i%b == 0){
+            isprime = 0;
+        };
+        b = b+1;
+    };
+    if(isprime){
+        sum=sum+1;
+    };
+    i = 1+i;
+};
+print(sum);
