@@ -1,7 +1,4 @@
-function odd(x:number , y:number):number{
-    return x+y;
-};
+var i = 3;
+var sum=0;
 
-c = odd(5,7);
-print(c);
-print("hello");
+print(i*i<sum);
