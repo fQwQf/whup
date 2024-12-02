@@ -123,6 +123,13 @@ void Block::generate(std::vector<Token> subtokens)
             std::cout<<i.value<<" ";
         }
         std::cout<<std::endl;
+
+        //新增对类的赋值语句，只支持object1=object2这样的语句
+        if(object_table.find(subtokens[0].value)!=object_table.end())
+        {
+            object_table[subtokens[0].value]->copy(object_table[subtokens[2].value]);
+        }
+        else
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
     }

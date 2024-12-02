@@ -4,8 +4,10 @@ class Test
     Test(x:int)
     {
         a=x;
+        print("success");
     };
 };
 Test t(666);
-Test p=t;
+Test p;
+p=t;
 
