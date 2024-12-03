@@ -139,11 +139,11 @@ void execute(std::vector<ThreeAddressCode> tacs)
         // {
         //     labelMap[tac.result]=i;
         // }
-        else if(tac.op=="goto")
+        else if(tac.opperator==GOTO)
         {
             i=labelMap[tac.result];
         }
-        else if(tac.op=="if_goto")
+        else if(tac.opperator==IF_GOTO)
         {
             if(tac.result=="end_of_file")
             {
