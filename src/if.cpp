@@ -124,16 +124,16 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	{
 		Expr* IET = new Expr(If_Expr_temps[i], this->If_Env);
 		If_Expr.push_back(IET);
-		tacs.push_back({ "if_goto",IET->getTacResult(),"", If_Block_labelArr[i]});//生成跳转语句
+		tacs.push_back({IF_GOTO, "if_goto",IET->getTacResult(),"", If_Block_labelArr[i]});//生成跳转语句
 	}
 
 
 	if (If_Expr_temps.size() < If_Block_temps.size())//可能结尾为else{}，不会生成Expr
 	{
-		tacs.push_back({ "goto","","",*(If_Block_labelArr.end()-1) });//goto用于实现默认进入else后的block
+		tacs.push_back({GOTO, "goto","","",*(If_Block_labelArr.end()-1) });//goto用于实现默认进入else后的block
 	}
 	else{
-		tacs.push_back({ "goto","","",If_endLabel });//没有默认的话直接跳到endLabel
+		tacs.push_back({GOTO, "goto","","",If_endLabel });//没有默认的话直接跳到endLabel
 	}
 	/*
 	与原定形式不太一样但效果相同
@@ -146,14 +146,14 @@ If::If(std::vector<Token> code, Environment* env) :If_Env(env)
 	//下面处理block
 	for (int i = 0; i < If_Block_temps.size(); i++)
 	{
-		tacs.push_back({ "label","","",If_Block_labelArr[i] });//先给label
+		tacs.push_back({LABEL, "label","","",If_Block_labelArr[i] });//先给label
 		Block* IBT = new Block(If_Block_temps[i], If_Env);
 		If_Block.push_back(IBT);//再给代码
-		tacs.push_back({ "goto","","",If_endLabel });//运行完前面的代码直接goto endLabel
+		tacs.push_back({GOTO, "goto","","",If_endLabel });//运行完前面的代码直接goto endLabel
 	}
 
 	//最后加上endlabel
-	tacs.push_back({"label","","",If_endLabel});
+	tacs.push_back({LABEL,"label","","",If_endLabel});
 }
 
 /*

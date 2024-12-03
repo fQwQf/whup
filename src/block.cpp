@@ -57,7 +57,7 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 
     block(tokens);
 
-    tacs.push_back(ThreeAddressCode{"exit", "", "", ""});
+    tacs.push_back(ThreeAddressCode{EXIT,"exit", "", "", ""});
 
     for(auto&object:object_table)
     {

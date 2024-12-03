@@ -1,6 +1,6 @@
 var i=3;
 var sum=0;
-while(i*i<=100)
+while(i<=1000)
 {
     var isprime=1;
     var b=2;

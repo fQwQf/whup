@@ -122,6 +122,14 @@ void Object::copy(Object*ptrObject)
             {
                 ThreeAddressCode tac;
                 this->Object_env->change_type_var(i.first,j.second);
+                if(j.second=="string")
+                {
+                    tac.opperator=STRASSIGN;
+                }
+                else
+                {
+                    tac.opperator=ASSIGN;
+                }
                 tac.op="=";
                 tac.result=this->Object_env->get_var(i.first);
                 tac.arg1=ptrObject->Object_env->get_var(j.first);
