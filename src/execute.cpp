@@ -52,74 +52,86 @@ void execute(std::vector<ThreeAddressCode> tacs)
     {
         ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
         // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
-        if(tac.op=="=")
+        if(tac.opperator==ASSIGN)
         {
-            //每一次都要判断感觉有点丑陋啊。。。//但是就这样吧，能跑就行（doge
-            if(isString(tac)||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
-            {
-                runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1];
-            }
-            else
-            {
-                runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1];
-            }
+            runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1];
+
+
+            // //每一次都要判断感觉有点丑陋啊。。。//但是就这样吧，能跑就行（doge
+            // if(isString(tac)||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
+            // {
+            //     runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1];
+            // }
+            // else
+            // {
+            //     runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1];
+            // }
         }
-        else if(tac.op=="+")
+        else if(tac.opperator==STRASSIGN)
         {
-            if(isString(tac))
-            {
-                runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1]+runtimeEnv_string[tac.arg2];
-            }
-            else
-            {
-                runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]+runtimeEnv_number[tac.arg2];
-            }
+            runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1];
         }
-        else if(tac.op=="-")
+        else if(tac.opperator==ADD)
+        {
+            runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]+runtimeEnv_number[tac.arg2];
+            // if(isString(tac))
+            // {
+            //     runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1]+runtimeEnv_string[tac.arg2];
+            // }
+            // else
+            // {
+            //     runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]+runtimeEnv_number[tac.arg2];
+            // }
+        }
+        else if(tac.opperator==STRADD)
+        {
+            runtimeEnv_string[tac.result]=runtimeEnv_string[tac.arg1]+runtimeEnv_string[tac.arg2];
+        }
+        else if(tac.opperator==SUB)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]-runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="*")
+        else if(tac.opperator==MUL)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]*runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="/")
+        else if(tac.opperator==DIV)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]/runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="%")//???怎么算的？？？
+        else if(tac.opperator==MOD)//???怎么算的？？？
         {
-            runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]-runtimeEnv_number[tac.arg2]*int(runtimeEnv_number[tac.arg1]/runtimeEnv_number[tac.arg2]);
+            runtimeEnv_number[tac.result]=std::fmod(runtimeEnv_number[tac.arg1],runtimeEnv_number[tac.arg2]);
         }
-        else if(tac.op=="==")
+        else if(tac.opperator==EQ)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]==runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="!=")
+        else if(tac.opperator==NEQ)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]!=runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="<")
+        else if(tac.opperator==LT)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]<runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="<=")
+        else if(tac.opperator==LE)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]<=runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op==">")
+        else if(tac.opperator==GT)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]>runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op==">=")
+        else if(tac.opperator==GE)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]>=runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="||")
+        else if(tac.opperator==OR)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]||runtimeEnv_number[tac.arg2];
         }
-        else if(tac.op=="&&")
+        else if(tac.opperator==AND)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]&&runtimeEnv_number[tac.arg2];
         }
@@ -127,11 +139,11 @@ void execute(std::vector<ThreeAddressCode> tacs)
         // {
         //     labelMap[tac.result]=i;
         // }
-        else if(tac.op=="goto")
+        else if(tac.opperator==GOTO)
         {
             i=labelMap[tac.result];
         }
-        else if(tac.op=="if_goto")
+        else if(tac.opperator==IF_GOTO)
         {
             if(tac.result=="end_of_file")
             {
@@ -142,7 +154,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
                 i=labelMap[tac.result];
             }
         }
-        else if(tac.op=="print")
+        else if(tac.opperator==PRINT)
         {
             if(var_declares[tac.arg1]=="string"||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
             {
@@ -153,7 +165,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
                 std::cout<<runtimeEnv_number[tac.arg1]<<std::endl;
             }
         }
-        else if(tac.op=="input")
+        else if(tac.opperator==WINPUT)
         {
             if(var_declares[tac.arg1]=="string")
             {
@@ -164,7 +176,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
                 std::cin>>runtimeEnv_number[tac.arg1];
             }
         }
-        else if(tac.op=="push")
+        else if(tac.opperator==PUSH)
         {
             if(functionStack_string.size() >= 100000000 || functionStack_number.size() >= 1000000000){
                 std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : stack overflow!" << "\033[0m" << std::endl;
@@ -183,7 +195,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
                 functionStack_number.push(floatPara);
             }
         }
-        else if(tac.op=="pop")
+        else if(tac.opperator==POP)
         {
             if(isString(tac))
             {
@@ -196,19 +208,19 @@ void execute(std::vector<ThreeAddressCode> tacs)
                 functionStack_number.pop();
             }
         }
-        else if(tac.op=="call")
+        else if(tac.opperator==CALL)
         {
             std::string temp=newTempLabel();
             labelMap[temp]=i;
             labelStack.push(temp);
             i=labelMap[tac.arg1];
         }
-        else if(tac.op=="return")
+        else if(tac.opperator==RET)
         {
             i=labelMap[labelStack.top()];
             labelStack.pop();
         }
-        else if(tac.op=="exit")
+        else if(tac.opperator==EXIT)
         {
             return;
         }

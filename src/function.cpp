@@ -113,7 +113,7 @@ void Function::push_real_para(Environment *env)
     {
         for (auto &i : params_name)
         {
-            tacs.push_back({"push", i.second, "", ""});
+            tacs.push_back({PUSH,"push", i.second, "", ""});
         }
     }
 }
@@ -124,7 +124,7 @@ void Function::call_with_stack_frame(Environment *env)
 
     if (env->isGlobal())
     { //如果在全局环境中调用，则不需要保存栈帧
-        tacs.push_back({"call", start_label, "", ""});
+        tacs.push_back({CALL,"call", start_label, "", ""});
         return;
     }
     else
@@ -153,17 +153,17 @@ void Function::call_with_stack_frame(Environment *env)
 
         //将栈帧压入栈中
         for(auto &i : stack_frame){
-            tacs.push_back({"push",i,"",""});
+            tacs.push_back({PUSH,"push",i,"",""});
         }
 
-        tacs.push_back({"call", start_label, "", ""});
+        tacs.push_back({CALL,"call", start_label, "", ""});
 
         //恢复栈帧
         for(int i=stack_frame.size()-1;i>=0;i--){
-            tacs.push_back({"pop","","",stack_frame[i]});
+            tacs.push_back({POP,"pop","","",stack_frame[i]});
         }
         for(int i=params_name.size()-1;i>=0;i--){
-            tacs.push_back({"pop","","",params_name[i].second});
+            tacs.push_back({POP,"pop","","",params_name[i].second});
         }
     }
 }
@@ -190,38 +190,38 @@ void Function::generate()
 
     function_ret_label = end_label;
     function_return_value = return_value;
-    tacs.push_back({"label", "", "", start_label});
+    tacs.push_back({LABEL,"label", "", "", start_label});
 
     // Block能否识别临时变量？
     new Block(body_tokens, env);
 
     //如果之前没有return，则在最后自动return
-    tacs.push_back({"return", "", "", ""});
+    tacs.push_back({RET,"return", "", "", ""});
 }
 
-void Function::generateInline()
-{
-    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
-    body_tokens.pop_back();                                          // 去掉 }
+// void Function::generateInline()
+// {
+//     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
+//     body_tokens.pop_back();                                          // 去掉 }
 
-    std::cout << "Function: " << name << std::endl;
-    std::cout << "Params: " << std::endl;
-    for (auto &param : params_name)
-    {
-        std::cout << "  " << param.first << " " << param.second << std::endl;
-    }
-    std::cout << "Return type: " << return_type << std::endl;
-    std::cout << "Body: " << std::endl;
-    for (auto &token : body_tokens)
-    {
-        std::cout << "  " << token.value;
-    }
-    std::cout << std::endl;
+//     std::cout << "Function: " << name << std::endl;
+//     std::cout << "Params: " << std::endl;
+//     for (auto &param : params_name)
+//     {
+//         std::cout << "  " << param.first << " " << param.second << std::endl;
+//     }
+//     std::cout << "Return type: " << return_type << std::endl;
+//     std::cout << "Body: " << std::endl;
+//     for (auto &token : body_tokens)
+//     {
+//         std::cout << "  " << token.value;
+//     }
+//     std::cout << std::endl;
 
 
-    // Block能否识别临时变量？
-    new Block(body_tokens, env);
-}
+//     // Block能否识别临时变量？
+//     new Block(body_tokens, env);
+// }
 
 ////////////////////////////////
 // 尝试对classfunction进行模块化//
@@ -330,7 +330,11 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             last_comma = i + 1;
             Expr *expression = new Expr(subtokens, env);
             std::cout << "pass value success!!!" << std::endl;
-            tacs.push_back({"=", expression->getTacResult(), "", params_name[param_num].second});
+
+            if(expression->return_type()=="string")
+            tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            else
+            tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;
