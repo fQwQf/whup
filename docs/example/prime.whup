@@ -1,0 +1,26 @@
+var j=1;
+while(j<=100)
+{
+    var i=3;
+    var sum=0;
+    while(i<=3000)
+    {
+        var isprime=1;
+        var b=2;
+        while(b*b<=i)
+        {
+            if(i%b==0)
+            {
+                isprime=0;
+            };
+            b=b+1;
+        };
+        if(isprime==1)
+        {
+            sum=sum+i;
+        };
+        i=i+1;
+    };
+    j=j+1;
+};
+print("done");
