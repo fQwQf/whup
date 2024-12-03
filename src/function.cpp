@@ -199,6 +199,30 @@ void Function::generate()
     tacs.push_back({"return", "", "", ""});
 }
 
+void Function::generateInline()
+{
+    body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
+    body_tokens.pop_back();                                          // 去掉 }
+
+    std::cout << "Function: " << name << std::endl;
+    std::cout << "Params: " << std::endl;
+    for (auto &param : params_name)
+    {
+        std::cout << "  " << param.first << " " << param.second << std::endl;
+    }
+    std::cout << "Return type: " << return_type << std::endl;
+    std::cout << "Body: " << std::endl;
+    for (auto &token : body_tokens)
+    {
+        std::cout << "  " << token.value;
+    }
+    std::cout << std::endl;
+
+
+    // Block能否识别临时变量？
+    new Block(body_tokens, env);
+}
+
 ////////////////////////////////
 // 尝试对classfunction进行模块化//
 ////////////////////////////////

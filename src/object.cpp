@@ -3,6 +3,8 @@
 #include"classfunction.h"
 #include"class.h"
 extern std::unordered_map<std::string,Class*>class_table;
+extern std::vector<ThreeAddressCode>tacs;
+
 std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;  
 //引入一个全局的向量，来储存所有对象的函数表指针，以便在函数调用时查找函数
 std::unordered_map<std::string,Object*>object_table;
@@ -55,6 +57,26 @@ void Object::constuctor_declare(std::vector<Token>subtokens)
 {
     //构造函数的声明
     myConstructor=new ClassFunction(subtokens,Object_env,this->function_table);
+}
+
+void Object::copy(Object*ptrObject)
+{
+    std::cout<<this->Object_name<<std::endl;
+    for(auto&i:this->Object_env->var_table)
+    {
+        for(auto&j:ptrObject->Object_env->var_table)
+        {
+            if(i.first==j.first)
+            {
+                ThreeAddressCode tac;
+                this->Object_env->change_type_var(i.first,j.second);
+                tac.op="=";
+                tac.result=this->Object_env->get_var(i.first);
+                tac.arg1=ptrObject->Object_env->get_var(j.first);
+                tacs.push_back(tac);
+            }
+        }
+    }
 }
 
 
