@@ -149,11 +149,50 @@ void Object::generator(std::vector<Token>subtokens)
         function_declare(subtokens);
         std::cout<<"function "<<subtokens[1].value<<" declare success"<<std::endl;
     }
-    else if(subtokens[0].type==IDENTIFIER&&subtokens[0].value==Class_name)
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[0].value==Class_name&&subtokens[1].value=="(")
     {
         //构造函数
         constuctor_declare(subtokens);
         std::cout<<"constructor declare success"<<std::endl;
+    }
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&class_table.find(subtokens[0].value)!=class_table.end())
+    {
+        //类中包含对象成员
+        std::string className=subtokens[0].value;
+        std::string objectName=subtokens[1].value;
+        std::cout<<"new object in an object"<<objectName<<std::endl;
+        Object*thisObject=new Object(className,objectName,Object_env);
+        
+        if(subtokens[2].type==SYMBOL&&subtokens[2].value=="(")
+        {
+            std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        std::string functionName=className;
+        // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        // {
+        //     std::cout<<"not found classfunction"<<functionName;
+        //     exit(1);
+        // }
+        std::cout<<functionName<<" call begin"<<std::endl;
+        // thisFunctionTable[functionName]->call(subtokens,this->env);
+        thisObject->myConstructor->call(subtokens,this->Object_env);
+
+        //可以理解为现在将构造函数的函数体内联
+        //目的时为了更早确定数据成员的类型
+        //否则在其他成员函数中使用数据成员时，可能会出现null
+        //注：generate重载为内联形式
+        // thisObject->myConstructor->generateInline();
+        }
+        else if(subtokens[2].value=="=")
+        {
+            //对等号左边的对象调用copy，传入等号右边的对象
+            std::cout<<"copy begin"<<std::endl;
+            for(auto&i:subtokens)
+            {
+                std::cout<<i.value<<" ";
+            }
+            object_table[subtokens[1].value]->copy(object_table[subtokens[3].value]);
+        }
+        std::cout<<"new object "<<objectName<<" success"<<std::endl;
     }
     else
     {

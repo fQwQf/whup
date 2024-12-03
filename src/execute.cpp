@@ -89,7 +89,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
         }
         else if(tac.op=="%")//???怎么算的？？？
         {
-            runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]-runtimeEnv_number[tac.arg2]*int(runtimeEnv_number[tac.arg1]/runtimeEnv_number[tac.arg2]);
+            runtimeEnv_number[tac.result]=std::fmod(runtimeEnv_number[tac.arg1],runtimeEnv_number[tac.arg2]);
         }
         else if(tac.op=="==")
         {
