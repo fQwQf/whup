@@ -30,6 +30,8 @@ public:
 
     //根据首token传入对应的类的构造函数中。
     void generate(std::vector<Token> subtokens);
+
+    Environment* getEnv(){return env;}
     
 
 };

@@ -11,6 +11,16 @@ IO::IO(const std::string &in_file, const std::string &out_file)
     out.open(out_file);
 }
 
+IO::IO(const std::string &in_file)
+{
+    in.open(in_file);
+
+    if(!in){
+        std::cerr << "\033[31m Error (⊙_⊙)!!! : " << in_file << ": No such file!\033[0m" << std::endl;
+        exit(1);
+    }
+}
+
 IO::~IO()
 {
     in.close();

@@ -13,6 +13,7 @@
 #include"object.h"
 #include"classfunction.h"
 #include "check.h"
+#include "whup_io.h"
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
@@ -20,6 +21,7 @@ extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_fu
 extern std::unordered_map<std::string,Object*>object_table;
 extern std::unordered_map<std::string,Class*>class_table;
 extern std::vector<Error> errors; // 存储错误信息
+extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -297,7 +299,51 @@ void Block::generate(std::vector<Token> subtokens)
         std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
         std::string functionName=subtokens[2].value;
 
+
+        if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+        {
+            std::cout<<"not found classfunction"<<functionName;
+            exit(1);
+        }
+        std::cout<<functionName<<" call begin"<<std::endl;
+        thisFunctionTable[functionName]->call(subtokens,this->env);
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="import")
+    {
+        std::cout << "import" << std::endl;
+
+        for(int i=1;i<subtokens.size();i++)
+        {
+            std::cout<<subtokens[i].value<<" ";
+            std::string fileName=subtokens[1].value;
+
+            IO* input = new IO(fileName+".whup");
+            
+            std::string expression = input->read();
+
+            delete input;
+
+            checkBrackets::checkPar(expression,fileName+".whup");
+            checkBrackets::checkBracket(expression,fileName+".whup");
+            checkBrackets::checkBrace(expression,fileName + ".whup");
+            printErrors();
+
+            Lexer lexer(expression,fileName + ".whup");
+            std::vector<Token> tokens = lexer.tokenize();
+            tokens.pop_back(); // 删除最后一个换行符
+
+            // 使用得到的token集合进行语法分析，生成一个中间表示
+            Block* block = new Block(tokens,env);
+
+            namespace_table[fileName] = block->getEnv();
+
+        }
         
+
+        Object* thisObject=object_table[subtokens[0].value];
+        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        std::string functionName=subtokens[2].value;
+
 
         if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         {

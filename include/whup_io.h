@@ -9,6 +9,7 @@ class IO {
     std::ofstream out;//输出文件流类型
 public:
     IO(const std::string &in_file, const std::string &out_file);
+    IO(const std::string &in_file);
 
     ~IO();
 

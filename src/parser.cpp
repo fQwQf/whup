@@ -7,6 +7,7 @@ std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
 std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
 std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
