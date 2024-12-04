@@ -1,5 +1,8 @@
 #include "function.h"
 #include "expression.h"
+#include "check.h"
+
+extern std::vector<Error> errors;
 
 std::string function_ret_label;    // 只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 std::string function_return_value; // 同理
@@ -110,7 +113,7 @@ void Function::push_real_para(Environment *env)
     {
         for (auto &i : params_name)
         {
-            tacs.push_back({"push", i.second, "", ""});
+            tacs.push_back({PUSH,"push", i.second, "", ""});
         }
     }
 }
@@ -121,7 +124,7 @@ void Function::call_with_stack_frame(Environment *env)
 
     if (env->isGlobal())
     { //如果在全局环境中调用，则不需要保存栈帧
-        tacs.push_back({"call", start_label, "", ""});
+        tacs.push_back({CALL,"call", start_label, "", ""});
         return;
     }
     else
@@ -150,17 +153,17 @@ void Function::call_with_stack_frame(Environment *env)
 
         //将栈帧压入栈中
         for(auto &i : stack_frame){
-            tacs.push_back({"push",i,"",""});
+            tacs.push_back({PUSH,"push",i,"",""});
         }
 
-        tacs.push_back({"call", start_label, "", ""});
+        tacs.push_back({CALL,"call", start_label, "", ""});
 
         //恢复栈帧
         for(int i=stack_frame.size()-1;i>=0;i--){
-            tacs.push_back({"pop","","",stack_frame[i]});
+            tacs.push_back({POP,"pop","","",stack_frame[i]});
         }
         for(int i=params_name.size()-1;i>=0;i--){
-            tacs.push_back({"pop","","",params_name[i].second});
+            tacs.push_back({POP,"pop","","",params_name[i].second});
         }
     }
 }
@@ -187,14 +190,38 @@ void Function::generate()
 
     function_ret_label = end_label;
     function_return_value = return_value;
-    tacs.push_back({"label", "", "", start_label});
+    tacs.push_back({LABEL,"label", "", "", start_label});
 
     // Block能否识别临时变量？
     new Block(body_tokens, env);
 
     //如果之前没有return，则在最后自动return
-    tacs.push_back({"return", "", "", ""});
+    tacs.push_back({RET,"return", "", "", ""});
 }
+
+// void Function::generateInline()
+// {
+//     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
+//     body_tokens.pop_back();                                          // 去掉 }
+
+//     std::cout << "Function: " << name << std::endl;
+//     std::cout << "Params: " << std::endl;
+//     for (auto &param : params_name)
+//     {
+//         std::cout << "  " << param.first << " " << param.second << std::endl;
+//     }
+//     std::cout << "Return type: " << return_type << std::endl;
+//     std::cout << "Body: " << std::endl;
+//     for (auto &token : body_tokens)
+//     {
+//         std::cout << "  " << token.value;
+//     }
+//     std::cout << std::endl;
+
+
+//     // Block能否识别临时变量？
+//     new Block(body_tokens, env);
+// }
 
 ////////////////////////////////
 // 尝试对classfunction进行模块化//
@@ -231,7 +258,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
             }
             else
             {
-                std::cout << "Error: no type for parameter " << param_name;
+                pushErrors(tokens[0], "No return type for function " + name);
             }
         }
         // tokens.erase(tokens.begin());
@@ -265,7 +292,7 @@ void Function::returnType(std::vector<Token> &tokens)
     }
     else
     {
-        std::cout << "No return type for function " << name << std::endl;
+        pushErrors(tokens[0], "No return type for function " + name);
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
@@ -278,7 +305,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     // 仍然将整个括号传入
     if (tokens[0].value != "(")
     {
-        std::cout << "error: not a function" << std::endl;
+        pushErrors(tokens[0], "No return type for function " + name);
         return;
     }
     int index = 1;
@@ -293,7 +320,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     {
         if (tokens[index].value == ")")
         {
-            std::cout << "no params" << std::endl;
+            pushErrors(tokens[0], "no params " );
             break;
         }
         matchPar(i, tokens);
@@ -303,7 +330,11 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             last_comma = i + 1;
             Expr *expression = new Expr(subtokens, env);
             std::cout << "pass value success!!!" << std::endl;
-            tacs.push_back({"=", expression->getTacResult(), "", params_name[param_num].second});
+
+            if(expression->return_type()=="string")
+            tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            else
+            tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;

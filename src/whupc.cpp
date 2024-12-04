@@ -45,7 +45,7 @@ int main(int n, const char *arg[])
     std::string expression = io.read();
 
     //进行expression的句法错误分析
-    CheckSemicolon::checkCode(expression,extractor.get_input_file());
+    //CheckSemicolon::checkCode(expression,extractor.get_input_file());
     //printErrors();
 
     //先对tokens进行统一的括号错误检查
@@ -76,7 +76,15 @@ int main(int n, const char *arg[])
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
+
+    std::clock_t start = clock();
+    
     execute(tacs);
+
+    std::clock_t end   = clock();
+    std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
+
+    
 
     std::cout<<"Execute success!"<<std::endl;
     return 0;

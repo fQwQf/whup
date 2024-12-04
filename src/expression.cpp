@@ -176,8 +176,8 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
             tac.op = "||";
+            tac.opperator=OR;
             tacs.push_back(tac);
             return;
         };
@@ -198,7 +198,7 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            tac.opperator=AND;
             tac.op = "&&";
             tacs.push_back(tac);
             return;
@@ -221,7 +221,30 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            if (E_expr[i].value == "<")
+            {
+                tac.opperator=LT;
+            }
+            else if (E_expr[i].value == "<=")
+            {
+                tac.opperator=LE;
+            }
+            else if (E_expr[i].value == ">")
+            {
+                tac.opperator=GT;
+            }
+            else if (E_expr[i].value == ">=")
+            {
+                tac.opperator=GE;
+            }
+            else if (E_expr[i].value == "==")
+            {
+                tac.opperator=EQ;
+            }
+            else if (E_expr[i].value == "!=")
+            {
+                tac.opperator=NEQ;
+            }
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;
@@ -240,13 +263,13 @@ void Expr::expr()
                 std::cout << "find string add" << std::endl;
 
                 std::string temp = newTempVar("string");
-                tacs.push_back({"=", "\"" + E_expr[0].value + "\"", "", temp});
+                tacs.push_back({STRASSIGN,"=", "\"" + E_expr[0].value + "\"", "", temp});
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
                 right->env = env;
 
                 tac.arg1 = temp;
                 tac.arg2 = right->tac.result;
-
+                tac.opperator=STRADD;
                 tac.op = E_expr[i].value;
                 tacs.push_back(tac);
                 return;
@@ -261,7 +284,14 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            if(E_expr[i].value == "+")
+            {
+                tac.opperator=ADD;
+            }
+            else if(E_expr[i].value == "-")
+            {
+                tac.opperator=SUB;
+            }
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;
@@ -283,7 +313,18 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            if(E_expr[i].value == "*")
+            {
+                tac.opperator=MUL;
+            }
+            else if(E_expr[i].value == "/")
+            {
+                tac.opperator=DIV;
+            }
+            else if(E_expr[i].value == "%")
+            {
+                tac.opperator=MOD;
+            }
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;
@@ -297,7 +338,11 @@ void Expr::expr()
         std::string temp = newTempVar(func->return_type);
         this->env->insert_return_var(temp);
         func->call(E_expression,env);
-        tacs.push_back({ "=", func->get_return_value(), "", temp });
+
+        if(func->return_type=="string")
+        tacs.push_back({STRASSIGN, "=", func->get_return_value(), "", temp });
+        else
+        tacs.push_back({ASSIGN, "=", func->get_return_value(), "", temp });
         tac.result = temp;
         return;
     }
@@ -311,7 +356,11 @@ void Expr::expr()
         std::string temp = newTempVar(object_function->return_type);
         this->env->insert_return_var(temp);
         object_function->call(expression,env);
-        tacs.push_back({ "=", object_function->get_return_value(), "", temp });
+
+        if(object_function->return_type=="string")
+        tacs.push_back({STRASSIGN, "=", object_function->get_return_value(), "", temp });
+        else
+        tacs.push_back({ASSIGN, "=", object_function->get_return_value(), "", temp });
         tac.result =temp;
         return;
     }

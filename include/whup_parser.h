@@ -17,9 +17,40 @@ std::string newTempLabel();
  *result = arg1 op arg2 ;
  *储存四个字符串，分别代表运算符，操作数1，操作数2，结果
  */
+enum Operator
+{
+    ADD, // +
+    STRADD,//字符串相加
+    SUB, // -
+    MUL, // *
+    DIV, // /
+    MOD, // %
+    AND, // &&
+    OR,  // ||
+    NOT, // !
+    EQ,  // ==
+    NEQ, // !=
+    LT,  // <
+    GT,  // >
+    LE,  // <=
+    GE,  // >=
+    ASSIGN, // =
+    STRASSIGN,//字符串赋值
+    LABEL,  // label
+    GOTO,   // goto
+    IF_GOTO, // if_goto
+    PRINT,   // print
+    WINPUT,   // input
+    PUSH,    // push
+    POP,     // pop
+    CALL,    // call
+    RET,     // return
+    EXIT    // end
+};
 struct ThreeAddressCode
 {
-    std::string op;     // 操作符
+    Operator opperator;       // 操作符
+    std::string op;     // 操作符//这里是为了方便，因为在生成代码的时候需要用到字符串
     std::string arg1;   // 变量1
     std::string arg2;   // 变量2
     std::string result; // 存储结果的变量

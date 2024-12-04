@@ -1,13 +1,12 @@
 var i=3;
 var sum=0;
-while(i<=1000)
+while(i*i<=100)
 {
     var isprime=1;
     var b=2;
     while(b*b<=i)
     {
-        if(i%b==0)
-        {
+        if( i%b == 0 ){
             isprime=0;
         };
         b=b+1;

@@ -1,7 +1,7 @@
 #include "check.h"
 #include "whup_io.h"
 
-static std::vector<Error> errors; // 存储错误信息
+std::vector<Error> errors; // 存储错误信息
 
 void checkSyntax::checkID(Token token)
 {
@@ -41,13 +41,16 @@ void checkBrackets::checkPar(std::string code,std::string file_name)
             }        
             else if (c == ')') 
             {
-                //检测到')'，若栈不为空，则缺少'(',报错
+                //检测到')'，若栈为空，则缺少'(',报错
                 if (brackets.empty()) 
                 {
                     Token token(SYMBOL,"",lineNumber,file_name);
                     errors.push_back({ token, "Unmatched ')' at line " });
                 }
-            brackets.pop();//'('出栈
+                else 
+                {
+                    brackets.pop();//')'出栈
+                }
             }
         }
     }
@@ -80,13 +83,16 @@ void checkBrackets::checkBracket(std::string code,std::string file_name)
             }        
             else if (c == ']') 
             {
-                //检测到']'，若栈不为空，则缺少'[',报错
+                //检测到']'，若栈为空，则缺少'[',报错
                 if (brackets.empty()) 
                 {
                     Token token(SYMBOL,"",lineNumber,file_name);
                     errors.push_back({ token, "Unmatched ']' at line " });
                 }
-            brackets.pop();//'['出栈
+                else 
+                {
+                    brackets.pop();//']'出栈
+                }
             }
         }
     }
@@ -125,8 +131,11 @@ void checkBrackets::checkBrace(std::string code,std::string file_name)
                     Token token(SYMBOL,"",lineNumber,file_name);
                     errors.push_back({ token, "Unmatched '}' at line " });
                 }
-            brackets.pop();//'{'出栈
-            }
+                else 
+                {
+                    brackets.pop();//'}'出栈
+                }
+            }    
         }
     }
 
@@ -206,6 +215,11 @@ std::string CheckSemicolon::trim(const std::string& str)
     return str.substr(first, last - first + 1);
 }
 
+void pushErrors(Token token, std::string message)
+{
+    errors.push_back({token, message});
+}
+
 void printErrors() 
 {
     if (errors.empty()) 
@@ -220,7 +234,7 @@ void printErrors()
         for (const auto& error : errors) 
         {
             //输出错误信息，其中"\033[31m"表示输出红色，"\033[0m"表示恢复默认颜色
-            std::cerr << "\033[31m Error (⊙ _⊙ )!!! : " << error.message << error.token.line_number << "\033[0m" << std::endl;
+            std::cerr << "\033[31m Error (⊙ _⊙ )!!! : " << error.message << "\033[0m" << std::endl;
             std::cout << "In file: " << error.token.file_name << " at line: " << error.token.line_number << std::endl;
             IO io(error.token.file_name,"");
             std::cout << "\t \033[33m" << io.read_line(error.token.line_number) << "\033[0m" << std::endl;

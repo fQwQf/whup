@@ -8,6 +8,8 @@ include_directories ( ./include )
 
 file(GLOB LIBS "src/*.cpp")
 
+add_compile_options(-Ofast)
+
 add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp 
             src/break.cpp src/continue.cpp src/return.cpp src/expression.cpp src/object.cpp src/class.cpp src/classfunction.cpp src/function.cpp)
 add_library(execute SHARED src/execute.cpp)

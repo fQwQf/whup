@@ -66,7 +66,7 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	//这里把一个标识符插入符号表，该标识符指向
 
 	//先为expression提供标签
-	tacs.push_back({ "label","","",While_begin_label});//一个特殊的“三地址”：“label：”
+	tacs.push_back({LABEL, "label","","",While_begin_label});//一个特殊的“三地址”：“label：”
 	//初始化W_expr;
 	int pos = 0;
 	matchPar(pos, code);//跳过括号地同时得到）的位置从而初始化expr
@@ -83,16 +83,18 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	std::cout<<"expr done"<<std::endl;
 	//先处理判断语句
 	std::string While_Expr_result = While_Expr->getTacResult();
+	
 	ThreeAddressCode While_Expr_tac;
+	While_Expr_tac.opperator=IF_GOTO;
 	While_Expr_tac.op = "if_goto";
 	While_Expr_tac.arg1 = While_Expr_result;
 	While_Expr_tac.result = While_Block_label;
 	tacs.push_back(While_Expr_tac);//如果true进入block
 
-	tacs.push_back({ "goto","","",While_end_label });//如果false跳转至结束
+	tacs.push_back({GOTO, "goto","","",While_end_label });//如果false跳转至结束
 
 	//为block提供标签
-	tacs.push_back({ "label","","",While_Block_label });
+	tacs.push_back({LABEL, "label","","",While_Block_label });
 
 	std::cout<<"Block begin"<<std::endl;
 	//初始化W_block;
@@ -106,8 +108,8 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 
 	std::cout<<"xunhuan begin."<<std::endl;
 	//跳转再次进入while
-	tacs.push_back({ "goto","","",While_begin_label });
+	tacs.push_back({GOTO, "goto","","",While_begin_label });
 
 	//最后为结束标签
-	tacs.push_back({ "label","","",While_end_label });
+	tacs.push_back({LABEL, "label","","",While_end_label });
 }

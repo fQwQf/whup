@@ -31,6 +31,8 @@ class Function {
         void matchPar(int &i,std::vector<Token> &tokens);
         void matchBrace(int &i,std::vector<Token>&tokens);
         void generate();//生成函数代码
+        std::vector<Token> getBodyTokens(){return body_tokens;};
+        // void generateInline();//生成内联函数//主要是为了类的构造
         std::string get_return_value();
 
         //下面拟进行模块化处理

@@ -12,10 +12,14 @@
 #include"class.h"
 #include"object.h"
 #include"classfunction.h"
+#include "check.h"
+
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
 extern std::unordered_map<std::string,Object*>object_table;
+extern std::unordered_map<std::string,Class*>class_table;
+extern std::vector<Error> errors; // 存储错误信息
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -52,17 +56,12 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 {
     this->env = new Environment();
 
+    
+
     block(tokens);
 
-    tacs.push_back(ThreeAddressCode{"exit", "", "", ""});
+    tacs.push_back(ThreeAddressCode{EXIT,"exit", "", "", ""});
 
-    for (auto &i : functions){
-        i.second->generate();
-    }
-
-    //先将各个实例的构造函数函数体生成出来
-    //这个过程中会将所有数据成员的类型确定下来
-    //避免其他成员函数中使用的变量未确定类型，导致函数体中出现null
     for(auto&object:object_table)
     {
         object.second->myConstructor->generate();
@@ -75,6 +74,14 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
             i.second->generate();
         }
     }
+    for (auto &i : functions){
+        i.second->generate();
+    }
+
+    //先将各个实例的构造函数函数体生成出来
+    //这个过程中会将所有数据成员的类型确定下来
+    //避免其他成员函数中使用的变量未确定类型，导致函数体中出现null
+    
 }
 
 // 以分号为分隔扫描
@@ -119,6 +126,13 @@ void Block::generate(std::vector<Token> subtokens)
             std::cout<<i.value<<" ";
         }
         std::cout<<std::endl;
+
+        //新增对类的赋值语句，只支持object1=object2这样的语句
+        if(object_table.find(subtokens[0].value)!=object_table.end())
+        {
+            object_table[subtokens[0].value]->copy(object_table[subtokens[2].value]);
+        }
+        else
         new Assign(subtokens,env);
         std::cout << "assign generate" << std::endl;
     }
@@ -166,8 +180,8 @@ void Block::generate(std::vector<Token> subtokens)
     {
         if (function_ret_label == "")
         {
-            std::cout << "unexpected return" << std::endl;
-            exit(1);
+            pushErrors(subtokens[0],"unexpected retrun");
+            // exit(1);
         }
         else
         {
@@ -191,22 +205,63 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Class(subtokens);
     }
-    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value!="(")
+    // else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value!="("&&subtokens[2].value!="=")
+    // {
+    //     std::string className=subtokens[0].value;
+    //     std::string objectName=subtokens[1].value;
+    //     std::cout<<"new object "<<objectName<<std::endl;
+    //     new Object(className,objectName,env);
+    //     std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    // }
+    // else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="(")
+    // {
+    //     //构造函数，创建对象的同时调用构造函数
+    //     std::string className=subtokens[0].value;
+    //     std::string objectName=subtokens[1].value;
+    //     std::cout<<"new object "<<objectName<<std::endl;
+    //     Object*thisObject=new Object(className,objectName,env);
+    //     std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+    //     std::string functionName=className;
+    //     // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
+    //     // {
+    //     //     std::cout<<"not found classfunction"<<functionName;
+    //     //     exit(1);
+    //     // }
+    //     std::cout<<functionName<<" call begin"<<std::endl;
+    //     // thisFunctionTable[functionName]->call(subtokens,this->env);
+    //     thisObject->myConstructor->callInline(subtokens,this->env);
+
+    //     //可以理解为现在将构造函数的函数体内联
+    //     //目的时为了更早确定数据成员的类型
+    //     //否则在其他成员函数中使用数据成员时，可能会出现null
+    //     //注：generate重载为内联形式
+    //     thisObject->myConstructor->generateInline();
+        
+    //     std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    // }
+    // else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="=")
+    // {
+    //     //对等号左边的对象调用copy，传入等号右边的对象
+    //     std::cout<<"copy begin"<<std::endl;
+    //     for(auto&i:subtokens)
+    //     {
+    //         std::cout<<i.value<<" ";
+    //     }
+    //     object_table[subtokens[1].value]->copy(object_table[subtokens[3].value]);
+    // }
+    //对实例构造进行整合
+    //////////////////
+    //////////////////
+    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&class_table.find(subtokens[0].value)!=class_table.end())
     {
-        std::string className=subtokens[0].value;
-        std::string objectName=subtokens[1].value;
-        std::cout<<"new object "<<objectName<<std::endl;
-        new Object(className,objectName,env);
-        std::cout<<"new object "<<objectName<<" success"<<std::endl;
-    }
-    else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="(")
-    {
-        //构造函数，创建对象的同时调用构造函数
         std::string className=subtokens[0].value;
         std::string objectName=subtokens[1].value;
         std::cout<<"new object "<<objectName<<std::endl;
         Object*thisObject=new Object(className,objectName,env);
-        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
+        
+        if(subtokens[2].type==SYMBOL&&subtokens[2].value=="(")
+        {
+            std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
         std::string functionName=className;
         // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         // {
@@ -216,6 +271,23 @@ void Block::generate(std::vector<Token> subtokens)
         std::cout<<functionName<<" call begin"<<std::endl;
         // thisFunctionTable[functionName]->call(subtokens,this->env);
         thisObject->myConstructor->call(subtokens,this->env);
+
+        //可以理解为现在将构造函数的函数体内联
+        //目的时为了更早确定数据成员的类型
+        //否则在其他成员函数中使用数据成员时，可能会出现null
+        //注：generate重载为内联形式
+        // thisObject->myConstructor->generateInline();
+        }
+        else if(subtokens[2].value=="=")
+        {
+            //对等号左边的对象调用copy，传入等号右边的对象
+            std::cout<<"copy begin"<<std::endl;
+            for(auto&i:subtokens)
+            {
+                std::cout<<i.value<<" ";
+            }
+            object_table[subtokens[1].value]->copy(object_table[subtokens[3].value]);
+        }
         std::cout<<"new object "<<objectName<<" success"<<std::endl;
     }
     else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value=="->")
@@ -237,6 +309,6 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else
     {
-        std::cout << "unexpected token" << std::endl;
+        pushErrors(subtokens[0],"unexpected token "+subtokens[0].value);
     }
 }
