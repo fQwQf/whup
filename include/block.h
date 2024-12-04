@@ -1,10 +1,11 @@
-#ifndef PARSER_H_
 #include"whup_parser.h"
-#endif
 
 #ifndef BLOCK_H_
 #define BLOCK_H_
 #include <bits/stdc++.h>
+
+class Environment;// 前向声明
+class ThreeAddressCode;// 前向声明
 
 
 /*

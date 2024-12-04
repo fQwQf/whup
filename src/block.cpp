@@ -16,7 +16,7 @@
 #include "whup_io.h"
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
-extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+extern std::unordered_map<std::string, Function*> functions;  // 存储所有函数名和对应的对象指针哈希表，用于生成函数体
 extern std::vector<std::unordered_map<std::string,ClassFunction*>> all_Object_function_table;
 extern std::unordered_map<std::string,Object*>object_table;
 extern std::unordered_map<std::string,Class*>class_table;
@@ -120,9 +120,20 @@ void Block::generate(std::vector<Token> subtokens)
     if (subtokens.empty())
         return;
 
+    std::vector<Token> namespace_tokens;
+
+    if (subtokens[0].type == IDENTIFIER && subtokens[1].type == SYMBOL && subtokens[1].value == "::") {
+        // 对于命名空间，先转化为没有命名空间的情况
+        namespace_tokens = std::vector<Token>(subtokens.begin(), subtokens.begin()+2);
+        subtokens.erase(subtokens.begin(), subtokens.begin()+2);
+    }
+
+
     if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "("&&subtokens[1].type!=IDENTIFIER&&subtokens[1].value!="->")
     {
         std::cout<<"assign begin"<<std::endl;
+        subtokens.insert(subtokens.begin(),namespace_tokens.begin(),namespace_tokens.end());
+
         for(auto&i:subtokens)
         {
             std::cout<<i.value<<" ";
@@ -140,13 +151,21 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else if(subtokens[0].type == IDENTIFIER && subtokens[1].value == "(")
     {
-        if (functions.find(subtokens[0].value) == functions.end())
+        Environment* funcenv = this -> env;
+        //如果指定了命名空间，切过去
+        if(!namespace_tokens.empty() && namespace_tokens[0].type == IDENTIFIER){
+            //TODO 这里加个找不到命名空间的报错
+            funcenv = namespace_table[namespace_tokens[0].value];
+        }
+
+        if (funcenv->get_function(subtokens[0].value) == nullptr)
         {
+            //TODO 改成报错
             std::cout << "Function " << subtokens[0].value << " not found" << std::endl;
         }
         else
         {
-            Function *func = functions[subtokens[0].value];
+            Function *func = funcenv->get_function(subtokens[0].value);
             func->call(subtokens, env);
             std::cout << "call function: " << subtokens[0].value << std::endl;
             return;

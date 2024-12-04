@@ -30,7 +30,8 @@ Function::Function(std::vector<Token> &tokens, Environment *env)
     if (tokens[i].type == IDENTIFIER && tokens[i + 1].type == SYMBOL && tokens[i + 1].value == "(")
     {
         name = tokens[i].value;
-        functions[name] = this; // 将函数插入类函数表//这里与普通函数不同，普通函数是插入全局函数表
+        functions[name] = this; // 将函数插入全局函数表
+        env->function_table[name] = this; // 将函数插入环境函数表
         i++;
     }
 
