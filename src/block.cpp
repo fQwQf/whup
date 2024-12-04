@@ -100,16 +100,18 @@ void Block::block(std::vector<Token> tokens)
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
             // 打印出所有Token
             // debug时可能有用
-            // std::cout<<"subtokens:"<<std::endl;
-            // for(auto &i:subtokens){
-            //    std::cout << i.value << " ";
-            // }
-            // std::cout << std::endl;
+            std::cout<<"subtokens:"<<std::endl;
+            for(auto &i:subtokens){
+               std::cout << i.value << " ";
+            }
+            std::cout << std::endl;
             
             last_semicolon = i+1;
             generate(subtokens);
         }
     }
+
+    return;
 }
 
 // 根据首token传入对应的类的构造函数中。
@@ -331,9 +333,9 @@ void Block::generate(std::vector<Token> subtokens)
     {
         std::cout << "import" << std::endl;
 
-        for(int i=1;i<subtokens.size();i++)
-        {
-            std::cout<<subtokens[i].value<<" ";
+        //for(int i=1;i<subtokens.size();i++)
+        //{
+            std::cout<<subtokens[1].value<<" ";
             std::string fileName=subtokens[1].value;
 
             IO* input = new IO(fileName+".whup");
@@ -349,29 +351,15 @@ void Block::generate(std::vector<Token> subtokens)
 
             Lexer lexer(expression,fileName + ".whup");
             std::vector<Token> tokens = lexer.tokenize();
-            tokens.pop_back(); // 删除最后一个换行符
+            //tokens.pop_back(); // 删除最后一个换行符
 
             // 使用得到的token集合进行语法分析，生成一个中间表示
             Block* block = new Block(tokens,env);
 
             namespace_table[fileName] = block->getEnv();
 
-        }
-        
-
-        Object* thisObject=object_table[subtokens[0].value];
-        std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
-        std::string functionName=subtokens[2].value;
-
-
-        if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
-        {
-            std::cout<<"not found classfunction"<<functionName;
-            exit(1);
-        }
-        std::cout<<functionName<<" call begin"<<std::endl;
-        thisFunctionTable[functionName]->call(subtokens,this->env);
-    }
+        //}
+    } 
     else
     {
         pushErrors(subtokens[0],"unexpected token "+subtokens[0].value);

@@ -193,6 +193,15 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
     }
     
 }
+/*TODO 这样的语句不会报错
+function add(a:number,b:number):number{
+    print(a+b);
+    return 
+};
+
+add(8,6);*/
+
+
 
 bool CheckSemicolon::endsWithSemicolon(const std::string& line) 
 {

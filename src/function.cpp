@@ -309,6 +309,20 @@ void Function::returnType(std::vector<Token> &tokens)
         // return_value = "";
         if(tokens[i].value!="{")
             pushErrors(tokens[0], "Missing colon before return type for function " + name);
+        for (int i = 0; i < tokens.size(); i++)
+        {
+            if (tokens[i].type == KEYWORD && tokens[i].value == "return")
+            {
+                if (tokens[i + 1].type == SYMBOL && tokens[i + 1].value == ";")
+                {
+                    continue;
+                }
+                else
+                {
+                    pushErrors(tokens[i], "Missing return type for function " + name);
+                }
+            }
+        }
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);

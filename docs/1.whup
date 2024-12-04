@@ -1,5 +1,3 @@
-function add(a:number,b:number):number{
-    print(a+b);
-};
+import bb;
 
-add(8,6);
+bb::add(8,6);
