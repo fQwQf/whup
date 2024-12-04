@@ -333,23 +333,29 @@ void Block::generate(std::vector<Token> subtokens)
     {
         std::cout << "import" << std::endl;
 
-        //for(int i=1;i<subtokens.size();i++)
-        //{
+        
             std::cout<<subtokens[1].value<<" ";
             std::string fileName=subtokens[1].value;
 
-            IO* input = new IO(fileName+".whup");
+            //fileName是相对于文件的，现在要改为相对于whupc的
+            std::string path=subtokens[0].file_name;
+            std::string whupc_path=path.substr(0,path.find_last_of("\\"));
+
+            fileName=fileName+".whup";
+            //whupc_path+"\\"+
+
+            IO* input = new IO(fileName);
             
             std::string expression = input->read();
 
             delete input;
 
-            checkBrackets::checkPar(expression,fileName+".whup");
-            checkBrackets::checkBracket(expression,fileName+".whup");
-            checkBrackets::checkBrace(expression,fileName + ".whup");
+            checkBrackets::checkPar(expression,fileName);
+            checkBrackets::checkBracket(expression,fileName);
+            checkBrackets::checkBrace(expression,fileName);
             printErrors();
 
-            Lexer lexer(expression,fileName + ".whup");
+            Lexer lexer(expression,fileName);
             std::vector<Token> tokens = lexer.tokenize();
             //tokens.pop_back(); // 删除最后一个换行符
 
@@ -358,7 +364,7 @@ void Block::generate(std::vector<Token> subtokens)
 
             namespace_table[fileName] = block->getEnv();
 
-        //}
+        
     } 
     else
     {

@@ -6,6 +6,7 @@ extern std::vector<Error> errors;
 
 std::string function_ret_label;    // 只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 std::string function_return_value; // 同理
+std::string function_return_type;
 
 extern std::unordered_map<std::string, Function *> functions;     // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, std::string> var_declares; // 存储将放入c++中变量名和类型的哈希表
@@ -196,6 +197,7 @@ void Function::generate()
 
     function_ret_label = end_label;
     function_return_value = return_value;
+    function_return_type = return_type;
     tacs.push_back({LABEL,"label", "", "", start_label});
 
     // Block能否识别临时变量？
