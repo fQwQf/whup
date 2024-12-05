@@ -1,4 +1,4 @@
 import bb;
 
-c = bb::add(add(3,4),9);
+c = add(bb::add(3,4),9);
 print(c);

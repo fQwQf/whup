@@ -12,6 +12,8 @@ extern std::unordered_map<std::string, Function *> functions;     // 存储函�
 extern std::unordered_map<std::string, std::string> var_declares; // 存储将放入c++中变量名和类型的哈希表
 extern std::vector<ThreeAddressCode> tacs;                        // 存储三地址代码的向量
 
+std::set<Function*> used_functions;
+
 Function::Function() {
     // 这东西什么用都没有，但是必须要有，否则编译器无法自动生成ClassFunction的默认构造函数
 };
@@ -121,7 +123,7 @@ void Function::push_real_para(Environment *env)
 
 void Function::call_with_stack_frame(Environment *env)
 {
-    
+    used_functions.insert(this);
 
     if (env->isGlobal())
     { //如果在全局环境中调用，则不需要保存栈帧
@@ -347,15 +349,13 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     int last_comma = index;
     int param_num = 0;
 
+    //下面的过程只能识别后面接,的参数，于是就这样
+    tokens[tokens.size()-1].value = ",";
+
     for (int i = index; i < tokens.size(); i++)
     {
-        if (tokens[index].value == ")")
-        {
-            pushErrors(tokens[0], "No params " );
-            break;
-        }
         matchPar(i, tokens);
-        if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
+        if (tokens[i].type == SYMBOL && (tokens[i].value == ","))
         {
             std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
             last_comma = i + 1;
@@ -369,12 +369,6 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;
-        }
-        // 呃呃有点没懂
-        if (tokens[i].type == SYMBOL && tokens[i].value == ")")
-        {
-            tokens.erase(tokens.begin(), tokens.begin() + i); // 检测到括号，则删除括号及括号之前的所有内容
-            break;
         }
     }
 

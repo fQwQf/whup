@@ -22,6 +22,7 @@ extern std::unordered_map<std::string,Object*>object_table;
 extern std::unordered_map<std::string,Class*>class_table;
 extern std::vector<Error> errors; // 存储错误信息
 extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
+extern std::set<Function*> used_functions;
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -100,8 +101,8 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
             i.second->generate();
         }
     }
-    for (auto &i : functions){
-        i.second->generate();
+    for (auto &i : used_functions){
+        i->generate();
     }
 
     //先将各个实例的构造函数函数体生成出来
