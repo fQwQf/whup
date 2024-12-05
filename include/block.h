@@ -23,6 +23,8 @@ public:
 
     //以分号为分隔扫描
     Block(std::vector<Token> tokens, Environment* env);
+    //这个是import的block
+    Block(std::vector<Token> tokens, Environment* env,bool is_import);
     Block(std::vector<Token> tokens);
     void block(std::vector<Token> tokens);
 

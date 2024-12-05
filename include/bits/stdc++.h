@@ -48,7 +48,6 @@
 #include <cstring>
 #include <ctime>
  
-#if __cplusplus >= 201103L
 #include <ccomplex>
 #include <cfenv>
 #include <cinttypes>
@@ -57,7 +56,7 @@
 #include <ctgmath>
 #include <cwchar>
 #include <cwctype>
-#endif
+
  
 // C++
 #include <algorithm>
@@ -93,7 +92,6 @@
 #include <valarray>
 #include <vector>
  
-#if __cplusplus >= 201103L
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -114,4 +112,3 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <filesystem>
-#endif

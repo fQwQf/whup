@@ -187,9 +187,10 @@ void Environment::insert_return_var(std::string name){
     return_var_list.push_back(name);
 }
 
+//开始打算用这个判断是否需要压栈帧，但后来发现在命名空间内也不用压
 bool Environment::isGlobal()
 {
-    if(parent==nullptr)
+    if(parent==nullptr || is_import)
     {
         return true;
     }
@@ -199,6 +200,7 @@ bool Environment::isGlobal()
     }
 }
 
+// 查到import的environment就停止，防止调用到namespace外
 Function* Environment::get_function(std::string name){
     if(function_table.find(name)!=function_table.end())
     {
@@ -206,8 +208,9 @@ Function* Environment::get_function(std::string name){
     }
     else
     {
-        if(parent==nullptr)
+        if(parent==nullptr || is_import)
         {
+            // TODO 报错
             return nullptr;
         }
         else

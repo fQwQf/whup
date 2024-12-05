@@ -110,6 +110,11 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     
 }
 
+Block::Block(std::vector<Token> tokens, Environment *env, bool is_import) : Block(tokens, env)
+{
+    this->env->is_import = is_import;
+};
+
 // 以分号为分隔扫描
 void Block::block(std::vector<Token> tokens)
 {
@@ -388,11 +393,9 @@ void Block::generate(std::vector<Token> subtokens)
         tokens.pop_back(); // 删除最后一个换行符，虽然在Windows下不必执行，但在Liunx下不执行会报错
 
         // 使用得到的token集合进行语法分析，生成一个中间表示
-        Block *import_block = new Block(tokens, env);
+        Block import_block(tokens, env, true);
 
-        namespace_table[fileName] = import_block->getEnv();
-
-        delete import_block;
+        namespace_table[fileName] = import_block.getEnv();
     } 
     else
     {

@@ -84,6 +84,7 @@ private:
     Environment *parent; // 指向父环境的指针
     int id;
     static int i;
+    
 
 public:
     // 以哈希表创建符号表，用于存储变量名及其类型
@@ -96,6 +97,7 @@ public:
     // 存储函数名和对应的对象指针哈希表
     std::unordered_map<std::string, Function*> function_table;  
 
+    bool is_import = false; // 是否为导入环境
 
     /*
     构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
