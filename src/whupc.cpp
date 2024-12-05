@@ -80,7 +80,7 @@ int main(int n, const char *arg[])
 
     std::clock_t start = clock();
     
-    execute(tacs);
+    //execute(tacs);
 
     std::clock_t end   = clock();
     std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;

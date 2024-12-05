@@ -192,7 +192,7 @@ void Block::generate(std::vector<Token> subtokens)
         else
         {
             Function *func = funcenv->get_function(subtokens[0].value);
-            func->call(subtokens, env);
+            func->call(subtokens, this->env);
             std::cout << "call function: " << subtokens[0].value << std::endl;
             return;
         }
@@ -357,43 +357,42 @@ void Block::generate(std::vector<Token> subtokens)
     {
         std::cout << "import" << std::endl;
 
-        
-            std::cout<<subtokens[1].value<<" ";
-            std::string fileName=subtokens[1].value;
+        std::cout << subtokens[1].value << " ";
+        std::string fileName = subtokens[1].value;
 
-            //fileName是相对于文件的，现在要改为相对于whupc的
-            std::string path=subtokens[0].file_name;
+        // fileName是相对于文件的，现在要改为相对于whupc的
+        std::string path = subtokens[0].file_name;
 
 #ifdef _WIN32
-            std::string whupc_path = path.substr(0, path.find_last_of("\\"));
-            std::string file_name = whupc_path + "\\" + fileName + ".whup";
+        std::string whupc_path = path.substr(0, path.find_last_of("\\"));
+        std::string file_name = whupc_path + "\\" + fileName + ".whup";
 #else
-            std::string whupc_path = path.substr(0, path.find_last_of("/"));
-            std::string file_name = whupc_path + "/" + fileName + ".whup";
+        std::string whupc_path = path.substr(0, path.find_last_of("/"));
+        std::string file_name = whupc_path + "/" + fileName + ".whup";
 #endif
 
-            IO* input = new IO(file_name);
-            
-            std::string expression = input->read();
+        IO *input = new IO(file_name);
 
-            delete input;
+        std::string expression = input->read();
 
-            checkBrackets::checkPar(expression,file_name);
-            checkBrackets::checkBracket(expression,file_name);
-            checkBrackets::checkBrace(expression,file_name);
-            printErrors();
+        delete input;
 
-            Lexer lexer(expression,file_name);
-            std::vector<Token> tokens = lexer.tokenize();
+        checkBrackets::checkPar(expression, file_name);
+        checkBrackets::checkBracket(expression, file_name);
+        checkBrackets::checkBrace(expression, file_name);
+        printErrors();
 
-            tokens.pop_back(); // 删除最后一个换行符，虽然在Windows下不必执行，但在Liunx下不执行会报错
+        Lexer lexer(expression, file_name);
+        std::vector<Token> tokens = lexer.tokenize();
 
-            // 使用得到的token集合进行语法分析，生成一个中间表示
-            Block* block = new Block(tokens,env);
+        tokens.pop_back(); // 删除最后一个换行符，虽然在Windows下不必执行，但在Liunx下不执行会报错
 
-            namespace_table[fileName] = block->getEnv();
+        // 使用得到的token集合进行语法分析，生成一个中间表示
+        Block *import_block = new Block(tokens, env);
 
-        
+        namespace_table[fileName] = import_block->getEnv();
+
+        delete import_block;
     } 
     else
     {
