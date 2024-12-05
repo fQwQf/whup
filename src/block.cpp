@@ -339,25 +339,30 @@ void Block::generate(std::vector<Token> subtokens)
 
             //fileName是相对于文件的，现在要改为相对于whupc的
             std::string path=subtokens[0].file_name;
-            std::string whupc_path=path.substr(0,path.find_last_of("\\"));
 
-            fileName=fileName+".whup";
-            //whupc_path+"\\"+
+#ifdef _WIN32
+            std::string whupc_path = path.substr(0, path.find_last_of("\\"));
+            std::string file_name = whupc_path + "\\" + fileName + ".whup";
+#else
+            std::string whupc_path = path.substr(0, path.find_last_of("/"));
+            std::string file_name = whupc_path + "/" + fileName + ".whup";
+#endif
 
-            IO* input = new IO(fileName);
+            IO* input = new IO(file_name);
             
             std::string expression = input->read();
 
             delete input;
 
-            checkBrackets::checkPar(expression,fileName);
-            checkBrackets::checkBracket(expression,fileName);
-            checkBrackets::checkBrace(expression,fileName);
+            checkBrackets::checkPar(expression,file_name);
+            checkBrackets::checkBracket(expression,file_name);
+            checkBrackets::checkBrace(expression,file_name);
             printErrors();
 
-            Lexer lexer(expression,fileName);
+            Lexer lexer(expression,file_name);
             std::vector<Token> tokens = lexer.tokenize();
-            //tokens.pop_back(); // 删除最后一个换行符
+
+            tokens.pop_back(); // 删除最后一个换行符，虽然在Windows下不必执行，但在Liunx下不执行会报错
 
             // 使用得到的token集合进行语法分析，生成一个中间表示
             Block* block = new Block(tokens,env);

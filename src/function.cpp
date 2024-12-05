@@ -38,7 +38,6 @@ Function::Function(std::vector<Token> &tokens, Environment *env)
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
 
-    // functions[name] = this;
     std::cout << "Function name: " << name << std::endl;
 
     // 1.形参处理

@@ -1,3 +1,4 @@
-function add(a:number,b:number){
+function add(a:number,b:number):number{
     print(a+b);
+    return;
 };
