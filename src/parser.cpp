@@ -118,6 +118,7 @@ void Environment::change_type_var(std::string name, std::string t)
 {
     if (var_table.find(name) != var_table.end())
     {
+        //TODO 添加类型检查，如果不是由null改成其它或没有改变，就报错
         var_table[name] = t;
     }
     else
