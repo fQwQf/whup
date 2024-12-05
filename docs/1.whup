@@ -1,21 +1,4 @@
-var i=3;
-var sum=0;
-while(i<=1000)
-{
-    var isprime=1;
-    var b=2;
-    while(b*b<=i)
-    {
-        if(i%b==0)
-        {
-            isprime=0;
-        };
-        b=b+1;
-    };
-    if(isprime==1)
-    {
-        sum=sum+i;
-    };
-    i=i+1;
-};
-print(sum);
+import bb;
+
+c = add(bb::add(3,4),9);
+print(sqrt(c-4));

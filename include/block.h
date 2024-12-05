@@ -1,10 +1,11 @@
-#ifndef PARSER_H_
 #include"whup_parser.h"
-#endif
 
 #ifndef BLOCK_H_
 #define BLOCK_H_
 #include <bits/stdc++.h>
+
+class Environment;// 前向声明
+class ThreeAddressCode;// 前向声明
 
 
 /*
@@ -22,6 +23,8 @@ public:
 
     //以分号为分隔扫描
     Block(std::vector<Token> tokens, Environment* env);
+    //这个是import的block
+    Block(std::vector<Token> tokens, Environment* env,bool is_import);
     Block(std::vector<Token> tokens);
     void block(std::vector<Token> tokens);
 
@@ -30,6 +33,8 @@ public:
 
     //根据首token传入对应的类的构造函数中。
     void generate(std::vector<Token> subtokens);
+
+    Environment* getEnv(){return env;}
     
 
 };

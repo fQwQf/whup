@@ -1,9 +1,13 @@
-#include <bits/stdc++.h>
-#include "whup_parser.h"
-#include "block.h"
-
 #ifndef FUNCTION_H_
 #define FUNCTION_H_
+#include <bits/stdc++.h>
+#include "whup_parser.h"
+
+
+
+#include "block.h"
+
+class Environment;//前向声明
 
 //这是对函数声明的识别，会将函数名与参数存入哈希表，并且将函数体压入function_tacs
 class Function {

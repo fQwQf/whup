@@ -1,11 +1,18 @@
 // mingw-w64里有一个parser.h，为避免冲突改名
 #ifndef PARSER_H_
 #define PARSER_H_
+
 #include <bits/stdc++.h>
 
 #ifndef LEXER_H_
 #include "lexer.h"
 #endif
+
+#ifndef FUNCTION_H_
+#include "function.h"
+#endif
+
+class Function;//前向声明
 
 // 创建新的临时变量
 std::string newTempVar(std::string type);
@@ -45,7 +52,8 @@ enum Operator
     POP,     // pop
     CALL,    // call
     RET,     // return
-    EXIT    // end
+    EXIT,    // end
+    POW      // **
 };
 struct ThreeAddressCode
 {
@@ -77,6 +85,7 @@ private:
     Environment *parent; // 指向父环境的指针
     int id;
     static int i;
+    
 
 public:
     // 以哈希表创建符号表，用于存储变量名及其类型
@@ -85,6 +94,11 @@ public:
     // 储存存储返回值的临时变量，便于压入栈帧
     // 放在environment是因为栈帧的另一个组成部分，即局部变量，也在environment，这样统一性更好
     std::vector<std::string> return_var_list;
+
+    // 存储函数名和对应的对象指针哈希表
+    std::unordered_map<std::string, Function*> function_table;  
+
+    bool is_import = false; // 是否为导入环境
 
     /*
     构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
@@ -146,6 +160,9 @@ public:
 
     //检测是否为全局环境
     bool isGlobal();
+
+    // 查找一个函数，方法和查变量一样
+    Function* get_function(std::string name);
 };
 
 #endif

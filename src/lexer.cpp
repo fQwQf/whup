@@ -13,9 +13,6 @@
 
 #include "lexer.h"
 
-
-
-
 Token::Token(TokenType type, const std::string& value, int line_number,std::string file_name)
         : type(type), value(value), line_number(line_number) ,file_name(file_name){};
 

@@ -6,7 +6,8 @@
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
 std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
-std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
+std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表，用于调用函数
+std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 
 int tempVarCounter = 0;  // 临时变量计数器
 int tempLabelCounter = 0;  // 临时标签计数器
@@ -117,6 +118,7 @@ void Environment::change_type_var(std::string name, std::string t)
 {
     if (var_table.find(name) != var_table.end())
     {
+        //TODO 添加类型检查，如果不是由null改成其它或没有改变，就报错
         var_table[name] = t;
     }
     else
@@ -185,9 +187,10 @@ void Environment::insert_return_var(std::string name){
     return_var_list.push_back(name);
 }
 
+//开始打算用这个判断是否需要压栈帧，但后来发现在命名空间内也不用压
 bool Environment::isGlobal()
 {
-    if(parent==nullptr)
+    if(parent==nullptr || is_import)
     {
         return true;
     }
@@ -196,3 +199,23 @@ bool Environment::isGlobal()
         return false;
     }
 }
+
+// 查到import的environment就停止，防止调用到namespace外
+Function* Environment::get_function(std::string name){
+    if(function_table.find(name)!=function_table.end())
+    {
+        return function_table[name];
+    }
+    else
+    {
+        if(parent==nullptr)
+        {
+            // TODO 报错
+            return nullptr;
+        }
+        else
+        {
+            return parent->get_function(name);
+        }
+    }
+};

@@ -6,10 +6,13 @@ extern std::vector<Error> errors;
 
 std::string function_ret_label;    // 只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 std::string function_return_value; // 同理
+std::string function_return_type;
 
 extern std::unordered_map<std::string, Function *> functions;     // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, std::string> var_declares; // 存储将放入c++中变量名和类型的哈希表
 extern std::vector<ThreeAddressCode> tacs;                        // 存储三地址代码的向量
+
+std::set<Function*> used_functions;
 
 Function::Function() {
     // 这东西什么用都没有，但是必须要有，否则编译器无法自动生成ClassFunction的默认构造函数
@@ -30,13 +33,13 @@ Function::Function(std::vector<Token> &tokens, Environment *env)
     if (tokens[i].type == IDENTIFIER && tokens[i + 1].type == SYMBOL && tokens[i + 1].value == "(")
     {
         name = tokens[i].value;
-        functions[name] = this; // 将函数插入类函数表//这里与普通函数不同，普通函数是插入全局函数表
+        functions[name] = this; // 将函数插入全局函数表
+        env->function_table[name] = this; // 将函数插入环境函数表
         i++;
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
 
-    // functions[name] = this;
     std::cout << "Function name: " << name << std::endl;
 
     // 1.形参处理
@@ -120,7 +123,7 @@ void Function::push_real_para(Environment *env)
 
 void Function::call_with_stack_frame(Environment *env)
 {
-    
+    used_functions.insert(this);
 
     if (env->isGlobal())
     { //如果在全局环境中调用，则不需要保存栈帧
@@ -172,6 +175,11 @@ void Function::generate()
 {
 
     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
+    //防止不写冒号直接写返回值的情况
+    if(body_tokens[0].value=="{"){
+        body_tokens.erase(body_tokens.begin());
+    }
+
     body_tokens.pop_back();                                          // 去掉 }
 
     std::cout << "Function: " << name << std::endl;
@@ -190,6 +198,7 @@ void Function::generate()
 
     function_ret_label = end_label;
     function_return_value = return_value;
+    function_return_type = return_type;
     tacs.push_back({LABEL,"label", "", "", start_label});
 
     // Block能否识别临时变量？
@@ -243,6 +252,11 @@ void Function::folmalPara(std::vector<Token> &tokens)
         // 接下来要按照逗号和冒号来分割参数
         while (tokens[i].type != SYMBOL || tokens[i].value != ")")
         {
+            if (tokens[i].type == SYMBOL && tokens[i].value == ",")
+            {
+                // tokens.erase(tokens.begin());
+                i++;
+            }
             std::string param_name = tokens[i].value;
             // tokens.erase(tokens.begin());
             i++;
@@ -258,7 +272,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
             }
             else
             {
-                pushErrors(tokens[0], "No return type for function " + name);
+                pushErrors(tokens[0], "No type for parameter " + param_name);
             }
         }
         // tokens.erase(tokens.begin());
@@ -285,6 +299,8 @@ void Function::returnType(std::vector<Token> &tokens)
     if (tokens[0].type == SYMBOL && tokens[0].value == ":")
     {
         i++;
+        if(tokens[i].value=="{")
+            pushErrors(tokens[0], "Need return type before colon for function " + name);
         return_type = tokens[i].value;
         return_value = newTempVar(return_type);
         i++;
@@ -292,7 +308,24 @@ void Function::returnType(std::vector<Token> &tokens)
     }
     else
     {
-        pushErrors(tokens[0], "No return type for function " + name);
+        // return_type = "void";
+        // return_value = "";
+        if(tokens[i].value!="{")
+            pushErrors(tokens[0], "Missing colon before return type for function " + name);
+        for (int i = 0; i < tokens.size(); i++)
+        {
+            if (tokens[i].type == KEYWORD && tokens[i].value == "return")
+            {
+                if (tokens[i + 1].type == SYMBOL && tokens[i + 1].value == ";")
+                {
+                    continue;
+                }
+                else
+                {
+                    pushErrors(tokens[i], "Missing return type for function " + name);
+                }
+            }
+        }
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
@@ -305,7 +338,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     // 仍然将整个括号传入
     if (tokens[0].value != "(")
     {
-        pushErrors(tokens[0], "No return type for function " + name);
+        pushErrors(tokens[0], "Not a function ");
         return;
     }
     int index = 1;
@@ -316,15 +349,13 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     int last_comma = index;
     int param_num = 0;
 
+    //下面的过程只能识别后面接,的参数，于是就这样
+    tokens[tokens.size()-1].value = ",";
+
     for (int i = index; i < tokens.size(); i++)
     {
-        if (tokens[index].value == ")")
-        {
-            pushErrors(tokens[0], "no params " );
-            break;
-        }
         matchPar(i, tokens);
-        if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
+        if (tokens[i].type == SYMBOL && (tokens[i].value == ","))
         {
             std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
             last_comma = i + 1;
@@ -338,12 +369,6 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;
-        }
-        // 呃呃有点没懂
-        if (tokens[i].type == SYMBOL && tokens[i].value == ")")
-        {
-            tokens.erase(tokens.begin(), tokens.begin() + i); // 检测到括号，则删除括号及括号之前的所有内容
-            break;
         }
     }
 

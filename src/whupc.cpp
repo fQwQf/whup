@@ -59,6 +59,7 @@ int main(int n, const char *arg[])
     std::vector<Token> tokens = lexer.tokenize();
     tokens.pop_back(); // 删除最后一个换行符
 
+
     //使用得到的token集合进行语法分析，生成一个中间表示
     Block block(tokens);
 
