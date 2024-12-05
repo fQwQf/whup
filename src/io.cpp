@@ -246,3 +246,33 @@ std::vector<ThreeAddressCode> IO::readTAC() {
 
     return tacs;
 }
+
+std::string IO::readWHUPLib()
+{
+    std::filesystem::path folderPath = "./WHUPLib";
+
+    // 检查文件夹是否存在
+    if (!std::filesystem::exists(folderPath) || !std::filesystem::is_directory(folderPath))
+    {
+        //TODO 统一报错
+        std::cerr << "Folder WHUPLib does not exist." << std::endl;
+        return "";
+    }
+
+    std::string result;
+
+    // 遍历文件夹中的所有文件
+    for (const auto &entry : std::filesystem::directory_iterator(folderPath))
+    {
+        in.open(entry.path().string());
+        if (in.is_open()) {
+            result += read();
+        }else{
+            //TODO 统一报错
+            std::cerr << "Failed to open file: " << entry.path().string() << std::endl;
+        }
+
+    }
+
+    return result;
+}

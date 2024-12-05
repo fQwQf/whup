@@ -10,6 +10,7 @@ class IO {
 public:
     IO(const std::string &in_file, const std::string &out_file);
     IO(const std::string &in_file);
+    IO(){};
 
     ~IO();
 
@@ -32,5 +33,8 @@ public:
     std::string opTACtoHUST(const std::string& op);
 
     std::string opHUSTtoTAC(const std::string& op);
+
+    std::string readWHUPLib();
+
     
 };

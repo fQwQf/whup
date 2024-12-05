@@ -1,5 +1,5 @@
-import bb;
 
-c = bb::add(5,6);
-c = add(c,bb::c);
+
+
+c = add(4,6);
 print(c);

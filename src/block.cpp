@@ -58,7 +58,31 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 {
     this->env = new Environment();
 
-    
+    //读取WHUPLib
+    IO *readLib = new IO();
+
+    std::string lib = readLib->readWHUPLib();
+
+    delete readLib;
+
+    //先对tokens进行统一的括号错误检查
+    checkBrackets::checkPar(lib,"WHUPLib");
+    checkBrackets::checkBracket(lib,"WHUPLib");
+    checkBrackets::checkBrace(lib,"WHUPLib");
+    printErrors();
+
+    //进行词法分析
+    Lexer lexer(lib,"WHUPLib");
+    std::vector<Token> lib_tokens = lexer.tokenize();
+    lib_tokens.pop_back(); // 删除最后一个换行符
+
+    //将WHUPLib的tokens添加到当前block的tokens中
+    tokens.insert(tokens.begin(),lib_tokens.begin(),lib_tokens.end());
+
+    //打印所有token看看
+    for (const auto &token : tokens) {
+        std::cout << token.type << " " << token.value << " " << token.line_number << std::endl;
+    }
 
     block(tokens);
 
