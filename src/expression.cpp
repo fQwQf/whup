@@ -109,7 +109,9 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             tac.result = E_expr[0].value;
             std::cout << "result: " << tac.result << std::endl;
 
-            runtimeEnv_number[tac.result]=std::stoi(tac.result);//测试设置常量的思路
+            runtimeEnv_number[tac.result]=std::stof(tac.result);
+            //测试设置常量的思路
+            //float啊！猜猜stoi的i代表什么？
         }
         return;
     };

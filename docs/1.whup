@@ -1,4 +1,4 @@
 import bb;
 
 c = add(bb::add(3,4),9);
-print(c);
+print(sqrt(c-4));
