@@ -208,7 +208,7 @@ Function* Environment::get_function(std::string name){
     }
     else
     {
-        if(parent==nullptr || is_import)
+        if(parent==nullptr)
         {
             // TODO 报错
             return nullptr;

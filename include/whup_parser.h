@@ -52,7 +52,8 @@ enum Operator
     POP,     // pop
     CALL,    // call
     RET,     // return
-    EXIT    // end
+    EXIT,    // end
+    POW      // **
 };
 struct ThreeAddressCode
 {

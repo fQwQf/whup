@@ -103,6 +103,10 @@ void execute(std::vector<ThreeAddressCode> tacs)
         {
             runtimeEnv_number[tac.result]=std::fmod(runtimeEnv_number[tac.arg1],runtimeEnv_number[tac.arg2]);
         }
+        else if(tac.opperator==POW)
+        {
+            runtimeEnv_number[tac.result]=std::pow(runtimeEnv_number[tac.arg1],runtimeEnv_number[tac.arg2]);
+        }
         else if(tac.opperator==EQ)
         {
             runtimeEnv_number[tac.result]=runtimeEnv_number[tac.arg1]==runtimeEnv_number[tac.arg2];
@@ -178,7 +182,7 @@ void execute(std::vector<ThreeAddressCode> tacs)
         }
         else if(tac.opperator==PUSH)
         {
-            if(functionStack_string.size() >= 100000000 || functionStack_number.size() >= 1000000000){
+            if(functionStack_string.size() >= 10000 || functionStack_number.size() >= 10000){
                 std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : stack overflow!" << "\033[0m" << std::endl;
 
                 exit(1);

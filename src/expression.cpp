@@ -356,6 +356,49 @@ void Expr::expr()
         };
     };
 
+    //扫描乘方
+    //乘方结合性与其他的不同，扫描方向也相反
+    for (int i = 0; i < E_expr.size() - 1; i++){
+
+        // 反方向的matchPar
+        if (E_expr[i].value == "(")
+        {
+            int leftPar = 1;
+            int rightPar = 0;
+            while (leftPar != rightPar)
+            {
+                ++i;
+                if (E_expr[i].value == ")")
+                {
+                    rightPar++;
+                }
+                else if (E_expr[i].value == "(")
+                {
+                    leftPar++;
+                }
+                else
+                    continue;
+            }
+        }
+
+        if (E_expr[i].type == SYMBOL && E_expr[i].value == "**")
+        {
+            std::cout << "find **" << std::endl;
+
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
+
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
+            tac.opperator=POW;
+            tac.op = E_expr[i].value;
+            tacs.push_back(tac);
+            return;
+        };
+    }
+
     //这就是函数调用，能扫到这里说明前面都没扫到
     Environment* funcenv = env;
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "::") {
