@@ -83,9 +83,9 @@ int main(int n, const char *arg[])
     execute(tacs);
 
     std::clock_t end   = clock();
-    std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
 
-    
+    if (extractor.wall_clock)
+        std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
 
     std::cout<<"Execute success!"<<std::endl;
     return 0;

@@ -16,6 +16,10 @@ Extractor::Extractor(int n,const char *arg[])
             i++;
             output_file = arg[i];
         }
+        else if (strcmp(arg[i],"-c") == 0)
+        {
+            wall_clock = true;
+        }
         else//如果参数不是以"-i"或"-o"开头，则默认为input
         {
             input_file = arg[i];
