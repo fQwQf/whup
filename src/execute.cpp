@@ -12,6 +12,10 @@ std::unordered_map<std::string,int>labelMap;//存label与行数的对应关系
 std::stack<float>functionStack_number;
 std::stack<std::string>functionStack_string;
 
+std::vector<runTAC> runtimeTACs;// 存储运行时三地址码
+std::unordered_map<std::string,float*>runtime_number;//
+std::unordered_map<std::string,std::string*>runtime_string;//
+
 struct runTAC{
     Operator opperator;       // 操作符
     void* arg1;   // 变量1指针
@@ -19,6 +23,127 @@ struct runTAC{
     void* result; // 存储结果的变量指针
     int line; // 存储跳转的行号，只在goto里用到
 };
+
+void TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
+    for (auto i : runtimeEnv_number){
+        runtime_number[i.first]=&i.second;
+    }
+
+    for (auto i : runtimeEnv_string){
+        runtime_string[i.first]=&i.second;
+    }
+
+    for(int i=0;i<tacs.size();i++)
+    {
+        ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
+        // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        if(tac.opperator==ASSIGN)
+        {
+            runtimeTACs[i].opperator=ASSIGN;
+            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].arg2=NULL;
+            runtimeTACs[i].result=runtime_number[tac.result];
+        }
+        else if(tac.opperator==STRASSIGN)
+        {
+            runtimeTACs[i].opperator=STRASSIGN;
+            runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            runtimeTACs[i].arg2=NULL;
+            runtimeTACs[i].result=runtime_string[tac.result];
+        }
+        else if(tac.opperator==ADD||SUB||MUL||DIV||MOD||POW||EQ||NEQ||GT||GE||LT||LE||AND||OR||NOT)
+        {
+            runtimeTACs[i].opperator=tac.opperator;
+            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].arg2=runtime_number[tac.arg2];
+            runtimeTACs[i].result=runtime_number[tac.result];
+        }
+        else if(tac.opperator==STRADD)
+        {
+            runtimeTACs[i].opperator=STRADD;
+            runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            runtimeTACs[i].arg2=runtime_string[tac.arg2];
+            runtimeTACs[i].result=runtime_string[tac.result];
+        }
+        // else if(tac.op=="label")//label什么也不干，只是记录自己的索引
+        // {
+        //     labelMap[tac.result]=i;
+        // }
+        else if(tac.opperator==GOTO)
+        {
+            runtimeTACs[i].opperator=GOTO;
+            runtimeTACs[i].line=labelMap[tac.result];
+        }
+        else if(tac.opperator==IF_GOTO)
+        {
+            runtimeTACs[i].opperator=IF_GOTO;
+            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].line=labelMap[tac.result];
+        }
+        else if(tac.opperator==PRINT)
+        {
+            runtimeTACs[i].opperator=PRINT;
+            if(var_declares[tac.arg1]=="string"||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
+            {
+                runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            }
+            else
+            {
+                runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            }
+        }
+        else if(tac.opperator==WINPUT)
+        {
+            runtimeTACs[i].opperator=WINPUT;
+            if(var_declares[tac.arg1]=="string")
+            {
+                runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            }
+            else
+            {
+                runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            }
+        }
+        else if(tac.opperator==PUSH)
+        {
+            runtimeTACs[i].opperator=PUSH;
+            if(isString(tac))
+            {
+                runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            }
+            else
+            {
+                runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            }
+        }
+        else if(tac.opperator==POP)
+        {
+            runtimeTACs[i].opperator=POP;
+            if(isString(tac))
+            {
+                runtimeTACs[i].result=runtime_string[tac.result];
+            }
+            else
+            {
+                runtimeTACs[i].result=runtime_number[tac.result];
+            }
+        }
+        else if(tac.opperator==CALL)
+        {
+            runtimeTACs[i].opperator=CALL;
+            runtimeTACs[i].line=labelMap[tac.arg1];
+
+        }
+        else if(tac.opperator==RET)
+        {
+            runtimeTACs[i].opperator=RET;
+        }
+        else if(tac.opperator==EXIT)
+        {
+            runtimeTACs[i].opperator=EXIT;
+        }
+    }
+}
 
 bool isString(ThreeAddressCode&tac)
 {
