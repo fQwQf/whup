@@ -16,25 +16,64 @@ std::stack<std::string>functionStack_string;
 std::unordered_map<std::string,float*>runtime_number;//
 std::unordered_map<std::string,std::string*>runtime_string;//
 
-struct runTAC{
-    Operator opperator;       // 操作符
-    void* arg1;   // 变量1指针
-    void* arg2;   // 变量2指针
-    void* result; // 存储结果的变量指针
-    int line; // 存储跳转的行号，只在goto里用到
-};
+
+bool isString(ThreeAddressCode&tac)
+{
+    if(var_declares[tac.arg1]=="string"||var_declares[tac.arg2]=="string")
+    {
+        return true;
+    }
+    else
+    return false;
+}
+bool isNumberString(std::string s)
+{
+    if(std::all_of(s.begin(),s.end(),::isdigit))
+    {
+        return true;
+    }
+    else
+    {
+        char*p;
+        std::strtod(s.c_str(),&p);
+        return *p==0;
+    }
+}
+void setLabel(std::vector<ThreeAddressCode>tacs)
+{
+    for(int i=0;i<tacs.size();i++)
+    {
+        if(tacs[i].op=="label")
+        {
+            labelMap[tacs[i].result]=i;
+            std::cout << "set " << tacs[i].result << " " << i <<std::endl;
+        }
+    }
+}
 
 std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
     setLabel(tacs);
 
+    for (auto i : var_declares){
+        if(i.second=="number"){
+            runtime_number[i.first]=new float(0);
+        }
+        else if(i.second=="string"){
+            runtime_string[i.first]=new std::string("");
+        }else{
+            runtime_number[i.first]=new float(0);
+        }
+    }
+
     std::vector<runTAC> runtimeTACs(tacs.size());
     for (auto i : runtimeEnv_number){
-        runtime_number[i.first]=&i.second;
+        runtime_number[i.first]=new float(i.second);
     }
 
     for (auto i : runtimeEnv_string){
-        runtime_string[i.first]=&i.second;
+        runtime_string[i.first]=new std::string(i.second);
     }
+
 
     for(int i=0;i<tacs.size();i++)
     {
@@ -54,7 +93,8 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].arg2=NULL;
             runtimeTACs[i].result=runtime_string[tac.result];
         }
-        else if(tac.opperator==ADD||SUB||MUL||DIV||MOD||POW||EQ||NEQ||GT||GE||LT||LE||AND||OR||NOT)
+        else if(tac.opperator==ADD||tac.opperator==SUB||tac.opperator==MUL||tac.opperator==DIV||tac.opperator==MOD||tac.opperator==POW||tac.opperator==EQ||
+        tac.opperator==NEQ||tac.opperator==GT||tac.opperator==GE||tac.opperator==LT||tac.opperator==LE||tac.opperator==AND||tac.opperator==OR||tac.opperator==NOT)
         {
             runtimeTACs[i].opperator=tac.opperator;
             runtimeTACs[i].arg1=runtime_number[tac.arg1];
@@ -68,20 +108,22 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].arg2=runtime_string[tac.arg2];
             runtimeTACs[i].result=runtime_string[tac.result];
         }
-        // else if(tac.op=="label")//label什么也不干，只是记录自己的索引
-        // {
-        //     labelMap[tac.result]=i;
-        // }
+        else if(tac.op=="label")//label什么也不干，只是记录自己的索引
+        {   
+            runtimeTACs[i].opperator=LABEL;
+        }
         else if(tac.opperator==GOTO)
         {
             runtimeTACs[i].opperator=GOTO;
             runtimeTACs[i].line=labelMap[tac.result];
+            std::cout << labelMap[tac.result] << tac.result <<std::endl;
         }
         else if(tac.opperator==IF_GOTO)
         {
             runtimeTACs[i].opperator=IF_GOTO;
             runtimeTACs[i].arg1=runtime_number[tac.arg1];
             runtimeTACs[i].line=labelMap[tac.result];
+            std::cout << labelMap[tac.result] << tac.result <<std::endl;
         }
         else if(tac.opperator==PRINT)
         {
@@ -144,42 +186,14 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         else if(tac.opperator==EXIT)
         {
             runtimeTACs[i].opperator=EXIT;
+        }else{
+            std::cout << "Fuck!Unexpected op!" << std::endl;
         }
     }
+
+    return runtimeTACs;
 }
 
-bool isString(ThreeAddressCode&tac)
-{
-    if(var_declares[tac.arg1]=="string"||var_declares[tac.arg2]=="string")
-    {
-        return true;
-    }
-    else
-    return false;
-}
-bool isNumberString(std::string s)
-{
-    if(std::all_of(s.begin(),s.end(),::isdigit))
-    {
-        return true;
-    }
-    else
-    {
-        char*p;
-        std::strtod(s.c_str(),&p);
-        return *p==0;
-    }
-}
-void setLabel(std::vector<ThreeAddressCode>tacs)
-{
-    for(int i=0;i<tacs.size();i++)
-    {
-        if(tacs[i].op=="label")
-        {
-            labelMap[tacs[i].result]=i;
-        }
-    }
-}
 
 void execute(std::vector<runTAC> runtacs)
 {
@@ -190,6 +204,7 @@ void execute(std::vector<runTAC> runtacs)
         // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
+            //std::cout << "assign " << i << std::endl;
             *(float*)tac.result=*(float*)tac.arg1;
 
 
@@ -275,10 +290,10 @@ void execute(std::vector<runTAC> runtacs)
         {
             *(float*)tac.result=*(float*)tac.arg1&&*(float*)tac.arg2;
         }
-        // else if(tac.op=="label")//label什么也不干，只是记录自己的索引
-        // {
-        //     labelMap[tac.result]=i;
-        // }
+        else if(tac.opperator==LABEL)//label什么也不干，只是记录自己的索引
+        {
+            //std::cout << "label " << i;
+        }
         else if(tac.opperator==GOTO)
         {
             i=tac.line;
@@ -318,6 +333,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==PUSH)
         {
+            //std::cout << "push "<<i<<std::endl;
             if(functionStack_string.size() >= 10000 || functionStack_number.size() >= 10000){
                 std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : stack overflow!" << "\033[0m" << std::endl;
 
@@ -350,6 +366,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==CALL)
         {
+            //std::cout << "CALL " << i << std::endl;
             labelStack.push(i);
             i=tac.line;
         }

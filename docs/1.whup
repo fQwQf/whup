@@ -1,4 +1,5 @@
-import bb;
-
-c = add(bb::add(3,4),9);
-print(sqrt(c-4));
+i=0;
+while(i<10){
+    print(i);
+    i=i+1;
+};

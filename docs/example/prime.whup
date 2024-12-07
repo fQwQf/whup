@@ -24,4 +24,4 @@ while(j<=100)
     };
     j=j+1;
 };
-print(sum);
+print("done");

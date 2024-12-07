@@ -17,7 +17,6 @@
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern std::vector<std::pair<std::string, std::string>> var_declares;//存储变量的声明信息
 extern int tempVarCounter;  // 临时变量计数器
-extern void execute(std::vector<ThreeAddressCode>tacs);
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
 int main(int n, const char *arg[])
 {
@@ -77,10 +76,25 @@ int main(int n, const char *arg[])
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
+    std::vector<runTAC> runtacs = TAC_to_runTAC(tacs);//将tacs转换为runTAC
+
+    for (auto i : runtacs){
+        std::cout << "arg1:" << i.arg1 << " arg2:" << i.arg2 << " op:" << i.opperator << " result:" << i.result <<" line:" << i.line << std::endl;
+        if (i.arg1!=0){
+            std::cout << "arg1: " << *(float*)i.arg1 << std::endl;
+        }
+        if (i.arg2!=0){
+            std::cout << "arg2: " << *(float*)i.arg2 << std::endl;
+        }
+        if (i.result!=0){
+            std::cout << "result: " << *(float*)i.result << std::endl;
+        }
+        std::cout << std::endl;
+    }
 
     std::clock_t start = clock();
     
-    execute(tacs);
+    execute(runtacs);
 
     std::clock_t end   = clock();
 
