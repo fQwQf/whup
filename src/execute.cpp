@@ -12,6 +12,14 @@ std::unordered_map<std::string,int>labelMap;//存label与行数的对应关系
 std::stack<float>functionStack_number;
 std::stack<std::string>functionStack_string;
 
+struct runTAC{
+    Operator opperator;       // 操作符
+    void* arg1;   // 变量1指针
+    void* arg2;   // 变量2指针
+    void* result; // 存储结果的变量指针
+    int line; // 存储跳转的行号，只在goto里用到
+};
+
 bool isString(ThreeAddressCode&tac)
 {
     if(var_declares[tac.arg1]=="string"||var_declares[tac.arg2]=="string")
