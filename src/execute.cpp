@@ -12,7 +12,7 @@ std::unordered_map<std::string,int>labelMap;//存label与行数的对应关系
 std::stack<float>functionStack_number;
 std::stack<std::string>functionStack_string;
 
-std::vector<runTAC> runtimeTACs;// 存储运行时三地址码
+//std::vector<runTAC> runtimeTACs;// 存储运行时三地址码
 std::unordered_map<std::string,float*>runtime_number;//
 std::unordered_map<std::string,std::string*>runtime_string;//
 
@@ -24,7 +24,8 @@ struct runTAC{
     int line; // 存储跳转的行号，只在goto里用到
 };
 
-void TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
+std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
+    std::vector<runTAC> runtimeTACs(tacs.size());
     for (auto i : runtimeEnv_number){
         runtime_number[i.first]=&i.second;
     }
@@ -181,6 +182,7 @@ void setLabel(std::vector<ThreeAddressCode>tacs)
 void execute(std::vector<ThreeAddressCode> tacs)
 {
     setLabel(tacs);
+    TAC_to_runTAC(tacs);
     for(int i=0;i<tacs.size();i++)
     {
         ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
