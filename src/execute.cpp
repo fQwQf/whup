@@ -88,45 +88,45 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         if(tac.opperator==ASSIGN)
         {
             runtimeTACs[i].opperator=ASSIGN;
-            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             runtimeTACs[i].arg2=NULL;
-            runtimeTACs[i].result=runtime_number[tac.result];
+            runtimeTACs[i].result=(void**)&runtime_number[tac.result];
         }
         else if(tac.opperator==REFNUM)
         {
             runtimeTACs[i].opperator=REFNUM;
-            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             runtimeTACs[i].arg2=NULL;
-            runtimeTACs[i].result=runtime_number[tac.result];
+            runtimeTACs[i].result=(void**)&runtime_number[tac.result];
         }
         else if(tac.opperator==STRASSIGN)
         {
             runtimeTACs[i].opperator=STRASSIGN;
-            runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
             runtimeTACs[i].arg2=NULL;
-            runtimeTACs[i].result=runtime_string[tac.result];
+            runtimeTACs[i].result=(void**)&runtime_string[tac.result];
         }
         else if(tac.opperator==REFSTR)
         {
             runtimeTACs[i].opperator=REFSTR;
-            runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
             runtimeTACs[i].arg2=NULL;
-            runtimeTACs[i].result=runtime_string[tac.result];
+            runtimeTACs[i].result=(void**)&runtime_string[tac.result];
         }
         else if(tac.opperator==ADD||tac.opperator==SUB||tac.opperator==MUL||tac.opperator==DIV||tac.opperator==MOD||tac.opperator==POW||tac.opperator==EQ||
         tac.opperator==NEQ||tac.opperator==GT||tac.opperator==GE||tac.opperator==LT||tac.opperator==LE||tac.opperator==AND||tac.opperator==OR||tac.opperator==NOT)
         {
             runtimeTACs[i].opperator=tac.opperator;
-            runtimeTACs[i].arg1=runtime_number[tac.arg1];
-            runtimeTACs[i].arg2=runtime_number[tac.arg2];
-            runtimeTACs[i].result=runtime_number[tac.result];
+            runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
+            runtimeTACs[i].arg2=(void**)&runtime_number[tac.arg2];
+            runtimeTACs[i].result=(void**)&runtime_number[tac.result];
         }
         else if(tac.opperator==STRADD)
         {
             runtimeTACs[i].opperator=STRADD;
-            runtimeTACs[i].arg1=runtime_string[tac.arg1];
-            runtimeTACs[i].arg2=runtime_string[tac.arg2];
-            runtimeTACs[i].result=runtime_string[tac.result];
+            runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
+            runtimeTACs[i].arg2=(void**)&runtime_string[tac.arg2];
+            runtimeTACs[i].result=(void**)&runtime_string[tac.result];
         }
         else if(tac.op=="label")//label什么也不干，只是记录自己的索引
         {   
@@ -141,7 +141,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         else if(tac.opperator==IF_GOTO)
         {
             runtimeTACs[i].opperator=IF_GOTO;
-            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             runtimeTACs[i].line=labelMap[tac.result];
             std::cout << labelMap[tac.result] << tac.result <<std::endl;
         }
@@ -150,11 +150,11 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].opperator=PRINT;
             if(var_declares[tac.arg1]=="string"||(tac.arg1[0]=='\"'&&*(tac.arg1.end()-1)=='\"'))
             {
-                runtimeTACs[i].arg1=runtime_string[tac.arg1];
+                runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
             }
             else
             {
-                runtimeTACs[i].arg1=runtime_number[tac.arg1];
+                runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             }
         }
         else if(tac.opperator==WINPUT)
@@ -162,11 +162,11 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].opperator=WINPUT;
             if(var_declares[tac.arg1]=="string")
             {
-                runtimeTACs[i].arg1=runtime_string[tac.arg1];
+                runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
             }
             else
             {
-                runtimeTACs[i].arg1=runtime_number[tac.arg1];
+                runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             }
         }
         else if(tac.opperator==PUSH)
@@ -174,11 +174,11 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].opperator=PUSH;
             if(isString(tac))
             {
-                runtimeTACs[i].arg1=runtime_string[tac.arg1];
+                runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
             }
             else
             {
-                runtimeTACs[i].arg1=runtime_number[tac.arg1];
+                runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             }
         }
         else if(tac.opperator==POP)
@@ -186,11 +186,11 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].opperator=POP;
             if(isString(tac))
             {
-                runtimeTACs[i].result=runtime_string[tac.result];
+                runtimeTACs[i].result=(void**)&runtime_string[tac.result];
             }
             else
             {
-                runtimeTACs[i].result=runtime_number[tac.result];
+                runtimeTACs[i].result=(void**)&runtime_number[tac.result];
             }
         }
         else if(tac.opperator==CALL)
@@ -224,9 +224,7 @@ void execute(std::vector<runTAC> runtacs)
         // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
-            std::cout << "assign " << i << std::endl;
-            std::cout<<*(float*)tac.result<<"="<<*(float*)tac.arg1<<std::endl;
-            *(float*)tac.result=*(float*)tac.arg1;
+            *(float*)*tac.result=*(float*)*tac.arg1;
 
 
             // //每一次都要判断感觉有点丑陋啊。。。//但是就这样吧，能跑就行（doge
@@ -241,11 +239,11 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==REFNUM)
         {
-            tac.result=tac.arg1;//void*赋值
+            *tac.result=*tac.arg1;//void*赋值
         }
         else if(tac.opperator==STRASSIGN)
         {
-            *(std::string*)tac.result=*(std::string*)tac.arg1;
+            *(std::string*)*tac.result=*(std::string*)*tac.arg1;
         }
         else if(tac.opperator==REFSTR)
         {
@@ -253,7 +251,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==ADD)
         {
-            *(float*)tac.result=*(float*)tac.arg1+*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1+*(float*)*tac.arg2;
             // if(isString(tac))
             // {
             //     *(std::string*)tac.result=*(std::string*)tac.arg1+*(std::string*)tac.arg2;
@@ -265,59 +263,59 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==STRADD)
         {
-            *(std::string*)tac.result=*(std::string*)tac.arg1+*(std::string*)tac.arg2;
+            *(std::string*)*tac.result=*(std::string*)*tac.arg1+*(std::string*)*tac.arg2;
         }
         else if(tac.opperator==SUB)
         {
-            *(float*)tac.result=*(float*)tac.arg1-*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1-*(float*)*tac.arg2;
         }
         else if(tac.opperator==MUL)
         {
-            *(float*)tac.result=*(float*)tac.arg1**(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1**(float*)*tac.arg2;
         }
         else if(tac.opperator==DIV)
         {
-            *(float*)tac.result=*(float*)tac.arg1 / *(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1 / *(float*)*tac.arg2;
         }
         else if(tac.opperator==MOD)//???怎么算的？？？
         {
-            *(float*)tac.result=std::fmod(*(float*)tac.arg1,*(float*)tac.arg2);
+            *(float*)*tac.result=std::fmod(*(float*)*tac.arg1,*(float*)*tac.arg2);
         }
         else if(tac.opperator==POW)
         {
-            *(float*)tac.result=std::pow(*(float*)tac.arg1,*(float*)tac.arg2);
+            *(float*)*tac.result=std::pow(*(float*)*tac.arg1,*(float*)*tac.arg2);
         }
         else if(tac.opperator==EQ)
         {
-            *(float*)tac.result=*(float*)tac.arg1==*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1==*(float*)*tac.arg2;
         }
         else if(tac.opperator==NEQ)
         {
-            *(float*)tac.result=*(float*)tac.arg1!=*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1!=*(float*)*tac.arg2;
         }
         else if(tac.opperator==LT)
         {
-            *(float*)tac.result=*(float*)tac.arg1<*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1<*(float*)*tac.arg2;
         }
         else if(tac.opperator==LE)
         {
-            *(float*)tac.result=*(float*)tac.arg1<=*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1<=*(float*)*tac.arg2;
         }
         else if(tac.opperator==GT)
         {
-            *(float*)tac.result=*(float*)tac.arg1>*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1>*(float*)*tac.arg2;
         }
         else if(tac.opperator==GE)
         {
-            *(float*)tac.result=*(float*)tac.arg1>=*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1>=*(float*)*tac.arg2;
         }
         else if(tac.opperator==OR)
         {
-            *(float*)tac.result=*(float*)tac.arg1||*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1||*(float*)*tac.arg2;
         }
         else if(tac.opperator==AND)
         {
-            *(float*)tac.result=*(float*)tac.arg1&&*(float*)tac.arg2;
+            *(float*)*tac.result=*(float*)*tac.arg1&&*(float*)*tac.arg2;
         }
         else if(tac.opperator==LABEL)//label什么也不干，只是记录自己的索引
         {
@@ -329,11 +327,11 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==IF_GOTO)
         {
-            if(tac.result=="end_of_file")
+            if(*(std::string*)*tac.result == "end_of_file")
             {
                 return;
             }
-            if(*(float*)tac.arg1)
+            if(*(float*)*tac.arg1)
             {
                 i=tac.line;
             }
@@ -342,22 +340,22 @@ void execute(std::vector<runTAC> runtacs)
         {
             if(var_declares[tacs[i].arg1]=="string"||(tacs[i].arg1[0]=='\"'&&*(tacs[i].arg1.end()-1)=='\"'))
             {
-                std::cout<<*(std::string*)tac.arg1<<std::endl;
+                std::cout<<*(std::string*)*tac.arg1<<std::endl;
             }
             else
             {
-                std::cout<<*(float*)tac.arg1<<std::endl;
+                std::cout<<*(float*)*tac.arg1<<std::endl;
             }
         }
         else if(tac.opperator==WINPUT)
         {
             if(var_declares[tacs[i].arg1]=="string")
             {
-                std::cin>>*(std::string*)tac.arg1;
+                std::cin>>*(std::string*)*tac.arg1;
             }
             else
             {
-                std::cin>>*(float*)tac.arg1;
+                std::cin>>*(float*)*tac.arg1;
             }
         }
         else if(tac.opperator==PUSH)
@@ -371,12 +369,12 @@ void execute(std::vector<runTAC> runtacs)
 
             if(isString(tacs[i]))
             {
-                std::string strPara=*(std::string*)tac.arg1;
+                std::string strPara=*(std::string*)*tac.arg1;
                 functionStack_string.push(strPara);
             }
             else
             {
-                float floatPara=*(float*)tac.arg1;
+                float floatPara=*(float*)*tac.arg1;
                 functionStack_number.push(floatPara);
             }
         }
@@ -384,12 +382,12 @@ void execute(std::vector<runTAC> runtacs)
         {
             if(isString(tacs[i]))
             {
-                *(std::string*)tac.result=functionStack_string.top();
+                *(std::string*)*tac.result=functionStack_string.top();
                 functionStack_string.pop();
             }
             else
             {
-                *(float*)tac.result=functionStack_number.top();
+                *(float*)*tac.result=functionStack_number.top();
                 functionStack_number.pop();
             }
         }

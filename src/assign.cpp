@@ -2,7 +2,7 @@
 
 extern std::vector<ThreeAddressCode> tacs;
 extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
-
+extern std::unordered_map<std::string,std::string>var_declares;
 
 Assign::Assign(std::vector<Token> code, Environment* env)
 {
@@ -26,6 +26,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 
 	//检查左边是否声明，未声明则自动声明
 	if(left_env->get_var(var.value)=="null"){
+		
 		left_env->insert_var(var.value);
 		left_env->change_type_var(var.value,expr->return_type());
 

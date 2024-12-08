@@ -1,4 +1,4 @@
-function swap(x:int&,y:int&)
+function swap(x:number,y:number)
 {
     var t=x;
     x=y;

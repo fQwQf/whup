@@ -93,7 +93,10 @@ std::string Environment::get_var(std::string name)
         {
 
             std::cout << "Variable "+name+" not found,return null" << std::endl;
+            if(var_declares.find(name)==var_declares.end())
             return "null";
+            else
+            return name;
         }
         else
         {
