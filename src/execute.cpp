@@ -246,7 +246,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==REFSTR)
         {
-            tac.result=tac.arg1;//void*赋值
+            *tac.result=*tac.arg1;//void*赋值
         }
         else if(tac.opperator==ADD)
         {
@@ -326,10 +326,10 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==IF_GOTO)
         {
-            if(*(std::string*)*tac.result == "end_of_file")
-            {
-                return;
-            }
+            // if((char*)*tac.result == "end_of_file")
+            // {
+            //     return;
+            // }
             if(*(float*)*tac.arg1)
             {
                 i=tac.line;
