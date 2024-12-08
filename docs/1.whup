@@ -1,12 +1,14 @@
-function swap(x:number,y:number)
-{
-    var t=x;
-    x=y;
-    y=t;
+function Hanoi(n : number) {
+	if(n==1){
+        ans = ans + 1;
+    }	
+	else {
+		Hanoi(n-1);
+		Hanoi(1);
+		Hanoi(n-1);
+	};
 };
 
-var a=1;
-var b=2;
-swap(a,b);
-
-print(a);
+var ans=0;
+Hanoi(6);
+print(ans);
