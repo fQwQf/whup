@@ -6,10 +6,13 @@ extern std::vector<Error> errors;
 
 std::string function_ret_label;    // 只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 std::string function_return_value; // 同理
+std::string function_return_type;
 
 extern std::unordered_map<std::string, Function *> functions;     // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, std::string> var_declares; // 存储将放入c++中变量名和类型的哈希表
 extern std::vector<ThreeAddressCode> tacs;                        // 存储三地址代码的向量
+
+std::set<Function*> used_functions;
 
 Function::Function() {
     // 这东西什么用都没有，但是必须要有，否则编译器无法自动生成ClassFunction的默认构造函数
@@ -30,13 +33,13 @@ Function::Function(std::vector<Token> &tokens, Environment *env)
     if (tokens[i].type == IDENTIFIER && tokens[i + 1].type == SYMBOL && tokens[i + 1].value == "(")
     {
         name = tokens[i].value;
-        functions[name] = this; // 将函数插入类函数表//这里与普通函数不同，普通函数是插入全局函数表
+        functions[name] = this; // 将函数插入全局函数表
+        env->function_table[name] = this; // 将函数插入环境函数表
         i++;
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
 
-    // functions[name] = this;
     std::cout << "Function name: " << name << std::endl;
 
     // 1.形参处理
@@ -113,18 +116,18 @@ void Function::push_real_para(Environment *env)
     {
         for (auto &i : params_name)
         {
-            tacs.push_back({"push", i.second, "", ""});
+            tacs.push_back({PUSH,"push", i.second, "", ""});
         }
     }
 }
 
 void Function::call_with_stack_frame(Environment *env)
 {
-    
+    used_functions.insert(this);
 
     if (env->isGlobal())
     { //如果在全局环境中调用，则不需要保存栈帧
-        tacs.push_back({"call", start_label, "", ""});
+        tacs.push_back({CALL,"call", start_label, "", ""});
         return;
     }
     else
@@ -153,17 +156,17 @@ void Function::call_with_stack_frame(Environment *env)
 
         //将栈帧压入栈中
         for(auto &i : stack_frame){
-            tacs.push_back({"push",i,"",""});
+            tacs.push_back({PUSH,"push",i,"",""});
         }
 
-        tacs.push_back({"call", start_label, "", ""});
+        tacs.push_back({CALL,"call", start_label, "", ""});
 
         //恢复栈帧
         for(int i=stack_frame.size()-1;i>=0;i--){
-            tacs.push_back({"pop","","",stack_frame[i]});
+            tacs.push_back({POP,"pop","","",stack_frame[i]});
         }
         for(int i=params_name.size()-1;i>=0;i--){
-            tacs.push_back({"pop","","",params_name[i].second});
+            tacs.push_back({POP,"pop","","",params_name[i].second});
         }
     }
 }
@@ -195,14 +198,39 @@ void Function::generate()
 
     function_ret_label = end_label;
     function_return_value = return_value;
-    tacs.push_back({"label", "", "", start_label});
+    function_return_type = return_type;
+    tacs.push_back({LABEL,"label", "", "", start_label});
 
     // Block能否识别临时变量？
     new Block(body_tokens, env);
 
     //如果之前没有return，则在最后自动return
-    tacs.push_back({"return", "", "", ""});
+    tacs.push_back({RET,"return", "", "", ""});
 }
+
+// void Function::generateInline()
+// {
+//     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
+//     body_tokens.pop_back();                                          // 去掉 }
+
+//     std::cout << "Function: " << name << std::endl;
+//     std::cout << "Params: " << std::endl;
+//     for (auto &param : params_name)
+//     {
+//         std::cout << "  " << param.first << " " << param.second << std::endl;
+//     }
+//     std::cout << "Return type: " << return_type << std::endl;
+//     std::cout << "Body: " << std::endl;
+//     for (auto &token : body_tokens)
+//     {
+//         std::cout << "  " << token.value;
+//     }
+//     std::cout << std::endl;
+
+
+//     // Block能否识别临时变量？
+//     new Block(body_tokens, env);
+// }
 
 ////////////////////////////////
 // 尝试对classfunction进行模块化//
@@ -215,7 +243,6 @@ void Function::folmalPara(std::vector<Token> &tokens)
     //  现在开始分析形参
     //  TODO:如果这里发现错误如首token不是括号，抛出异常
     int i = 0;
-
     if (tokens[0].type == SYMBOL && tokens[0].value == "(")
     {
         // tokens.erase(tokens.begin());
@@ -236,11 +263,22 @@ void Function::folmalPara(std::vector<Token> &tokens)
             {
                 // tokens.erase(tokens.begin());
                 i++;
-                params_type.push_back(tokens[i].value);
+                paramType pt;
+                pt.type=tokens[i].value;
                 params_name.push_back({param_name, newTempVar(tokens[i].value)});
-
-                // tokens.erase(tokens.begin(), tokens.begin() + 1);
+                
                 i++;
+                // tokens.erase(tokens.begin(), tokens.begin() + 1);
+                pt.isreference=false;
+                if(tokens[i].value=="&")
+                {
+                    std::cout<<"&"<<std::endl;
+                    std::cout<<tokens[i].value<<std::endl;
+                    pt.isreference=true;
+                    i++;
+                }
+
+                params_type.push_back(pt);
             }
             else
             {
@@ -255,9 +293,16 @@ void Function::folmalPara(std::vector<Token> &tokens)
     for (int param_num = 0; param_num < params_name.size(); param_num++)
     {
         env->insert_var(params_name[param_num].first);
-        env->change_type_var(params_name[param_num].first, params_type[param_num]);
+        env->change_type_var(params_name[param_num].first, params_type[param_num].type);
     }
 
+    for(int i=0;i<params_name.size();i++)
+    {
+        std::cout<<"param "<<params_name[i].first<<" is "<<params_name[i].second<<std::endl;
+        std::cout<<"param "<<params_name[i].first<<" type is "<<params_type[i].type<<std::endl;
+        std::cout<<"param "<<params_name[i].first<<" isreference is "<<params_type[i].isreference<<std::endl;
+        std::cout<<std::endl;
+    }
     tokens.erase(tokens.begin(), tokens.begin() + i);
 }
 
@@ -284,6 +329,20 @@ void Function::returnType(std::vector<Token> &tokens)
         // return_value = "";
         if(tokens[i].value!="{")
             pushErrors(tokens[0], "Missing colon before return type for function " + name);
+        for (int i = 0; i < tokens.size(); i++)
+        {
+            if (tokens[i].type == KEYWORD && tokens[i].value == "return")
+            {
+                if (tokens[i + 1].type == SYMBOL && tokens[i + 1].value == ";")
+                {
+                    continue;
+                }
+                else
+                {
+                    pushErrors(tokens[i], "Missing return type for function " + name);
+                }
+            }
+        }
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
@@ -307,30 +366,36 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
     int last_comma = index;
     int param_num = 0;
 
+    //下面的过程只能识别后面接,的参数，于是就这样
+    tokens[tokens.size()-1].value = ",";
+
     for (int i = index; i < tokens.size(); i++)
     {
-        if (tokens[index].value == ")")
-        {
-            pushErrors(tokens[0], "No params " );
-            break;
-        }
         matchPar(i, tokens);
-        if (tokens[i].type == SYMBOL && (tokens[i].value == "," || tokens[i].value == ")"))
+        if (tokens[i].type == SYMBOL && (tokens[i].value == ","))
         {
             std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
             last_comma = i + 1;
             Expr *expression = new Expr(subtokens, env);
             std::cout << "pass value success!!!" << std::endl;
-            tacs.push_back({"=", expression->getTacResult(), "", params_name[param_num].second});
+            if(!params_type[param_num].isreference)//按值
+            {
+                if(expression->return_type()=="string")
+                tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+                else
+                tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            }
+            else//按引用
+            {
+                std::cout<<std::endl<<"reference"<<std::endl<<std::endl;
+                if(expression->return_type()=="string")
+                tacs.push_back({REFSTR,"=", expression->getTacResult(), "", params_name[param_num].second});
+                else
+                tacs.push_back({REFNUM,"=", expression->getTacResult(), "", params_name[param_num].second});
+            }
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;
-        }
-        // 呃呃有点没懂
-        if (tokens[i].type == SYMBOL && tokens[i].value == ")")
-        {
-            tokens.erase(tokens.begin(), tokens.begin() + i); // 检测到括号，则删除括号及括号之前的所有内容
-            break;
         }
     }
 

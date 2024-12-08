@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var j=1;
 arr num[10]={10};
 num[0]=1;
@@ -6,3 +7,17 @@ print(((j+1)*(num[2]+num[0]-6))/2);
 print(num[3]<=10);
 num[11]=2;
 print(num[11]);
+=======
+function swap(x:number,y:number)
+{
+    var t=x;
+    x=y;
+    y=t;
+};
+
+var a=1;
+var b=2;
+swap(a,b);
+
+print(a);
+>>>>>>> origin/develop_fQwQf

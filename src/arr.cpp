@@ -46,7 +46,7 @@ void Arr::initArr(std::vector<Token> code,Environment* env)
         for(int i=0;i<size;i++)
         {
             Expr* expr = new Expr(code,env);
-            tacs.push_back({ "=",expr->getTacResult(),"",env->get_arr(var.value+"["+std::to_string(i)+"]")});
+            tacs.push_back({ASSIGN,expr->getTacResult(),"",env->get_arr(var.value+"["+std::to_string(i)+"]")});
         }
     }
 }

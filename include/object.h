@@ -26,8 +26,13 @@ class Object
     void var_declare(std::vector<Token> tokens);//变量声明
     void function_declare(std::vector<Token> tokens);//函数声明
     void constuctor_declare(std::vector<Token>);//构造函数声明
+
+
     void generator(std::vector<Token>subtoken);//整合变量声明与函数声明//其实没有必要但好看
     void matchBrace(int &i,std::vector<Token> &tokens);
+    void matchPar(int &i,std::vector<Token> &tokens);
+    void copy(Object*ptrObject);//复制对象
+    
     
     ClassFunction*myConstructor;//单独的构造函数
     std::unordered_map<std::string,ClassFunction*> function_table;//函数表//<函数名，函数指针>

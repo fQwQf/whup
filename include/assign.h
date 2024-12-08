@@ -11,6 +11,7 @@ class Assign
 	Expr* expr;//等号右侧表达式
 
 	Environment* env;//当前环境
+	Environment* left_env;//等号左侧变量所在环境
 public:
 	Assign(std::vector<Token> code, Environment* env);
 	void assign(bool isArr=false);

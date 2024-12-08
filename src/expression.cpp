@@ -10,6 +10,7 @@ extern std::unordered_map<std::string, Function*> functions;  // 存储函数名
 extern std::unordered_map<std::string, Object*> object_table;  // 存储对象名和对应的对象指针哈希表
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
 extern std::unordered_map<std::string,std::string>runtimeEnv_string;//
+extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 // 从右至左对输入进行遍历，扫描以下运算符，从下向上
 /*
     ** 表示 幂运算
@@ -51,6 +52,30 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 {
     
     this->setEnv(env);
+
+    //这是命名空间中的变量
+    if (expr.size() == 3 && expr[1].type == SYMBOL && expr[1].value == "::")
+    {
+        std::cout << "find IDENTIFIER in namespace!";
+        if (E_expr[2].processed == true)
+        {
+            tac.result = E_expr[2].value;
+            std::cout << "result: " << tac.result << std::endl;
+            std::cout << "processed: " << E_expr[2].processed << std::endl;
+            return;
+        }
+        else
+        {
+
+            // 检查变量是否已经声明
+            checkSyntax::checkVar(E_expr[2].value, namespace_table[expr[0].value], E_expr[2].line_number, E_expr[2]);
+
+            tac.result = namespace_table[expr[0].value]->get_var(E_expr[2].value);
+            std::cout << "result: " << tac.result << std::endl;
+            return;
+        }
+    }
+
     if (expr.size() == 1)
     { // 只有一个元素
 
@@ -84,7 +109,9 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             tac.result = E_expr[0].value;
             std::cout << "result: " << tac.result << std::endl;
 
-            runtimeEnv_number[tac.result]=std::stoi(tac.result);//测试设置常量的思路
+            runtimeEnv_number[tac.result]=std::stof(tac.result);
+            //测试设置常量的思路
+            //float啊！猜猜stoi的i代表什么？
         }
         return;
     };
@@ -186,8 +213,8 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
             tac.op = "||";
+            tac.opperator=OR;
             tacs.push_back(tac);
             return;
         };
@@ -208,7 +235,7 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            tac.opperator=AND;
             tac.op = "&&";
             tacs.push_back(tac);
             return;
@@ -231,7 +258,30 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            if (E_expr[i].value == "<")
+            {
+                tac.opperator=LT;
+            }
+            else if (E_expr[i].value == "<=")
+            {
+                tac.opperator=LE;
+            }
+            else if (E_expr[i].value == ">")
+            {
+                tac.opperator=GT;
+            }
+            else if (E_expr[i].value == ">=")
+            {
+                tac.opperator=GE;
+            }
+            else if (E_expr[i].value == "==")
+            {
+                tac.opperator=EQ;
+            }
+            else if (E_expr[i].value == "!=")
+            {
+                tac.opperator=NEQ;
+            }
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;
@@ -250,13 +300,13 @@ void Expr::expr()
                 std::cout << "find string add" << std::endl;
 
                 std::string temp = newTempVar("string");
-                tacs.push_back({"=", "\"" + E_expr[0].value + "\"", "", temp});
+                tacs.push_back({STRASSIGN,"=", "\"" + E_expr[0].value + "\"", "", temp});
                 right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
                 right->env = env;
 
                 tac.arg1 = temp;
                 tac.arg2 = right->tac.result;
-
+                tac.opperator=STRADD;
                 tac.op = E_expr[i].value;
                 tacs.push_back(tac);
                 return;
@@ -271,7 +321,14 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            if(E_expr[i].value == "+")
+            {
+                tac.opperator=ADD;
+            }
+            else if(E_expr[i].value == "-")
+            {
+                tac.opperator=SUB;
+            }
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;
@@ -293,23 +350,92 @@ void Expr::expr()
             right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
             right->env = env;
             tac.arg2 = right->tac.result;
-
+            if(E_expr[i].value == "*")
+            {
+                tac.opperator=MUL;
+            }
+            else if(E_expr[i].value == "/")
+            {
+                tac.opperator=DIV;
+            }
+            else if(E_expr[i].value == "%")
+            {
+                tac.opperator=MOD;
+            }
             tac.op = E_expr[i].value;
             tacs.push_back(tac);
             return;
         };
     };
 
+<<<<<<< HEAD
 
 
     //这就是函数调用
+=======
+    //扫描乘方
+    //乘方结合性与其他的不同，扫描方向也相反
+    for (int i = 0; i < E_expr.size() - 1; i++){
+
+        // 反方向的matchPar
+        if (E_expr[i].value == "(")
+        {
+            int leftPar = 1;
+            int rightPar = 0;
+            while (leftPar != rightPar)
+            {
+                ++i;
+                if (E_expr[i].value == ")")
+                {
+                    rightPar++;
+                }
+                else if (E_expr[i].value == "(")
+                {
+                    leftPar++;
+                }
+                else
+                    continue;
+            }
+        }
+
+        if (E_expr[i].type == SYMBOL && E_expr[i].value == "**")
+        {
+            std::cout << "find **" << std::endl;
+
+            left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
+            left->env = env; // 传递环境
+            tac.arg1 = left->tac.result;
+
+            right = new Expr(std::vector<Token>(E_expr.begin() + i + 1, E_expr.end()), this->env);
+            right->env = env;
+            tac.arg2 = right->tac.result;
+            tac.opperator=POW;
+            tac.op = E_expr[i].value;
+            tacs.push_back(tac);
+            return;
+        };
+    }
+
+    //这就是函数调用，能扫到这里说明前面都没扫到
+    Environment* funcenv = env;
+    if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "::") {
+        // 对于命名空间，先转化为没有命名空间的情况
+        funcenv = namespace_table[E_expr[0].value];
+        E_expr.erase(E_expr.begin(), E_expr.begin()+2);
+    }
+
+>>>>>>> origin/develop_fQwQf
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
-        Function* func = functions[E_expr[0].value];
+        Function* func = funcenv->get_function(E_expr[0].value);
         std::vector<Token> E_expression = E_expr;
         std::string temp = newTempVar(func->return_type);
         this->env->insert_return_var(temp);
         func->call(E_expression,env);
-        tacs.push_back({ "=", func->get_return_value(), "", temp });
+
+        if(func->return_type=="string")
+        tacs.push_back({STRASSIGN, "=", func->get_return_value(), "", temp });
+        else
+        tacs.push_back({ASSIGN, "=", func->get_return_value(), "", temp });
         tac.result = temp;
         return;
     }
@@ -323,10 +449,16 @@ void Expr::expr()
         std::string temp = newTempVar(object_function->return_type);
         this->env->insert_return_var(temp);
         object_function->call(expression,env);
-        tacs.push_back({ "=", object_function->get_return_value(), "", temp });
+
+        if(object_function->return_type=="string")
+        tacs.push_back({STRASSIGN, "=", object_function->get_return_value(), "", temp });
+        else
+        tacs.push_back({ASSIGN, "=", object_function->get_return_value(), "", temp });
         tac.result =temp;
         return;
     }
+    //TODO 函数调用找不到说明未定义，报错
+    
 
     // 前面均没扫到说明全部被括号包裹
     // 去掉首尾括号并重新调用expr（）

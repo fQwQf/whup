@@ -1,0 +1,27 @@
+function add(x:number,y:number):number{
+    return x+y;
+};
+
+function sub(x:number,y:number):number{
+    return x-y;
+};
+
+function mul(x:number,y:number):number{
+    return x*y;
+};
+
+function div(x:number,y:number):number{
+    return x/y;
+};
+
+function pow(x:number,y:number):number{
+    return x**y;
+};
+
+function sqrt(x:number):number{
+    return x**(1/2);
+};
+
+function cbrt(x:number):number{
+    return x**(1/3);
+};

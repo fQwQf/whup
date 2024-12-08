@@ -6,7 +6,9 @@ aux_source_directory(./src WHUPC_LIST)
 
 include_directories ( ./include )
 
-file(GLOB LIBS "src/*.cpp")
+file(COPY WHUPLib DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+add_compile_options(-O3)
 
 add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp src/arr.cpp
             src/break.cpp src/continue.cpp src/return.cpp src/expression.cpp src/object.cpp src/class.cpp src/classfunction.cpp src/function.cpp)

@@ -5,6 +5,7 @@ class Extractor
 {
     std::string input_file;//存储输入文件路径
     std::string output_file;//存储输出文件路径
+    
 
     public:
         Extractor(int n,const char* arg[]);
@@ -12,4 +13,6 @@ class Extractor
         std::string get_input_file();
 
         std::string get_output_file();
+        
+        bool wall_clock = false;//是否使用wall clock计时器
 };

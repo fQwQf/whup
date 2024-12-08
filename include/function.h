@@ -1,9 +1,18 @@
-#include <bits/stdc++.h>
-#include "whup_parser.h"
-#include "block.h"
-
 #ifndef FUNCTION_H_
 #define FUNCTION_H_
+#include <bits/stdc++.h>
+#include "whup_parser.h"
+
+
+
+#include "block.h"
+struct paramType
+{
+    std::string type;
+    bool isreference;
+};
+
+class Environment;//前向声明
 
 //这是对函数声明的识别，会将函数名与参数存入哈希表，并且将函数体压入function_tacs
 class Function {
@@ -12,7 +21,8 @@ class Function {
         
         std::string body;
         std::vector<std::pair<std::string,std::string>> params_name;//形参名,分别为原形参名和生成的专用形参名
-        std::vector<std::string> params_type;//形参类型
+        std::vector<paramType> params_type;//形参类型
+        std::vector<bool> params_isreference;
         std::string end_label; //函数结束标签
         std::string start_label; //函数开始标签
 
@@ -31,6 +41,8 @@ class Function {
         void matchPar(int &i,std::vector<Token> &tokens);
         void matchBrace(int &i,std::vector<Token>&tokens);
         void generate();//生成函数代码
+        std::vector<Token> getBodyTokens(){return body_tokens;};
+        // void generateInline();//生成内联函数//主要是为了类的构造
         std::string get_return_value();
 
         //下面拟进行模块化处理

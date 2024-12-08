@@ -14,5 +14,5 @@ Continue::Continue(Environment*env)
     }
     global_circulation_id.pop();
     std::string beginLabel=env->get_var(beginLabelName);//得到out.cpp会出现地的label名
-    tacs.push_back({"goto","","",beginLabel});
+    tacs.push_back({GOTO,"goto","","",beginLabel});
 }
