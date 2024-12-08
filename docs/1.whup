@@ -1,5 +1,9 @@
-i=0;
-while(i<10){
-    print(i);
-    i=i+1;
+var a=1;
+function f(x:int)
+{
+    a=x;
 };
+
+f(10);
+
+print(a);

@@ -264,11 +264,19 @@ void Function::folmalPara(std::vector<Token> &tokens)
             {
                 // tokens.erase(tokens.begin());
                 i++;
-                params_type.push_back(tokens[i].value);
+                paramType pt;
+                pt.type=tokens[i].value;
                 params_name.push_back({param_name, newTempVar(tokens[i].value)});
 
                 // tokens.erase(tokens.begin(), tokens.begin() + 1);
                 i++;
+                pt.isreference=false;
+                if(tokens[i].value=="&")
+                {
+                    pt.isreference==true;
+                }
+
+                params_type.push_back(pt);
             }
             else
             {
@@ -283,7 +291,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
     for (int param_num = 0; param_num < params_name.size(); param_num++)
     {
         env->insert_var(params_name[param_num].first);
-        env->change_type_var(params_name[param_num].first, params_type[param_num]);
+        env->change_type_var(params_name[param_num].first, params_type[param_num].type);
     }
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
@@ -361,11 +369,20 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             last_comma = i + 1;
             Expr *expression = new Expr(subtokens, env);
             std::cout << "pass value success!!!" << std::endl;
-
-            if(expression->return_type()=="string")
-            tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
-            else
-            tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            if(!params_type[param_num].isreference)//按值
+            {
+                if(expression->return_type()=="string")
+                tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+                else
+                tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            }
+            else//按引用
+            {
+                if(expression->return_type()=="string")
+                tacs.push_back({REFSTR,"=", expression->getTacResult(), "", params_name[param_num].second});
+                else
+                tacs.push_back({REFNUM,"=", expression->getTacResult(), "", params_name[param_num].second});
+            }
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;

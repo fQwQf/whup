@@ -16,6 +16,9 @@ std::stack<std::string>functionStack_string;
 std::unordered_map<std::string,float*>runtime_number;//
 std::unordered_map<std::string,std::string*>runtime_string;//
 
+//对于reference只需要重载一次ASSIGN
+//区分strref和numberref？
+
 
 bool isString(ThreeAddressCode&tac)
 {
@@ -60,7 +63,9 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         }
         else if(i.second=="string"){
             runtime_string[i.first]=new std::string("");
-        }else{
+        }
+        else
+        {
             runtime_number[i.first]=new float(0);
         }
     }
@@ -68,6 +73,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
     std::vector<runTAC> runtimeTACs(tacs.size());
     for (auto i : runtimeEnv_number){
         runtime_number[i.first]=new float(i.second);
+        //这里应该只设置常量
     }
 
     for (auto i : runtimeEnv_string){
@@ -86,6 +92,13 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].arg2=NULL;
             runtimeTACs[i].result=runtime_number[tac.result];
         }
+        // else if(tac.opperator==REFNUM)
+        // {
+        //     runtimeTACs[i].opperator=REFNUM;
+        //     runtimeTACs[i].arg1=runtime_number[tac.arg1];
+        //     runtimeTACs[i].arg2=NULL;
+        //     runtimeTACs[i].result=runtime_number[tac.result];
+        // }
         else if(tac.opperator==STRASSIGN)
         {
             runtimeTACs[i].opperator=STRASSIGN;
@@ -93,6 +106,13 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].arg2=NULL;
             runtimeTACs[i].result=runtime_string[tac.result];
         }
+        // else if(tac.opperator==REFSTR)
+        // {
+        //     runtimeTACs[i].opperator=REFSTR;
+        //     runtimeTACs[i].arg1=runtime_string[tac.arg1];
+        //     runtimeTACs[i].arg2=NULL;
+        //     runtimeTACs[i].result=runtime_string[tac.result];
+        // }
         else if(tac.opperator==ADD||tac.opperator==SUB||tac.opperator==MUL||tac.opperator==DIV||tac.opperator==MOD||tac.opperator==POW||tac.opperator==EQ||
         tac.opperator==NEQ||tac.opperator==GT||tac.opperator==GE||tac.opperator==LT||tac.opperator==LE||tac.opperator==AND||tac.opperator==OR||tac.opperator==NOT)
         {
@@ -204,7 +224,8 @@ void execute(std::vector<runTAC> runtacs)
         // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
-            //std::cout << "assign " << i << std::endl;
+            std::cout << "assign " << i << std::endl;
+            std::cout<<*(float*)tac.result<<"="<<*(float*)tac.arg1<<std::endl;
             *(float*)tac.result=*(float*)tac.arg1;
 
 
@@ -218,9 +239,17 @@ void execute(std::vector<runTAC> runtacs)
             //     *(float*)tac.result=*(float*)tac.arg1;
             // }
         }
+        else if(tac.opperator==REFNUM)
+        {
+            tac.result=tac.arg1;//void*赋值
+        }
         else if(tac.opperator==STRASSIGN)
         {
             *(std::string*)tac.result=*(std::string*)tac.arg1;
+        }
+        else if(tac.opperator==REFSTR)
+        {
+            tac.result=tac.arg1;//void*赋值
         }
         else if(tac.opperator==ADD)
         {
