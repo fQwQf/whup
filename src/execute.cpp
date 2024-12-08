@@ -92,13 +92,13 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].arg2=NULL;
             runtimeTACs[i].result=runtime_number[tac.result];
         }
-        // else if(tac.opperator==REFNUM)
-        // {
-        //     runtimeTACs[i].opperator=REFNUM;
-        //     runtimeTACs[i].arg1=runtime_number[tac.arg1];
-        //     runtimeTACs[i].arg2=NULL;
-        //     runtimeTACs[i].result=runtime_number[tac.result];
-        // }
+        else if(tac.opperator==REFNUM)
+        {
+            runtimeTACs[i].opperator=REFNUM;
+            runtimeTACs[i].arg1=runtime_number[tac.arg1];
+            runtimeTACs[i].arg2=NULL;
+            runtimeTACs[i].result=runtime_number[tac.result];
+        }
         else if(tac.opperator==STRASSIGN)
         {
             runtimeTACs[i].opperator=STRASSIGN;
@@ -106,13 +106,13 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
             runtimeTACs[i].arg2=NULL;
             runtimeTACs[i].result=runtime_string[tac.result];
         }
-        // else if(tac.opperator==REFSTR)
-        // {
-        //     runtimeTACs[i].opperator=REFSTR;
-        //     runtimeTACs[i].arg1=runtime_string[tac.arg1];
-        //     runtimeTACs[i].arg2=NULL;
-        //     runtimeTACs[i].result=runtime_string[tac.result];
-        // }
+        else if(tac.opperator==REFSTR)
+        {
+            runtimeTACs[i].opperator=REFSTR;
+            runtimeTACs[i].arg1=runtime_string[tac.arg1];
+            runtimeTACs[i].arg2=NULL;
+            runtimeTACs[i].result=runtime_string[tac.result];
+        }
         else if(tac.opperator==ADD||tac.opperator==SUB||tac.opperator==MUL||tac.opperator==DIV||tac.opperator==MOD||tac.opperator==POW||tac.opperator==EQ||
         tac.opperator==NEQ||tac.opperator==GT||tac.opperator==GE||tac.opperator==LT||tac.opperator==LE||tac.opperator==AND||tac.opperator==OR||tac.opperator==NOT)
         {

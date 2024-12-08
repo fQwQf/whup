@@ -1,9 +1,12 @@
-var a=1;
-function f(x:int)
+function swap(x:int&,y:int&)
 {
-    a=x;
+    var t=x;
+    x=y;
+    y=t;
 };
 
-f(10);
+var a=1;
+var b=2;
+swap(a,b);
 
 print(a);

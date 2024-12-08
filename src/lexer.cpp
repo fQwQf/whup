@@ -198,6 +198,6 @@ std::unordered_set<std::string> Lexer::symbol_sets() const {
         "->",
         "::",
         "<<",
-        ">>"
+        ">>",
     };
 }
