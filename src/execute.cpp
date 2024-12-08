@@ -46,7 +46,6 @@ void setLabel(std::vector<ThreeAddressCode>tacs)
         if(tacs[i].op=="label")
         {
             labelMap[tacs[i].result]=i;
-            std::cout << "set " << tacs[i].result << " " << i <<std::endl;
         }
     }
 }
@@ -116,14 +115,14 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         {
             runtimeTACs[i].opperator=GOTO;
             runtimeTACs[i].line=labelMap[tac.result];
-            std::cout << labelMap[tac.result] << tac.result <<std::endl;
+            //std::cout << labelMap[tac.result] << tac.result <<std::endl;
         }
         else if(tac.opperator==IF_GOTO)
         {
             runtimeTACs[i].opperator=IF_GOTO;
             runtimeTACs[i].arg1=runtime_number[tac.arg1];
             runtimeTACs[i].line=labelMap[tac.result];
-            std::cout << labelMap[tac.result] << tac.result <<std::endl;
+            //std::cout << labelMap[tac.result] << tac.result <<std::endl;
         }
         else if(tac.opperator==PRINT)
         {

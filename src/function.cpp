@@ -264,6 +264,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
             {
                 // tokens.erase(tokens.begin());
                 i++;
+                //TODO 不是支持的类型就报错
                 params_type.push_back(tokens[i].value);
                 params_name.push_back({param_name, newTempVar(tokens[i].value)});
 

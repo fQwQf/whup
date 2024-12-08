@@ -81,9 +81,9 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     tokens.insert(tokens.begin(),lib_tokens.begin(),lib_tokens.end());
 
     //打印所有token看看
-    for (const auto &token : tokens) {
+    /*for (const auto &token : tokens) {
         std::cout << token.type << " " << token.value << " " << token.line_number << std::endl;
-    }
+    }*/
 
     block(tokens);
 
@@ -131,9 +131,9 @@ void Block::block(std::vector<Token> tokens)
             // 打印出所有Token
             // debug时可能有用
             std::cout<<"subtokens:"<<std::endl;
-            for(auto &i:subtokens){
+            /*for(auto &i:subtokens){
                std::cout << i.value << " ";
-            }
+            }*/
             std::cout << std::endl;
             
             last_semicolon = i+1;
