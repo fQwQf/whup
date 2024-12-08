@@ -53,7 +53,9 @@ enum Operator
     CALL,    // call
     RET,     // return
     EXIT,    // end
-    POW      // **
+    POW,    // **
+    REFSTR,
+    REFNUM      //引用传递
 };
 struct ThreeAddressCode
 {

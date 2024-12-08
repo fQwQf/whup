@@ -2,3 +2,4 @@ function add(a:number,b:number):number{
     print(a+b);
     return a+2*b;
 };
+add(1,1);
