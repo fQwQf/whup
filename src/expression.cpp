@@ -368,11 +368,7 @@ void Expr::expr()
         };
     };
 
-<<<<<<< HEAD
-
-
     //这就是函数调用
-=======
     //扫描乘方
     //乘方结合性与其他的不同，扫描方向也相反
     for (int i = 0; i < E_expr.size() - 1; i++){
@@ -423,8 +419,7 @@ void Expr::expr()
         funcenv = namespace_table[E_expr[0].value];
         E_expr.erase(E_expr.begin(), E_expr.begin()+2);
     }
-
->>>>>>> origin/develop_fQwQf
+    
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = funcenv->get_function(E_expr[0].value);
         std::vector<Token> E_expression = E_expr;
