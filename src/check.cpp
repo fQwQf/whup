@@ -10,16 +10,26 @@ void checkSyntax::checkID(Token token)
         //如果标识符不是由数字、字母或 _ 组成，则输出错误信息
         if (!(isalpha(ch) || isdigit(ch) || ch == '_')) 
         {
-            errors.push_back({ token, "Unrecognized token '" + token.value + "' at line " });
+            errors.push_back({ token, "Unrecognized token '" + token.value + "' " });
         }
     }
 }
 
-void checkSyntax::checkVar(std::string name,Environment *env,int line_number,Token token)
+void checkSyntax::checkVar(std::string name,Environment *env,int line_number,Token token,bool isArr)
 {
-    if ("null"==env->get_var(name)) 
+    if (isArr) 
     {
-        errors.push_back({ token, "Unrecognized token '" + name + "' at line " });
+        if (env->get_arr(name) == "null") 
+        {
+            errors.push_back({ token, "Unrecognized arr token '" + name + "' or index out of range" });
+        }
+    }
+    else 
+    {
+        if ("null"==env->get_var(name)) 
+        {
+            errors.push_back({ token, "Unrecognized var token '" + name + "' " });
+        }
     }
 }
 
@@ -175,10 +185,28 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
     std::string trimmedLine = trim(line);//去掉收尾空白符后的line
     std::string trimmedNextLine = trim(nextline);//去掉收尾空白符后的nextline
     // 忽略空行和仅有 '{' 或 '}' 开头的块
-    if (trimmedLine.empty() || trimmedLine == "{" || trimmedLine == "}") {
+    if (trimmedLine.empty() || trimmedLine == "{" || trimmedLine == "}") 
+    {
         return;
     }
 
+    //对注释行进行特殊处理
+    if(trimmedLine.find("//") != std::string::npos)
+    {
+        if(trimmedLine.find("//") == 0)
+        {
+            return;
+        }
+        else
+        {
+            if(trimmedLine[trimmedLine.find("//")-1] != ';')
+            {
+                Token token(SYMBOL,"",lineNumber,file_name);
+                errors.push_back({token, "Missing semicolon at the end of line "});
+            }
+        }
+    }
+    
     // 忽略{}结构前的";"检查
     if(trimmedNextLine.front() == '{') 
     {
@@ -186,7 +214,8 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
     }
 
     // 如果行没有以分号结尾且不是"{"结尾，报错
-    if (!endsWithSemicolon(trimmedLine) && !isBlockStructure(trimmedLine)) {
+    if (!endsWithSemicolon(trimmedLine) && !isBlockStructure(trimmedLine) && trimmedLine.find("//")==std::string::npos) 
+    {
         //新建一个默认Token，记录错误的行号和文件名，用于报错
         Token token(SYMBOL,"",lineNumber,file_name);
         errors.push_back({token, "Missing semicolon at the end of line "});

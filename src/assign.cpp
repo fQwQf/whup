@@ -1,40 +1,89 @@
 #include"assign.h"
+#include"check.h"
 
 extern std::vector<ThreeAddressCode> tacs;
 
 Assign::Assign(std::vector<Token> code, Environment* env)
 {
+	bool isArr = false;
+	int index;
+	//判断是否是数组赋值
+	if(code[1].value=="[")
+	{
+		std::cout<<"find array "<<std::endl;
+		isArr = true;
+	}
+
 	this->setEnv(env);
-	var = code[0];
-	code.erase(code.begin());
-	code.erase(code.begin()); // 两次处理将等号和等号左侧变量消去
+	var = code[0];//记录该变量
+	
+	if(!isArr)
+	{
+		// 两次处理将等号和等号左侧变量消去
+		code.erase(code.begin());
+		code.erase(code.begin());
+	}
+	else
+	{
+		index=std::stoi(code[2].value);
+		var.value+="[" + std::to_string(index) + "]";
+		checkSyntax::checkVar(var.value,env,code[0].line_number,code[0],true);//检查变量是否声明
+		//说明这是数组赋值,消去变量、中括号和等号
+		code.erase(code.begin(),code.begin()+5);
+	}
 	std::cout<<"right expr"<<std::endl;
-	expr = new Expr(code,env);
+	expr = new Expr(code,env);//将右侧代码建立新的expr
 	std::cout<<"expr tac.result"<<expr->getTacResult()<<std::endl;
 
-	//检查左边是否声明，未声明则自动声明
-	if(env->get_var(var.value)=="null"){
-		env->insert_var(var.value);
-		env->change_type_var(var.value,expr->return_type());
+	if(!isArr)
+	{
+	    //检查左边是否声明，未声明则自动声明
+		if(env->get_var(var.value)=="null"){
+			env->insert_var(var.value);
+			env->change_type_var(var.value,expr->return_type());
 
-		std::cout << "var " << var.value << " declared automatically" << std::endl;
-		std::cout << "var " << var.value << " type is " << expr->return_type() << std::endl;
+			std::cout << "var " << var.value << " declared automatically" << std::endl;
+			std::cout << "var " << var.value << " type is " << expr->return_type() << std::endl;
 		
-	}else{
-		std::cout<<"var "<<var.value<<" already declared"<<std::endl;
+		}else{
+			std::cout<<"var "<<var.value<<" already declared"<<std::endl;
 
-		std::cout<<expr->getTacResult()<<" type is "<<expr->return_type();
-		env->change_type_var(var.value,expr->return_type());//导致类型问题！！！
+			std::cout<<expr->getTacResult()<<" type is "<<expr->return_type();
+			env->change_type_var(var.value,expr->return_type());//导致类型问题！！！
 
-		std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
+			std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
+		}
+		assign();
 	}
-	assign();
+	else
+	{
+	    // //检查左边是否声明，未声明则自动声明
+		// if(env->get_arr(var.value)=="null"){
+		// 	env->insert_arr(var.value);
+		// 	// env->change_type_var(var.value,expr->return_type());
+
+		// 	std::cout << "arr " << var.value << " declared automatically" << std::endl;
+		//  std::cout << "arr " << var.value << " type is " << expr->return_type() << std::endl;
+		
+		// }else{
+			std::cout<<"var "<<var.value<<" already declared"<<std::endl;
+
+			std::cout<<expr->getTacResult()<<" type is "<<"sub_arr "<<std::endl;
+			// env->change_type_var(var.value,expr->return_type());//导致类型问题！！！
+
+			// std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
+		// }
+		assign(true);
+	}
 }
 
 
-void Assign::assign()
+void Assign::assign(bool isArr)
 {
-	tacs.push_back({ "=",expr->getTacResult(),"",env->get_var(var.value)});
+	if(!isArr)
+		tacs.push_back({ "=",expr->getTacResult(),"",env->get_var(var.value)});
+	else
+		tacs.push_back({ "=",expr->getTacResult(),"",env->get_arr(var.value)});
 }
 
 void Assign::setEnv(Environment* env)

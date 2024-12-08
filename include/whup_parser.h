@@ -50,6 +50,7 @@ private:
 public:
     // 以哈希表创建符号表，用于存储变量名及其类型
     std::unordered_map<std::string, std::string> var_table;
+    std::unordered_map<std::string, std::string> arr_table;
 
     // 储存存储返回值的临时变量，便于压入栈帧
     // 放在environment是因为栈帧的另一个组成部分，即局部变量，也在environment，这样统一性更好
@@ -72,6 +73,7 @@ public:
      *  name 要插入的变量名。
      */
     void insert_var(std::string name);
+    void insert_arr(std::string name);
     /**
      * 简介： 查找变量的函数
      *
@@ -83,6 +85,7 @@ public:
      * 返回值： 变量翻译成的c++的名称，如果未找到则返回"null"
      */
     std::string get_var(std::string name);
+    std::string get_arr(std::string name);
 
     /**
      * 简介： 更改变量类型的函数
@@ -95,6 +98,7 @@ public:
      *  t 新的变量类型
      */
     void change_type_var(std::string name, std::string t);
+    void change_type_arr(std::string name, std::string t);
 
     /**
      * 函数名：get_type_var

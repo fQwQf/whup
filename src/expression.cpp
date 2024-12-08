@@ -88,6 +88,16 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
+    if(expr.size() == 4 && expr[0].type == IDENTIFIER && expr[1].value == "[" && expr[3].value == "]")
+    {
+        std::cout << "find IDENTIFIER!";
+        //检查变量是否已经声明
+        checkSyntax::checkVar(E_expr[0].value+"["+E_expr[2].value+"]",env,E_expr[0].line_number,E_expr[0],true);
+
+        tac.result = env->get_arr(E_expr[0].value+"[" + E_expr[2].value + "]");
+        std::cout << "result: " << tac.result << std::endl;
+        return;
+    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
@@ -290,6 +300,8 @@ void Expr::expr()
         };
     };
 
+
+
     //这就是函数调用
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = functions[E_expr[0].value];
@@ -321,7 +333,7 @@ void Expr::expr()
     std::cout << "find par" << std::endl;
 
     //检查是否出现错误
-    printErrors();
+    // printErrors();
 
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());

@@ -13,7 +13,7 @@ class Assign
 	Environment* env;//当前环境
 public:
 	Assign(std::vector<Token> code, Environment* env);
-	void assign();
+	void assign(bool isArr=false);
 	void setEnv(Environment* env);
 	std::string return_type();
 };
