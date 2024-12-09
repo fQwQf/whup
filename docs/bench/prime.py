@@ -17,6 +17,7 @@ while(j<=100):
             
                 isprime=0
             
+            
             b=b+1
         
         if(isprime==1):
