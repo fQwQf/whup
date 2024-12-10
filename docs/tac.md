@@ -107,4 +107,20 @@
 |---|---|---|---|
 | load | arg1 |  | result |
 
-效果：将arg1的值赋给result。  
+效果：将arg1的值赋给result。
+
+## REFNUM
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| REFNUM | arg1 |  | result |
+
+效果：使result指向arg1
+
+## BIAS
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| BIAS | arg1 | arg2 | result |
+
+效果：使result指向arg1偏移arg2的值个单位长度。

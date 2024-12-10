@@ -4,7 +4,6 @@ time_start = time.time()  # 记录开始时间
 
 j=1
 while(j<=100):
-
     i=3
     sum=0
     while(i<=10000):

@@ -16,6 +16,7 @@ std::stack<std::string>functionStack_string;
 std::unordered_map<std::string,float*>runtime_number;//
 std::unordered_map<std::string,std::string*>runtime_string;//
 
+
 //对于reference只需要重载一次ASSIGN
 //区分strref和numberref？
 
@@ -53,9 +54,10 @@ void setLabel(std::vector<ThreeAddressCode>tacs)
     }
 }
 
+//其实这就是二次编译
 std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
-    setLabel(tacs);
-
+    
+    //这里是登记变量
     for (auto i : var_declares){
         if(i.second=="number"){
             runtime_number[i.first]=new float(0);
@@ -69,16 +71,25 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         }
     }
 
+    //这里是登记常量
     std::vector<runTAC> runtimeTACs(tacs.size());
     for (auto i : runtimeEnv_number){
         runtime_number[i.first]=new float(i.second);
-        //这里应该只设置常量
     }
 
     for (auto i : runtimeEnv_string){
         runtime_string[i.first]=new std::string(i.second);
     }
 
+    //理论上还有个登记数组
+    //数组指针也存在runtime_string和runtime_number中，因此需要有确保不会与变量混淆的数组名机制
+
+    //数组偏移按计划通过BIAS指令实现，那么就应该在二次编译时插入新的指令，因此要在setLabel前进行
+    //具体思路是：如果在任一语句中检测到>->，先将其登记并替换为相应的指针
+    //然后，在这一语句前插入BIAS指令
+    //在执行时，BIAS指令会根据参数的值，完成指针的偏移
+
+    setLabel(tacs);
 
     for(int i=0;i<tacs.size();i++)
     {
