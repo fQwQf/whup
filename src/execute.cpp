@@ -3,6 +3,8 @@
 
 extern std::vector<ThreeAddressCode>tacs;//全局的三地址码
 extern std::unordered_map<std::string,std::string>var_declares;
+extern std::vector<ThreeAddressCode>tacArrs;//数组声明
+
 extern std::string newTempLabel();
 std::stack<int>labelStack;
 
@@ -81,8 +83,16 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         runtime_string[i.first]=new std::string(i.second);
     }
 
-    //理论上还有个登记数组
+    //这里是登记数组
     //数组指针也存在runtime_string和runtime_number中，因此需要有确保不会与变量混淆的数组名机制
+    //arg1:size arg2:type result:name
+    for (auto i : tacArrs){
+        if(i.arg2=="number"){
+            runtime_number[i.result]=new float[std::stoi(i.arg1)]();
+        }else if(i.arg2=="string"){
+            runtime_string[i.result]=new std::string[std::stoi(i.arg1)]();
+        }
+    }
 
     //数组偏移按计划通过BIAS指令实现，那么就应该在二次编译时插入新的指令，因此要在setLabel前进行
     //具体思路是：如果在任一语句中检测到>->，先将其登记并替换为相应的指针
@@ -93,17 +103,70 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         if((*tac).arg1.find(">->")!=std::string::npos){
             std::string array_name(0,(*tac).arg1.find(">->")-1);
             std::string bias((*tac).arg1.find(">->")+3,(*tac).arg1.size()-1);
-            if(runtime_string.find(array) != runtime_string.end() || runtime_number.find(array) != runtime_number.end()){
-                tacs.insert(tac,{BIAS,array_name,bias,array});
+            if(runtime_string.find(array) != runtime_string.end()){
+                tacs.insert(tac,{BIASSTR,array_name,bias,array});
+            }else if(runtime_number.find(array) != runtime_number.end()){
+                tacs.insert(tac,{BIASNUM,array_name,bias,array});
             }
             else
             {
                 if (runtime_string.find(array_name) != runtime_string.end())
                 {
-                    continue;
+                    runtime_string[array]=new std::string("");
+                    tacs.insert(tac,{BIASSTR,array_name,bias,array});
                 }
                 else if (runtime_number.find(array_name) != runtime_number.end())
                 {
+                    runtime_number[array]=new float(0);
+                    tacs.insert(tac,{BIASNUM,array_name,bias,array});
+                }
+            }
+        }
+
+        array = (*tac).arg2;
+        if((*tac).arg2.find(">->")!=std::string::npos){
+            std::string array_name(0,(*tac).arg2.find(">->")-1);
+            std::string bias((*tac).arg2.find(">->")+3,(*tac).arg2.size()-1);
+            if(runtime_string.find(array) != runtime_string.end()){
+                tacs.insert(tac,{BIASSTR,array_name,bias,array});
+            }else if(runtime_number.find(array) != runtime_number.end()){
+                tacs.insert(tac,{BIASNUM,array_name,bias,array});
+            }
+            else
+            {
+                if (runtime_string.find(array_name) != runtime_string.end())
+                {
+                    runtime_string[array]=new std::string("");
+                    tacs.insert(tac,{BIASSTR,array_name,bias,array});
+                }
+                else if (runtime_number.find(array_name) != runtime_number.end())
+                {
+                    runtime_number[array]=new float(0);
+                    tacs.insert(tac,{BIASNUM,array_name,bias,array});
+                }
+            }
+        }
+
+        array = (*tac).result;
+        if((*tac).result.find(">->")!=std::string::npos){
+            std::string array_name(0,(*tac).result.find(">->")-1);
+            std::string bias((*tac).result.find(">->")+3,(*tac).result.size()-1);
+            if(runtime_string.find(array) != runtime_string.end()){
+                tacs.insert(tac,{BIASSTR,array_name,bias,array});
+            }else if(runtime_number.find(array) != runtime_number.end()){
+                tacs.insert(tac,{BIASNUM,array_name,bias,array});
+            }
+            else
+            {
+                if (runtime_string.find(array_name) != runtime_string.end())
+                {
+                    runtime_string[array]=new std::string("");
+                    tacs.insert(tac,{BIASSTR,array_name,bias,array});
+                }
+                else if (runtime_number.find(array_name) != runtime_number.end())
+                {
+                    runtime_number[array]=new float(0);
+                    tacs.insert(tac,{BIASNUM,array_name,bias,array});
                 }
             }
         }
@@ -236,7 +299,22 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         else if(tac.opperator==EXIT)
         {
             runtimeTACs[i].opperator=EXIT;
-        }else{
+        }
+        else if(tac.opperator==BIASNUM)
+        {
+            runtimeTACs[i].opperator=tac.opperator;
+            runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
+            runtimeTACs[i].arg2=(void**)&runtime_number[tac.arg2];
+            runtimeTACs[i].result=(void**)&runtime_number[tac.result];
+        }
+        else if(tac.opperator==BIASSTR)
+        {
+            runtimeTACs[i].opperator=tac.opperator;
+            runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
+            runtimeTACs[i].arg2=(void**)&runtime_number[tac.arg2];
+            runtimeTACs[i].result=(void**)&runtime_string[tac.result];
+        }
+        else{
             std::cout << "Fuck!Unexpected op!" << std::endl;
         }
     }
@@ -431,6 +509,19 @@ void execute(std::vector<runTAC> runtacs)
         {
             i=labelStack.top();
             labelStack.pop();
+        }
+        else if(tac.opperator==BIASNUM)
+        {
+            float* temp=(float*)*tac.arg1+*(int*)*tac.arg2;
+            delete tac.result;
+            tac.result = (void**)&temp;
+
+        }
+        else if(tac.opperator==BIASSTR)
+        {
+            std::string* temp=(std::string*)*tac.arg1+*(int*)*tac.arg2;
+            delete tac.result;
+            tac.result = (void**)&temp;
         }
         else if(tac.opperator==EXIT)
         {

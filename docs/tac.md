@@ -117,10 +117,18 @@
 
 效果：使result指向arg1
 
-## BIAS
+## BIASNUM
 
 | op | arg1 | arg2 | result |
 |---|---|---|---|
-| BIAS | arg1 | arg2 | result |
+| BIASNUM | arg1 | arg2 | result |
 
-效果：使result指向arg1偏移arg2的值个单位长度。
+效果：使result指向arg1偏移arg2的值个float单位长度。
+
+## BIASSTR
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| BIASSTR | arg1 | arg2 | result |
+
+效果：使result指向arg1偏移arg2的值个string单位长度。

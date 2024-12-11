@@ -66,46 +66,12 @@ enum Operator
     ARRASSIGN,//数组赋值
     ARRGET,  //数组取值
     ARRLEN,  //数组长度
-    BIAS     //数组偏移
+    BIASNUM,     //数字数组偏移
+    BIASSTR      //字符串
 };
-enum Operator
-{
-    ADD, // +
-    STRADD,//字符串相加
-    SUB, // -
-    MUL, // *
-    DIV, // /
-    MOD, // %
-    AND, // &&
-    OR,  // ||
-    NOT, // !
-    EQ,  // ==
-    NEQ, // !=
-    LT,  // <
-    GT,  // >
-    LE,  // <=
-    GE,  // >=
-    ASSIGN, // =
-    STRASSIGN,//字符串赋值
-    LABEL,  // label
-    GOTO,   // goto
-    IF_GOTO, // if_goto
-    PRINT,   // print
-    WINPUT,   // input
-    PUSH,    // push
-    POP,     // pop
-    CALL,    // call
-    RET,     // return
-    EXIT,    // end
-    POW,    // **
-    REFSTR,
-    REFNUM,      //引用传递
-    BIAS    //数组偏移
-};
+
 struct ThreeAddressCode
 {
-    Operator opperator;       // 操作符
-    std::string op;     // 操作符//这里是为了方便，因为在生成代码的时候需要用到字符串
     Operator opperator;       // 操作符
     std::string op;     // 操作符//这里是为了方便，因为在生成代码的时候需要用到字符串
     std::string arg1;   // 变量1
@@ -113,6 +79,8 @@ struct ThreeAddressCode
     std::string result; // 存储结果的变量
 
     ThreeAddressCode(Operator o,std::string s1,std::string s2,std::string res):opperator(o),arg1(s1),arg2(s2),result(res){}
+    ThreeAddressCode(){}
+    ThreeAddressCode(Operator o,std::string op,std::string s1,std::string s2,std::string res):opperator(o),op(op),arg1(s1),arg2(s2),result(res){}
 };
 
 /*
@@ -152,10 +120,6 @@ public:
 
     bool is_import = false; // 是否为导入环境
 
-    // 存储函数名和对应的对象指针哈希表
-    std::unordered_map<std::string, Function*> function_table;  
-
-    bool is_import = false; // 是否为导入环境
 
     /*
     构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
@@ -224,8 +188,6 @@ public:
     // 查找一个函数，方法和查变量一样
     Function* get_function(std::string name);
 
-    // 查找一个函数，方法和查变量一样
-    Function* get_function(std::string name);
 };
 
 #endif
