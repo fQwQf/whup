@@ -65,7 +65,8 @@ enum Operator
     ARRSET,  //数组声明
     ARRASSIGN,//数组赋值
     ARRGET,  //数组取值
-    ARRLEN  //数组长度
+    ARRLEN,  //数组长度
+    BIAS     //数组偏移
 };
 enum Operator
 {
