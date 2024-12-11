@@ -3,8 +3,11 @@
 #include"classfunction.h"
 #include"object.h"
 #include "check.h"
+#include "arr.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
+extern std::vector<Arr> arrs;       // 存储数组对象的向量
+extern std::vector<ThreeAddressCode> tacArrs; // 存储数组三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, Object*> object_table;  // 存储对象名和对应的对象指针哈希表
@@ -115,6 +118,44 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
+    if(expr[0].type == IDENTIFIER && expr[1].value == "[" )
+    {
+        std::cout << "find IDENTIFIER!";
+        int index = 0;
+        int thisarr = 0;
+        while(thisarr<arrs.size())
+		{
+			if(arrs[thisarr].name==E_expr[0].value)
+			{
+				std::cout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
+				break;
+			}
+			thisarr++;
+		}
+		if(thisarr==arrs.size())
+		{
+			//兼顾了数组未声明的报错
+			pushErrors(E_expr[0], "Unrecognized arr token '" + E_expr[0].value + "' ");
+		}
+        E_expr.erase(E_expr.begin());//消去变量名
+        while(arrs[thisarr].dimension>0)
+		{
+			E_expr.erase(E_expr.begin());
+			// for(auto i:code)
+			// {
+			// 	std::cout<<i.value<<" ";
+			// }
+			// std::cout<<"index is "<<index<<std::endl;
+			index+=std::stoi(E_expr[0].value) * arrs[thisarr].len[arrs[thisarr].dimension-1];
+			// std::cout<<"index is "<<index<<std::endl;
+			E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
+			arrs[thisarr].dimension--;
+		}
+        tacArrs.push_back({ARRGET,"=",E_expr[0].value,std::to_string(index),tac.result});
+        // tac.result = env->get_arr(E_expr[0].value);
+        std::cout << "result: " << tac.result << std::endl;
+        return;
+    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
@@ -358,6 +399,7 @@ void Expr::expr()
         };
     };
 
+    //这就是函数调用
     //扫描乘方
     //乘方结合性与其他的不同，扫描方向也相反
     for (int i = 0; i < E_expr.size() - 1; i++){
@@ -408,7 +450,7 @@ void Expr::expr()
         funcenv = namespace_table[E_expr[0].value];
         E_expr.erase(E_expr.begin(), E_expr.begin()+2);
     }
-
+    
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = funcenv->get_function(E_expr[0].value);
         std::vector<Token> E_expression = E_expr;
@@ -449,7 +491,7 @@ void Expr::expr()
     std::cout << "find par" << std::endl;
 
     //检查是否出现错误
-    printErrors();
+    // printErrors();
 
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());

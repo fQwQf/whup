@@ -154,6 +154,7 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "function",
         "let", 
         "var", 
+        "arr",
         "const", 
         "break", 
         "continue", 

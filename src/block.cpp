@@ -1,6 +1,7 @@
 #include "block.h"
 #include"assign.h"
 #include"var.h"
+#include"arr.h"
 #include"print.h"
 #include"if.h"
 #include"while.h"
@@ -208,6 +209,11 @@ void Block::generate(std::vector<Token> subtokens)
         new Var(subtokens,env);
         std::cout << "var generate" << std::endl;
     }
+    else if(subtokens[0].type == KEYWORD && subtokens[0].value == "arr")
+    {
+        new Arr(subtokens,env);
+        std::cout << "arr generate" << std::endl;
+    }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
     {
         new Print(subtokens,env);
@@ -353,8 +359,7 @@ void Block::generate(std::vector<Token> subtokens)
 
         if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         {
-            std::cout<<"not found classfunction"<<functionName;
-            exit(1);
+            pushErrors(subtokens[0],"not found classfunction "+functionName);
         }
         std::cout<<functionName<<" call begin"<<std::endl;
         thisFunctionTable[functionName]->call(subtokens,this->env);

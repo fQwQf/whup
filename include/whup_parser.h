@@ -14,6 +14,12 @@
 
 class Function;//前向声明
 
+#ifndef FUNCTION_H_
+#include "function.h"
+#endif
+
+class Function;//前向声明
+
 // 创建新的临时变量
 std::string newTempVar(std::string type);
 // 创建新的临时标签
@@ -56,10 +62,49 @@ enum Operator
     POW,    // **
     REFSTR,
     REFNUM,      //引用传递
+    ARRSET,  //数组声明
+    ARRASSIGN,//数组赋值
+    ARRGET,  //数组取值
+    ARRLEN  //数组长度
+};
+enum Operator
+{
+    ADD, // +
+    STRADD,//字符串相加
+    SUB, // -
+    MUL, // *
+    DIV, // /
+    MOD, // %
+    AND, // &&
+    OR,  // ||
+    NOT, // !
+    EQ,  // ==
+    NEQ, // !=
+    LT,  // <
+    GT,  // >
+    LE,  // <=
+    GE,  // >=
+    ASSIGN, // =
+    STRASSIGN,//字符串赋值
+    LABEL,  // label
+    GOTO,   // goto
+    IF_GOTO, // if_goto
+    PRINT,   // print
+    WINPUT,   // input
+    PUSH,    // push
+    POP,     // pop
+    CALL,    // call
+    RET,     // return
+    EXIT,    // end
+    POW,    // **
+    REFSTR,
+    REFNUM,      //引用传递
     BIAS    //数组偏移
 };
 struct ThreeAddressCode
 {
+    Operator opperator;       // 操作符
+    std::string op;     // 操作符//这里是为了方便，因为在生成代码的时候需要用到字符串
     Operator opperator;       // 操作符
     std::string op;     // 操作符//这里是为了方便，因为在生成代码的时候需要用到字符串
     std::string arg1;   // 变量1
@@ -95,10 +140,16 @@ private:
 public:
     // 以哈希表创建符号表，用于存储变量名及其类型
     std::unordered_map<std::string, std::string> var_table;
+    std::unordered_map<std::string, std::string> arr_table;
 
     // 储存存储返回值的临时变量，便于压入栈帧
     // 放在environment是因为栈帧的另一个组成部分，即局部变量，也在environment，这样统一性更好
     std::vector<std::string> return_var_list;
+
+    // 存储函数名和对应的对象指针哈希表
+    std::unordered_map<std::string, Function*> function_table;  
+
+    bool is_import = false; // 是否为导入环境
 
     // 存储函数名和对应的对象指针哈希表
     std::unordered_map<std::string, Function*> function_table;  
@@ -122,6 +173,7 @@ public:
      *  name 要插入的变量名。
      */
     void insert_var(std::string name);
+    void insert_arr(std::string name);
     /**
      * 简介： 查找变量的函数
      *
@@ -133,6 +185,7 @@ public:
      * 返回值： 变量翻译成的c++的名称，如果未找到则返回"null"
      */
     std::string get_var(std::string name);
+    std::string get_arr(std::string name);
 
     /**
      * 简介： 更改变量类型的函数
@@ -145,6 +198,7 @@ public:
      *  t 新的变量类型
      */
     void change_type_var(std::string name, std::string t);
+    void change_type_arr(std::string name, std::string t);
 
     /**
      * 函数名：get_type_var
@@ -165,6 +219,9 @@ public:
 
     //检测是否为全局环境
     bool isGlobal();
+
+    // 查找一个函数，方法和查变量一样
+    Function* get_function(std::string name);
 
     // 查找一个函数，方法和查变量一样
     Function* get_function(std::string name);
