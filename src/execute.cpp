@@ -88,6 +88,15 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
     //具体思路是：如果在任一语句中检测到>->，先将其登记并替换为相应的指针
     //然后，在这一语句前插入BIAS指令
     //在执行时，BIAS指令会根据参数的值，完成指针的偏移
+    for(int i=0;i<tacs.size();i++){
+        if(tacs[i].arg1.find(">->")!=std::string::npos){
+            std::string array_name(0,tacs[i].arg1.find(">->")-1);
+            std::string bias(tacs[i].arg1.find(">->")+3,tacs[i].arg1.size()-1);
+            if(runtime_string.find(array_name)){
+                continue;
+            }
+        }
+    }
 
     setLabel(tacs);
 
