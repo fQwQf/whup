@@ -14,6 +14,12 @@
 
 class Function;//前向声明
 
+#ifndef FUNCTION_H_
+#include "function.h"
+#endif
+
+class Function;//前向声明
+
 // 创建新的临时变量
 std::string newTempVar(std::string type);
 // 创建新的临时标签
@@ -59,8 +65,11 @@ enum Operator
     ARRSET,  //数组声明
     ARRASSIGN,//数组赋值
     ARRGET,  //数组取值
-    ARRLEN  //数组长度
+    ARRLEN,  //数组长度
+    BIASNUM,     //数字数组偏移
+    BIASSTR      //字符串
 };
+
 struct ThreeAddressCode
 {
     Operator opperator;       // 操作符
@@ -68,6 +77,10 @@ struct ThreeAddressCode
     std::string arg1;   // 变量1
     std::string arg2;   // 变量2
     std::string result; // 存储结果的变量
+
+    ThreeAddressCode(Operator o,std::string s1,std::string s2,std::string res):opperator(o),arg1(s1),arg2(s2),result(res){}
+    ThreeAddressCode(){}
+    ThreeAddressCode(Operator o,std::string op,std::string s1,std::string s2,std::string res):opperator(o),op(op),arg1(s1),arg2(s2),result(res){}
 };
 
 /*
@@ -106,6 +119,7 @@ public:
     std::unordered_map<std::string, Function*> function_table;  
 
     bool is_import = false; // 是否为导入环境
+
 
     /*
     构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
@@ -173,6 +187,7 @@ public:
 
     // 查找一个函数，方法和查变量一样
     Function* get_function(std::string name);
+
 };
 
 #endif
