@@ -3,7 +3,7 @@
 
 extern std::vector<ThreeAddressCode>tacs;//全局的三地址码
 extern std::unordered_map<std::string,std::string>var_declares;
-extern std::vector<ThreeAddressCode>tacArrs;//数组声明
+std::vector<ThreeAddressCode>tacArrs;//数组声明
 
 extern std::string newTempLabel();
 std::stack<int>labelStack;

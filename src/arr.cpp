@@ -4,7 +4,7 @@
 extern std::vector<ThreeAddressCode> tacs;
 
 std::vector<Arr> arrs;//记录所有数组
-std::vector<ThreeAddressCode> tacArrs;
+extern std::vector<ThreeAddressCode> tacArrs;
 
 void Arr::declare()
 {
