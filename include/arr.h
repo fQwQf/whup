@@ -21,7 +21,7 @@ public:
     int dimension;
     std::string name;
 
-    Arr(std::vector<Token> tokens,Environment* env);
+    Arr(std::vector<Token> tokens,Environment* env,std::string type);
 
     void arr(Environment *env, std::string name, std::vector<Token> tokens ,int dimension,int size);
 

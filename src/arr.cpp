@@ -9,10 +9,13 @@ std::vector<ThreeAddressCode> tacArrs;
 void Arr::declare()
 {
     env->insert_arr(name);
-    tacArrs.push_back({ARRSET,"", std::to_string(size),"",env->get_arr(name)});
+    if(type=="number")
+        tacArrs.push_back({ARRSET,"", std::to_string(size),"number",env->get_arr(name)});
+    else if(type=="string")
+        tacArrs.push_back({ARRSET,"", std::to_string(size),"string",env->get_arr(name)});
 }
 
-Arr::Arr(std::vector<Token> tokens,Environment* env)
+Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type)
 {
     this->env = env;
     int dimension ;
@@ -80,6 +83,7 @@ void Arr::arr(Environment *env, std::string name, std::vector<Token> tokens ,int
     //     std::cout<<i.value<<" ";
     // }
     tokens.pop_back();
+    // if(std::isdigit(tokens.back().value))
     if(!len.empty())
         this->len.push_back(this->len.back()*std::stoi(tokens.back().value));
     else

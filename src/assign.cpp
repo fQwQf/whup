@@ -11,7 +11,7 @@ extern std::unordered_map<std::string,std::string>var_declares;
 Assign::Assign(std::vector<Token> code, Environment* env)
 {
 	bool isArr = false;
-	int index=0;
+	std::vector<Token> indextokens;
 	int thisarr=0;
 	if(code[1].value !="::"){
 		this->setEnv(env);
@@ -57,11 +57,19 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 				// 	std::cout<<i.value<<" ";
 				// }
 				// std::cout<<"index is "<<index<<std::endl;
-				index+=std::stoi(code[0].value) * arrs[thisarr].len[arrs[thisarr].dimension-1];
+				indextokens.push_back(code[0]);
+				Token temp1={SYMBOL,"*",code[0].line_number,code[0].file_name};
+				Token temp2={SYMBOL,"+",code[0].line_number,code[0].file_name};
+				indextokens.push_back(temp1);
+				indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[arrs[thisarr].dimension-1]),code[0].line_number,code[0].file_name});
+				indextokens.push_back(temp2);
 				// std::cout<<"index is "<<index<<std::endl;
+
 				code.erase(code.begin(),code.begin()+2);//删除前两个节点
 				arrs[thisarr].dimension--;
 			}
+			indextokens.pop_back();
+
 			// index=std::stoi(code[2].value);
 			// var.value+="[" + std::to_string(index) + "]";
 			// //检查变量是否声明
@@ -118,19 +126,21 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 
 			// std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
 		// }
-		assign(true,index);
+
+		Expr* index_expr = new Expr(indextokens,env);//将偏移量表达式建立新的expr
+		assign(true,index_expr);
 	}
 }
 
 
-void Assign::assign(bool isArr,int index)
+void Assign::assign(bool isArr,Expr* index_expr)
 {
 	if(expr->return_type()=="string")
 		tacs.push_back({STRASSIGN, "=",expr->getTacResult(),"",left_env->get_var(var.value)});
 	else if(!isArr)
 		tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",left_env->get_var(var.value)});
 	else	
-		tacArrs.push_back({ARRASSIGN,"=",std::to_string(index),expr->getTacResult(),left_env->get_arr(var.value)});
+		tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",left_env->get_arr(var.value)+">->"+index_expr->getTacResult()});
 }
 
 void Assign::setEnv(Environment* env)

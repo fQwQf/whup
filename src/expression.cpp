@@ -121,7 +121,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
     if(expr[0].type == IDENTIFIER && expr[1].value == "[" )
     {
         std::cout << "find IDENTIFIER!";
-        int index = 0;
+        std::vector<Token> indextokens;
         int thisarr = 0;
         while(thisarr<arrs.size())
 		{
@@ -146,12 +146,18 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 			// 	std::cout<<i.value<<" ";
 			// }
 			// std::cout<<"index is "<<index<<std::endl;
-			index+=std::stoi(E_expr[0].value) * arrs[thisarr].len[arrs[thisarr].dimension-1];
+			indextokens.push_back(E_expr[0]);
+			Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
+			Token temp2={SYMBOL,"+",E_expr[0].line_number,E_expr[0].file_name};
+			indextokens.push_back(temp1);
+			indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[arrs[thisarr].dimension-1]),E_expr[0].line_number,E_expr[0].file_name});
+			indextokens.push_back(temp2);
 			// std::cout<<"index is "<<index<<std::endl;
 			E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
 			arrs[thisarr].dimension--;
 		}
-        tacArrs.push_back({ARRGET,"=",E_expr[0].value,std::to_string(index),tac.result});
+        Expr *index_expr = new Expr(indextokens, env);
+        tac.result = index_expr->getTacResult();
         // tac.result = env->get_arr(E_expr[0].value);
         std::cout << "result: " << tac.result << std::endl;
         return;
