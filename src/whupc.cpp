@@ -78,7 +78,7 @@ int main(int n, const char *arg[])
 
     std::vector<runTAC> runtacs = TAC_to_runTAC(tacs);//将tacs转换为runTAC
 
-    /*for (auto i : runtacs){
+    for (auto i : runtacs){
         std::cout << "arg1:" << i.arg1 << " arg2:" << i.arg2 << " op:" << i.opperator << " result:" << i.result <<" line:" << i.line << std::endl;
         if (i.arg1!=0){
             std::cout << "arg1: " << *(float*)i.arg1 << std::endl;
@@ -90,7 +90,7 @@ int main(int n, const char *arg[])
             std::cout << "result: " << *(float*)i.result << std::endl;
         }
         std::cout << std::endl;
-    }*/
+    }
 
     std::clock_t start = clock();
     

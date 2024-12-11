@@ -19,10 +19,10 @@ void checkSyntax::checkVar(std::string name,Environment *env,int line_number,Tok
 {
     if (isArr) 
     {
-        if (env->get_arr(name) == "null") 
-        {
-            errors.push_back({ token, "Unrecognized arr token '" + name + "' or index out of range" });
-        }
+        // if (env->get_arr(name) == "null") 
+        // {
+        //     errors.push_back({ token, "Unrecognized arr token '" + name + "' or index out of range" });
+        // }
     }
     else 
     {

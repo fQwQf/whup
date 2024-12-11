@@ -3,8 +3,11 @@
 #include"classfunction.h"
 #include"object.h"
 #include "check.h"
+#include "arr.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
+extern std::vector<Arr> arrs;       // 存储数组对象的向量
+extern std::vector<ThreeAddressCode> tacArrs; // 存储数组三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, Object*> object_table;  // 存储对象名和对应的对象指针哈希表
@@ -115,13 +118,41 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
-    if(expr.size() == 4 && expr[0].type == IDENTIFIER && expr[1].value == "[" && expr[3].value == "]")
+    if(expr[0].type == IDENTIFIER && expr[1].value == "[" )
     {
         std::cout << "find IDENTIFIER!";
-        //检查变量是否已经声明
-        checkSyntax::checkVar(E_expr[0].value+"["+E_expr[2].value+"]",env,E_expr[0].line_number,E_expr[0],true);
-
-        tac.result = env->get_arr(E_expr[0].value+"[" + E_expr[2].value + "]");
+        int index = 0;
+        int thisarr = 0;
+        while(thisarr<arrs.size())
+		{
+			if(arrs[thisarr].name==E_expr[0].value)
+			{
+				std::cout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
+				break;
+			}
+			thisarr++;
+		}
+		if(thisarr==arrs.size())
+		{
+			//兼顾了数组未声明的报错
+			pushErrors(E_expr[0], "Unrecognized arr token '" + E_expr[0].value + "' ");
+		}
+        E_expr.erase(E_expr.begin());//消去变量名
+        while(arrs[thisarr].dimension>0)
+		{
+			E_expr.erase(E_expr.begin());
+			// for(auto i:code)
+			// {
+			// 	std::cout<<i.value<<" ";
+			// }
+			// std::cout<<"index is "<<index<<std::endl;
+			index+=std::stoi(E_expr[0].value) * arrs[thisarr].len[arrs[thisarr].dimension-1];
+			// std::cout<<"index is "<<index<<std::endl;
+			E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
+			arrs[thisarr].dimension--;
+		}
+        tacArrs.push_back({ARRGET,"=",E_expr[0].value,std::to_string(index),tac.result});
+        // tac.result = env->get_arr(E_expr[0].value);
         std::cout << "result: " << tac.result << std::endl;
         return;
     }

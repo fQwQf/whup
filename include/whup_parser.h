@@ -55,7 +55,11 @@ enum Operator
     EXIT,    // end
     POW,    // **
     REFSTR,
-    REFNUM      //引用传递
+    REFNUM,      //引用传递
+    ARRSET,  //数组声明
+    ARRASSIGN,//数组赋值
+    ARRGET,  //数组取值
+    ARRLEN  //数组长度
 };
 struct ThreeAddressCode
 {

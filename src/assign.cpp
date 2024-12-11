@@ -1,14 +1,18 @@
 #include"assign.h"
 #include"check.h"
+#include"arr.h"
 
 extern std::vector<ThreeAddressCode> tacs;
+extern std::vector<Arr> arrs;
+extern std::vector<ThreeAddressCode> tacArrs; 
 extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 extern std::unordered_map<std::string,std::string>var_declares;
 
 Assign::Assign(std::vector<Token> code, Environment* env)
 {
 	bool isArr = false;
-	int index;
+	int index=0;
+	int thisarr=0;
 	if(code[1].value !="::"){
 		this->setEnv(env);
 		var = code[0];
@@ -18,6 +22,20 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		{
 			std::cout<<"find array "<<std::endl;
 			isArr = true;
+			while(thisarr<arrs.size())
+			{
+				if(arrs[thisarr].name==var.value)
+				{
+					std::cout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
+					break;
+				}
+				thisarr++;
+			}
+			if(thisarr==arrs.size())
+			{
+				//兼顾了数组未声明的报错
+				pushErrors(code[0], "Unrecognized arr token '" + var.value + "' ");
+			}
 		}
 
 		var = code[0];//记录该变量
@@ -30,23 +48,40 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		}
 		else
 		{
-			index=std::stoi(code[2].value);
-			var.value+="[" + std::to_string(index) + "]";
-			checkSyntax::checkVar(var.value,env,code[0].line_number,code[0],true);//检查变量是否声明
-			//说明这是数组赋值,消去变量、中括号和等号
-			code.erase(code.begin(),code.begin()+5);
-		}
-		}else{
-	    	left_env = namespace_table[code[0].value];
-			var = code[2];
-			code.erase(code.begin(),code.begin()+4);
-		}
-		std::cout<<"right expr"<<std::endl;
-		expr = new Expr(code,env);//将右侧代码建立新的expr
-		std::cout<<"expr tac.result"<<expr->getTacResult()<<std::endl;
+			code.erase(code.begin());//消去变量名
+			while(arrs[thisarr].dimension>0)
+			{
+				code.erase(code.begin());
+				// for(auto i:code)
+				// {
+				// 	std::cout<<i.value<<" ";
+				// }
+				// std::cout<<"index is "<<index<<std::endl;
+				index+=std::stoi(code[0].value) * arrs[thisarr].len[arrs[thisarr].dimension-1];
+				// std::cout<<"index is "<<index<<std::endl;
+				code.erase(code.begin(),code.begin()+2);//删除前两个节点
+				arrs[thisarr].dimension--;
+			}
+			// index=std::stoi(code[2].value);
+			// var.value+="[" + std::to_string(index) + "]";
+			// //检查变量是否声明
+			// checkSyntax::checkVar(var.value,env,code[0].line_number,code[0],true);
+			////说明这是数组赋值,消去变量、中括号和等号
+			// code.erase(code.begin(),code.begin()+4);
 
-		if(!isArr)
-		{
+			code.erase(code.begin());//消去等号
+		}
+	}else{
+	    left_env = namespace_table[code[0].value];
+		var = code[2];
+		code.erase(code.begin(),code.begin()+4);
+	}
+	std::cout<<"right expr"<<std::endl;
+	expr = new Expr(code,env);//将右侧代码建立新的expr
+	std::cout<<"expr tac.result"<<expr->getTacResult()<<std::endl;
+
+	if(!isArr)
+	{
 	    //检查左边是否声明，未声明则自动声明
 		if(env->get_var(var.value)=="null"){
 			env->insert_var(var.value);
@@ -83,19 +118,19 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 
 			// std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
 		// }
-		assign(true);
+		assign(true,index);
 	}
 }
 
 
-void Assign::assign(bool isArr)
+void Assign::assign(bool isArr,int index)
 {
 	if(expr->return_type()=="string")
 		tacs.push_back({STRASSIGN, "=",expr->getTacResult(),"",left_env->get_var(var.value)});
 	else if(!isArr)
-		tacs.push_back({ASSIGN,expr->getTacResult(),"",env->get_var(var.value)});
+		tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",left_env->get_var(var.value)});
 	else	
-		tacs.push_back({ASSIGN, "=",expr->getTacResult(),"",left_env->get_var(var.value)});
+		tacArrs.push_back({ARRASSIGN,"=",std::to_string(index),expr->getTacResult(),left_env->get_arr(var.value)});
 }
 
 void Assign::setEnv(Environment* env)
