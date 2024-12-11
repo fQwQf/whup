@@ -14,7 +14,7 @@ class Assign
 	Environment* left_env;//等号左侧变量所在环境
 public:
 	Assign(std::vector<Token> code, Environment* env);
-	void assign(bool isArr=false,int index=0);
+	void assign(bool isArr=false,Expr* expr=0);
 	void setEnv(Environment* env);
 	std::string return_type();
 };

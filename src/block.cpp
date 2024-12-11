@@ -209,9 +209,14 @@ void Block::generate(std::vector<Token> subtokens)
         new Var(subtokens,env);
         std::cout << "var generate" << std::endl;
     }
-    else if(subtokens[0].type == KEYWORD && subtokens[0].value == "arr")
+    else if(subtokens[0].type == KEYWORD && subtokens[0].value == "number")
     {
-        new Arr(subtokens,env);
+        new Arr(subtokens,env,"number");
+        std::cout << "arr generate" << std::endl;
+    }
+    else if(subtokens[0].type == KEYWORD && subtokens[0].value == "string")
+    {
+        new Arr(subtokens,env,"string");
         std::cout << "arr generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")

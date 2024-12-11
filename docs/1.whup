@@ -1,5 +1,5 @@
 var j=1;
-arr num[5][10][10]={10};
+number num[5][10][10]={10};
 num[0][1][2]=1;
 print(j+1);
 print(((j+1)*(num[2]+num[0]-6))/2);
