@@ -55,7 +55,8 @@ enum Operator
     EXIT,    // end
     POW,    // **
     REFSTR,
-    REFNUM      //引用传递
+    REFNUM,      //引用传递
+    BIAS    //数组偏移
 };
 struct ThreeAddressCode
 {
@@ -64,6 +65,8 @@ struct ThreeAddressCode
     std::string arg1;   // 变量1
     std::string arg2;   // 变量2
     std::string result; // 存储结果的变量
+
+    ThreeAddressCode(Operator o,std::string s1,std::string s2,std::string res):opperator(o),arg1(s1),arg2(s2),result(res){}
 };
 
 /*

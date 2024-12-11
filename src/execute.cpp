@@ -88,12 +88,23 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
     //具体思路是：如果在任一语句中检测到>->，先将其登记并替换为相应的指针
     //然后，在这一语句前插入BIAS指令
     //在执行时，BIAS指令会根据参数的值，完成指针的偏移
-    for(int i=0;i<tacs.size();i++){
-        if(tacs[i].arg1.find(">->")!=std::string::npos){
-            std::string array_name(0,tacs[i].arg1.find(">->")-1);
-            std::string bias(tacs[i].arg1.find(">->")+3,tacs[i].arg1.size()-1);
-            if(runtime_string.find(array_name)){
-                continue;
+    for(std::vector<ThreeAddressCode>::iterator tac = tacs.begin(); tac != tacs.end(); ++tac){
+        std::string array = (*tac).arg1;
+        if((*tac).arg1.find(">->")!=std::string::npos){
+            std::string array_name(0,(*tac).arg1.find(">->")-1);
+            std::string bias((*tac).arg1.find(">->")+3,(*tac).arg1.size()-1);
+            if(runtime_string.find(array) != runtime_string.end() || runtime_number.find(array) != runtime_number.end()){
+                tacs.insert(tac,{BIAS,array_name,bias,array});
+            }
+            else
+            {
+                if (runtime_string.find(array_name) != runtime_string.end())
+                {
+                    continue;
+                }
+                else if (runtime_number.find(array_name) != runtime_number.end())
+                {
+                }
             }
         }
     }
