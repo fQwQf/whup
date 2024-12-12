@@ -94,6 +94,8 @@ int main(int n, const char *arg[])
         if (i.arg2!=0){
             std::cout << "arg2: " << *(float*)i.arg2 << std::endl;
         }
+    
+    
         if (i.result!=0){
             std::cout << "result: " << *(float*)i.result << std::endl;
         }
