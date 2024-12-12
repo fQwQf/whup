@@ -139,7 +139,8 @@ void Function::call_with_stack_frame(Environment *env)
         //将局部变量加入栈帧
         for (auto &i : env->var_table)
         {
-            stack_frame.push_back(i.first);
+            std::cout << "local var: " << i.first << " " << i.second << std::endl;
+            stack_frame.push_back(env->get_var(i.first));
         }
 
         //函数调用返回值加入栈帧

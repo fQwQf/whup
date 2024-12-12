@@ -112,9 +112,11 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     
 }
 
-Block::Block(std::vector<Token> tokens, Environment *env, bool is_import) : Block(tokens, env)
+Block::Block(std::vector<Token> tokens, Environment *env, bool is_import)
 {
+    this->env = new Environment(env);
     this->env->is_import = is_import;
+    block(tokens);
 };
 
 // 以分号为分隔扫描
