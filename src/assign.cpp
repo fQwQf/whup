@@ -49,7 +49,8 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		else
 		{
 			code.erase(code.begin());//消去变量名
-			while(arrs[thisarr].dimension>0)
+			int temp_dimension = arrs[thisarr].dimension;
+			while(temp_dimension>0)
 			{
 				code.erase(code.begin());
 				// for(auto i:code)
@@ -61,14 +62,14 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 				Token temp1={SYMBOL,"*",code[0].line_number,code[0].file_name};
 				Token temp2={SYMBOL,"+",code[0].line_number,code[0].file_name};
 				indextokens.push_back(temp1);
-				indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[arrs[thisarr].dimension-1]),code[0].line_number,code[0].file_name});
+				indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-1]),code[0].line_number,code[0].file_name});
 				indextokens.push_back(temp2);
 				// std::cout<<"index is "<<index<<std::endl;
 
 				code.erase(code.begin(),code.begin()+2);//删除前两个节点
-				arrs[thisarr].dimension--;
+				temp_dimension--;
 			}
-			indextokens.pop_back();
+			indextokens.pop_back();//删除最后一个加号
 
 			// index=std::stoi(code[2].value);
 			// var.value+="[" + std::to_string(index) + "]";

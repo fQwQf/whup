@@ -13,7 +13,7 @@
 #endif
 
 
-
+extern std::vector<ThreeAddressCode> tacArrs;  
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern std::vector<std::pair<std::string, std::string>> var_declares;//存储变量的声明信息
 extern int tempVarCounter;  // 临时变量计数器
@@ -76,6 +76,14 @@ int main(int n, const char *arg[])
     std::cout << "Generate code to " << out << std::endl;
     std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
+    // std::cout<<"tacArrs size:" << tacArrs.size() << std::endl;
+    // for(auto i : tacArrs)
+    // {
+    //     std::cout << i.arg1 << std::endl;
+    //     std::cout << i.arg2 << std::endl;
+    //     std::cout << i.opperator << std::endl;
+    //     std::cout << i.result << std::endl;
+    // }
     std::vector<runTAC> runtacs = TAC_to_runTAC(tacs);//将tacs转换为runTAC
 
     for (auto i : runtacs){

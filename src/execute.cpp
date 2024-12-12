@@ -83,15 +83,17 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs){
         runtime_string[i.first]=new std::string(i.second);
     }
 
-    //这里是登记数组
-    //数组指针也存在runtime_string和runtime_number中，因此需要有确保不会与变量混淆的数组名机制
-    //arg1:size arg2:type result:name
+    // 这里是登记数组
+    // 数组指针也存在runtime_string和runtime_number中，因此需要有确保不会与变量混淆的数组名机制
+    // arg1:size arg2:type result:name
     for (auto i : tacArrs){
+        // std::cout<<"success!!"<<std::endl;
         if(i.arg2=="number"){
             runtime_number[i.result]=new float[std::stoi(i.arg1)]();
         }else if(i.arg2=="string"){
             runtime_string[i.result]=new std::string[std::stoi(i.arg1)]();
         }
+        // std::cout<<"success!!"<<std::endl;
     }
 
     //数组偏移按计划通过BIAS指令实现，那么就应该在二次编译时插入新的指令，因此要在setLabel前进行
