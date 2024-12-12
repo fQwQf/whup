@@ -1,6 +1,6 @@
-var j=1;
-number num[5][10][10]={10};
-num[0][1][2]=1;
-print(j+1);
-print(((j+1)*(num[2]+num[0]-6))/2);
-print(num[3]<=10);
+function add(x:number,y:number):number{  
+    return x+y;   
+};  
+
+a = add(2,3);   
+print(a);  

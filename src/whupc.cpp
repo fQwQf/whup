@@ -44,8 +44,8 @@ int main(int n, const char *arg[])
     std::string expression = io.read();
 
     //进行expression的句法错误分析
-    //CheckSemicolon::checkCode(expression,extractor.get_input_file());
-    //printErrors();
+    CheckSemicolon::checkCode(expression,extractor.get_input_file());
+    printErrors();
 
     //先对tokens进行统一的括号错误检查
     checkBrackets::checkPar(expression,extractor.get_input_file());

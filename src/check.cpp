@@ -250,7 +250,13 @@ std::string CheckSemicolon::trim(const std::string& str)
         return ""; // 全是空白字符
     }
     size_t last = str.find_last_not_of(" \t");
-    return str.substr(first, last - first + 1);
+    std::string ans = str.substr(first, last - first + 1);
+    //在linux下应该去掉回车符
+    if(ans.back() == char(13)) 
+    {
+        ans.pop_back();
+    }
+    return ans;
 }
 
 void pushErrors(Token token, std::string message)
