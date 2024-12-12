@@ -172,7 +172,9 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "and", 
         "or", 
         "print", 
-        "input"};
+        "input",
+        "number",
+        "string",};
 }
 
 std::unordered_set<std::string> Lexer::symbol_sets() const {

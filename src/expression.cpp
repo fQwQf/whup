@@ -137,30 +137,43 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 			//兼顾了数组未声明的报错
 			pushErrors(E_expr[0], "Unrecognized arr token '" + E_expr[0].value + "' ");
 		}
-        E_expr.erase(E_expr.begin());//消去变量名
-        while(arrs[thisarr].dimension>0)
-		{
-			E_expr.erase(E_expr.begin());
-			// for(auto i:code)
-			// {
-			// 	std::cout<<i.value<<" ";
-			// }
-			// std::cout<<"index is "<<index<<std::endl;
-			indextokens.push_back(E_expr[0]);
-			Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
-			Token temp2={SYMBOL,"+",E_expr[0].line_number,E_expr[0].file_name};
-			indextokens.push_back(temp1);
-			indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[arrs[thisarr].dimension-1]),E_expr[0].line_number,E_expr[0].file_name});
-			indextokens.push_back(temp2);
-			// std::cout<<"index is "<<index<<std::endl;
-			E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
-			arrs[thisarr].dimension--;
-		}
-        Expr *index_expr = new Expr(indextokens, env);
-        tac.result = index_expr->getTacResult();
-        // tac.result = env->get_arr(E_expr[0].value);
-        std::cout << "result: " << tac.result << std::endl;
-        return;
+
+        //说明只有这一个数组变量了，否则是数组表达式，不能直接运算，应该调用this->expr()
+        if(E_expr.size()==3*arrs[thisarr].dimension+1)
+        {
+            E_expr.erase(E_expr.begin());//消去变量名
+                // for(auto i : arrs)
+            // {
+            //     std::cout<<"name = "<<i.name<<std::endl;
+            //     std::cout<<"dimension = "<<i.dimension<<std::endl;
+            //     std::cout<<"size = "<<i.size<<std::endl;
+            // }
+            // std::cout << "dimension: " << arrs[thisarr].dimension << std::endl;
+            int temp_dimension = arrs[thisarr].dimension;
+            while(temp_dimension>0)
+		    {
+			    E_expr.erase(E_expr.begin());
+			    // for(auto i:E_expr)
+    			// {
+	    		// 	std::cout<<i.value<<" ";
+	    		// }
+	    		indextokens.push_back(E_expr[0]);
+	    		Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
+	    		Token temp2={SYMBOL,"+",E_expr[0].line_number,E_expr[0].file_name};
+	    		indextokens.push_back(temp1);
+	    		indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-1]),E_expr[0].line_number,E_expr[0].file_name});
+	    		indextokens.push_back(temp2);
+	    		// std::cout<<"index is "<<index<<std::endl;
+	    		E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
+	    		temp_dimension--;
+	    	}
+            indextokens.pop_back();//删除最后一个加号
+            Expr *index_expr = new Expr(indextokens, env);
+            tac.result = index_expr->getTacResult();
+            // tac.result = env->get_arr(E_expr[0].value);
+            std::cout << "result: " << tac.result << std::endl;
+            return;
+        }
     }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
@@ -349,7 +362,7 @@ void Expr::expr()
                 return;
             }
 
-            std::cout << "find add" << std::endl;
+            std::cout << "find add   i =" << i <<std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -502,5 +515,5 @@ void Expr::expr()
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());
     this->expr();
-    std::cout<<"expr success.";
+    std::cout<<"expr success."<<std::endl;
 };

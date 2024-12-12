@@ -211,6 +211,7 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else if(subtokens[0].type == KEYWORD && subtokens[0].value == "number")
     {
+        std::cout << "find number" << std::endl;
         new Arr(subtokens,env,"number");
         std::cout << "arr generate" << std::endl;
     }

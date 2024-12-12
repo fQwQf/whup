@@ -13,9 +13,10 @@ void Arr::declare()
         tacArrs.push_back({ARRSET,"", std::to_string(size),"number",env->get_arr(name)});
     else if(type=="string")
         tacArrs.push_back({ARRSET,"", std::to_string(size),"string",env->get_arr(name)});
+    std::cout<<"arr declear success!!   tacArrs.size ="<<tacArrs.size()<<std::endl;
 }
 
-Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type)
+Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type):type(type)
 {
     this->env = env;
     int dimension ;
@@ -28,7 +29,7 @@ Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type)
             isAssign = true;
             //先完成声明
             dimension = (tokens.size()-6)/3;
-            std::cout<<"dimension = "<<dimension<<std::endl;
+            // std::cout<<"dimension = "<<dimension<<std::endl;
             std::vector<Token> temp_tokens=tokens;
             //消去初始化量、中括号和等号
             for(int i=0;i<4;i++) 
@@ -51,6 +52,12 @@ Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type)
 
     //记录该数组
     arrs.push_back(*this);
+    // for(auto i : arrs)
+    // {
+    //     std::cout<<"name = "<<i.name<<std::endl;
+    //     std::cout<<"dimension = "<<i.dimension<<std::endl;
+    //     std::cout<<"size = "<<i.size<<std::endl;
+    // }
 }
 
 void Arr::initArr(std::vector<Token> code,Environment* env)
@@ -71,7 +78,7 @@ void Arr::initArr(std::vector<Token> code,Environment* env)
         for(int i=0;i<size;i++)
         {
             Expr* expr = new Expr(code,env);
-            tacArrs.push_back({ARRASSIGN,"=",std::to_string(i),expr->getTacResult(),env->get_arr(var.value)});
+            tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",env->get_arr(var.value)+">->"+std::to_string(i)});
         }
     }
 }
@@ -105,5 +112,5 @@ void Arr::arr(Environment *env, std::string name, std::vector<Token> tokens ,int
     arr(env,name,tokens,dimension-1,size);
 
     this->dimension = dimension;
-
+    // std::cout<<"dimension = "<<this->dimension<<std::endl;
 }
