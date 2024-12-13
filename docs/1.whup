@@ -1,6 +1,5 @@
 var j=1;
 number num[3][10][10]={10};
-num[j][1][2]=1;
-print(j+1);
-print(((j+1)*(num[2][j][3]+num[0][4][j]-6))/2);
-print(num[3][2][1]<=10);
+num[j][1][2]=13;
+d=num[j][1][2]+1;
+print(d);

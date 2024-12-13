@@ -51,24 +51,27 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 			code.erase(code.begin());//消去变量名
 			int temp_dimension = arrs[thisarr].dimension;
 			while(temp_dimension>0)
-			{
-				code.erase(code.begin());
-				// for(auto i:code)
-				// {
-				// 	std::cout<<i.value<<" ";
-				// }
-				// std::cout<<"index is "<<index<<std::endl;
-				indextokens.push_back(code[0]);
-				Token temp1={SYMBOL,"*",code[0].line_number,code[0].file_name};
-				Token temp2={SYMBOL,"+",code[0].line_number,code[0].file_name};
-				indextokens.push_back(temp1);
-				indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-1]),code[0].line_number,code[0].file_name});
-				indextokens.push_back(temp2);
-				// std::cout<<"index is "<<index<<std::endl;
-
-				code.erase(code.begin(),code.begin()+2);//删除前两个节点
-				temp_dimension--;
-			}
+		    {
+			    code.erase(code.begin());
+			    // for(auto i:code)
+    			// {
+	    		// 	std::cout<<i.value<<" ";
+	    		// }
+	    		indextokens.push_back(code[0]);
+	    		Token temp1={SYMBOL,"*",code[0].line_number,code[0].file_name};
+	    		Token temp2={SYMBOL,"+",code[0].line_number,code[0].file_name};
+	    		indextokens.push_back(temp1);
+                if(temp_dimension==1)
+	    		{
+                    indextokens.push_back({NUMBER,std::to_string(1),code[0].line_number,code[0].file_name});
+	    		}else{
+                    indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),code[0].line_number,code[0].file_name});
+                }
+	    		indextokens.push_back(temp2);
+	    		// std::cout<<"index is "<<index<<std::endl;
+	    		code.erase(code.begin(),code.begin()+2);//删除前两个节点
+	    		temp_dimension--;
+	    	}
 			indextokens.pop_back();//删除最后一个加号
 
 			// index=std::stoi(code[2].value);

@@ -11,7 +11,7 @@ struct runTAC{
     int line; // 存储跳转的行号，只在goto里用到
 };
 
-std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode>tacs);
+std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs);
 
 void execute(std::vector<runTAC> runtacs);
 

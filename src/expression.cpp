@@ -6,7 +6,10 @@
 #include "arr.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
+
+//不用哈希吗？
 extern std::vector<Arr> arrs;       // 存储数组对象的向量
+
 extern std::vector<ThreeAddressCode> tacArrs; // 存储数组三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
@@ -161,7 +164,12 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 	    		Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
 	    		Token temp2={SYMBOL,"+",E_expr[0].line_number,E_expr[0].file_name};
 	    		indextokens.push_back(temp1);
-	    		indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-1]),E_expr[0].line_number,E_expr[0].file_name});
+                if(temp_dimension==1)
+	    		{
+                    indextokens.push_back({NUMBER,std::to_string(1),E_expr[0].line_number,E_expr[0].file_name});
+	    		}else{
+                    indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),E_expr[0].line_number,E_expr[0].file_name});
+                }
 	    		indextokens.push_back(temp2);
 	    		// std::cout<<"index is "<<index<<std::endl;
 	    		E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
@@ -169,7 +177,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 	    	}
             indextokens.pop_back();//删除最后一个加号
             Expr *index_expr = new Expr(indextokens, env);
-            tac.result = index_expr->getTacResult();
+            tac.result = env->get_arr(arrs[thisarr].name)+">->"+index_expr->getTacResult();
             // tac.result = env->get_arr(E_expr[0].value);
             std::cout << "result: " << tac.result << std::endl;
             return;
