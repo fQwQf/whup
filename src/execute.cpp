@@ -110,9 +110,12 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
     //具体思路是：如果在任一语句中检测到>->，先将其登记并替换为相应的指针
     //然后，在这一语句前插入BIAS指令
     //在执行时，BIAS指令会根据参数的值，完成指针的偏移
+        
     for(std::vector<ThreeAddressCode>::iterator tac = tacs.begin(); tac != tacs.end(); ++tac){
         std::string array = (*tac).arg1;
-        if((*tac).arg1.find(">->")!=std::string::npos){
+
+
+        if((*tac).arg1.find(">->") != std::string::npos){
             std::cout << "array: " << array << std::endl;
 
             std::string array_name(&array[0],&array[(*tac).arg1.find(">->")]);
@@ -120,26 +123,26 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
 
             std::cout<< "array: " << array_name << " bias: " << bias <<std::endl;
             if(runtime_string.find(array) != runtime_string.end()){
-                tacs.insert(tac,{BIASSTR,array_name,bias,array});
-                tac++;
+                auto it = tacs.insert(tac,{BIASSTR,array_name,bias,array});
+                tac = ++it;
             }else if(runtime_number.find(array) != runtime_number.end()){
-                tacs.insert(tac,{BIASNUM,array_name,bias,array});
-                tac++;
+                auto it = tacs.insert(tac,{BIASNUM,array_name,bias,array});
+                tac = ++it;
             }
             else
             {
                 if (runtime_string.find(array_name) != runtime_string.end())
                 {
                     runtime_string[array]=new std::string("");
-                    tacs.insert(tac,{BIASSTR,array_name,bias,array});
-                    tac++;
-                }
+                    auto it = tacs.insert(tac,{BIASSTR,array_name,bias,array});
+                    tac = ++it;
+                    }
                 else if (runtime_number.find(array_name) != runtime_number.end())
                 {
                     runtime_number[array]=new float(0);
-                    tacs.insert(tac,{BIASNUM,array_name,bias,array});
-                    tac++;
-                }
+                    auto it = tacs.insert(tac,{BIASNUM,array_name,bias,array});
+                    tac = ++it;
+                    }
             }
         }
 
@@ -156,28 +159,28 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
 
             if (runtime_string.find(array) != runtime_string.end())
             {
-                tacs.insert(tac, {BIASSTR, array_name, bias, array});
-                tac++;
+                auto it = tacs.insert(tac, {BIASSTR, array_name, bias, array});
+                tac = ++it;
             }
             else if (runtime_number.find(array) != runtime_number.end())
             {
-                tacs.insert(tac, {BIASNUM, array_name, bias, array});
-                tac++;
+                auto it = tacs.insert(tac, {BIASNUM, array_name, bias, array});
+                tac = ++it;
             }
             else
             {
                 if (runtime_string.find(array_name) != runtime_string.end())
                 {
                     runtime_string[array] = new std::string("");
-                    tacs.insert(tac, {BIASSTR, array_name, bias, array});
-                    tac++;
-                }
+                    auto it = tacs.insert(tac, {BIASSTR, array_name, bias, array});
+                    tac = ++it;
+                    }
                 else if (runtime_number.find(array_name) != runtime_number.end())
                 {
                     runtime_number[array] = new float(0);
-                    tacs.insert(tac, {BIASNUM, array_name, bias, array});
-                    tac++;
-                }
+                    auto it = tacs.insert(tac, {BIASNUM, array_name, bias, array});
+                    tac = ++it;
+                    }
             }
         }
 
@@ -194,33 +197,37 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
 
             if (runtime_string.find(array) != runtime_string.end())
             {
-                tacs.insert(tac, {BIASSTR, array_name, bias, array});
-                tac++;
+                auto it = tacs.insert(tac, {BIASSTR, array_name, bias, array});
+                tac = ++it;
             }
             else if (runtime_number.find(array) != runtime_number.end())
             {
-                tacs.insert(tac, {BIASNUM, array_name, bias, array});
-                tac++;
+                auto it = tacs.insert(tac, {BIASNUM, array_name, bias, array});
+                tac = ++it;
             }
             else
             {
                 if (runtime_string.find(array_name) != runtime_string.end())
                 {
                     runtime_string[array]=new std::string("");
-                    tacs.insert(tac,{BIASSTR,array_name,bias,array});
-                    tac++;
-                }
+                    auto it = tacs.insert(tac,{BIASSTR,array_name,bias,array});
+                    tac = ++it;
+                    }
                 else if (runtime_number.find(array_name) != runtime_number.end())
                 {
                     runtime_number[array]=new float(0);
-                    tacs.insert(tac,{BIASNUM,array_name,bias,array});
-                    tac++;
-                }else{
+                    auto it = tacs.insert(tac,{BIASNUM,array_name,bias,array});
+                    tac = ++it;
+                    }else{
                     std::cout << "MAN! WHAT CAN I SAY!" << std::endl;
                 }
             }
         }
+
     }
+
+    //没有resize，唐完了🤣
+    runtimeTACs.resize(tacs.size());
 
     std::cout << "arrays are offsetted" << std::endl;
 

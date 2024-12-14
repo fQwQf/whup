@@ -2,4 +2,4 @@ var j=1;
 number num[3][10][10]={10};
 num[j][1][2]=13;
 d=num[j][1][2]+1;
-print(d);
+print(3);

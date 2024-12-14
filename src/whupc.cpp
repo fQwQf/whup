@@ -104,7 +104,7 @@ int main(int n, const char *arg[])
 
     std::clock_t start = clock();
     
-    //execute(runtacs);
+    execute(runtacs);
 
     std::clock_t end   = clock();
 
