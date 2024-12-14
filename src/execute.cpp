@@ -226,8 +226,16 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
 
     }
 
+    for (auto i : tacs){
+        std::cout << i.opperator << " " << i.arg1 << " " << i.arg2 << " " << i.result << std::endl;
+    }
+
+
     //没有resize，唐完了🤣
     runtimeTACs.resize(tacs.size());
+
+    std::cout << tacs.size() << std::endl;
+    std::cout << runtimeTACs.size() << std::endl;
 
     std::cout << "arrays are offsetted" << std::endl;
 
@@ -280,7 +288,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
             runtimeTACs[i].arg2=(void**)&runtime_string[tac.arg2];
             runtimeTACs[i].result=(void**)&runtime_string[tac.result];
         }
-        else if(tac.op=="label")//label什么也不干，只是记录自己的索引
+        else if(tac.opperator==LABEL)//label什么也不干，只是记录自己的索引
         {   
             runtimeTACs[i].opperator=LABEL;
         }
@@ -571,13 +579,16 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==BIASNUM)
         {
-            float* temp=(float*)*tac.arg1+*(int*)*tac.arg2;
+            float* temp=(float*)*tac.arg1+int(*(float*)*tac.arg2);
+            std::cout << "arg1 = " << (float*)*tac.arg1 << std::endl;
+            std::cout << "temp = " << *temp << std::endl;
+            std::cout << "arg2 " << int(*(float*)*tac.arg2) << std::endl;
             tac.result = (void**)&temp;
 
         }
         else if(tac.opperator==BIASSTR)
         {
-            std::string* temp=(std::string*)*tac.arg1+*(int*)*tac.arg2;
+            std::string* temp=(std::string*)*tac.arg1+int(*(float*)*tac.arg2);
             tac.result = (void**)&temp;
         }
         else if(tac.opperator==EXIT)
