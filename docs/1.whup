@@ -1,5 +1,5 @@
 var j=1;
 number num[3][10][10]={10};
 num[j][1][2]=13;
-d=num[j][1][2];
-print(num[j][1][2]);
+j=2;
+print(num[1][1][j]+1);

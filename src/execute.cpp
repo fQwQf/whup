@@ -96,6 +96,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
             runtime_number[i.result]=new float[std::stoi(i.arg1)]();
             std::cout<< i.result << " registered success!!"<<std::endl;
             std::cout<< "length: " << i.arg1 << " type: " << i.arg2 <<std::endl;
+            std::cout<< "address: " << runtime_number[i.result] << std::endl;
         }else if(i.arg2=="string"){
             runtime_string[i.result]=new std::string[std::stoi(i.arg1)]();
             std::cout<< i.result << " registered success!!"<<std::endl;
@@ -396,7 +397,7 @@ void execute(std::vector<runTAC> runtacs)
     for(int i=0;i<runtacs.size();i++)
     {
         runTAC tac=runtacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        //std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
             *(float*)*tac.result=*(float*)*tac.arg1;
@@ -580,16 +581,13 @@ void execute(std::vector<runTAC> runtacs)
         else if(tac.opperator==BIASNUM)
         {
             float* temp=(float*)*tac.arg1+int(*(float*)*tac.arg2);
-            std::cout << "arg1 = " << (float*)*tac.arg1 << std::endl;
-            std::cout << "temp = " << *temp << std::endl;
-            std::cout << "arg2 " << int(*(float*)*tac.arg2) << std::endl;
-            tac.result = (void**)&temp;
+            *(tac.result) = temp;
 
         }
         else if(tac.opperator==BIASSTR)
         {
             std::string* temp=(std::string*)*tac.arg1+int(*(float*)*tac.arg2);
-            tac.result = (void**)&temp;
+            *(tac.result) = (void**)&temp;
         }
         else if(tac.opperator==EXIT)
         {
