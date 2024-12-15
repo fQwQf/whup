@@ -18,6 +18,12 @@ extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern std::vector<std::pair<std::string, std::string>> var_declares;//存储变量的声明信息
 extern int tempVarCounter;  // 临时变量计数器
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
+
+bool print_c1 = false;
+bool print_c2 = false;
+bool print_e = false;
+
+
 int main(int n, const char *arg[])
 {
     #ifdef _WIN32

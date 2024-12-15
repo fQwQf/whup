@@ -1,0 +1,11 @@
+function to_string(input:number):string{
+    var temp = "";
+    cast(input,string,temp);
+    return temp;
+};
+
+function to_number(input:string):number{
+    var temp = 0;
+    cast(input,number,temp);
+    return temp;
+};

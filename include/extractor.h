@@ -15,4 +15,8 @@ class Extractor
         std::string get_output_file();
         
         bool wall_clock = false;//是否使用wall clock计时器
+
+        bool print_c1 = false;//是否打印第一次编译详细信息
+        bool print_c2 = false;//是否打印第二次编译详细信息
+        bool print_e = false;//是否打印执行详细信息
 };
