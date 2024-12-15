@@ -208,7 +208,8 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
     }
     
     // 忽略{}结构前的";"检查
-    if(trimmedNextLine.front() == '{') 
+    //还有else
+    if(trimmedNextLine.front() == '{' || trimmedNextLine.substr(0,4) == "else") 
     {
         return;
     }

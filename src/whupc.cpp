@@ -27,7 +27,11 @@ int main(int n, const char *arg[])
     #endif
 
     if(n==1){
-        std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
+        std::cout << "Usage:" << " whupc " << std::endl
+                << std::left << std::setw(25) << " <file>" << " input file path" << std::endl
+                << std::left << std::setw(25) << " -i / --input <file>" << " input file path" << std::endl
+                << std::left << std::setw(25) << " -o / --output <file>" << " output file path (default: out.hust)"<< std::endl
+                << std::left << std::setw(25) << " -pc1 / --print-c1" << " print details of the first compile" << std::endl;
         return 0;
     }
 

@@ -21,13 +21,13 @@ Extractor::Extractor(int n,const char *arg[])
         {
             wall_clock = true;
         }
-        else if (strcmp(arg[i],"-pc1") == 0 || strcmp(arg[i],"--print_c1") == 0){
+        else if (strcmp(arg[i],"-pc1") == 0 || strcmp(arg[i],"--print-c1") == 0){
             print_c1 = true;
         }
-        else if (strcmp(arg[i],"-pc2") == 0 || strcmp(arg[i],"--print_c2") == 0){
+        else if (strcmp(arg[i],"-pc2") == 0 || strcmp(arg[i],"--print-c2") == 0){
             print_c2 = true;
         }
-        else if (strcmp(arg[i],"-pe") == 0 || strcmp(arg[i],"--print_e") == 0){
+        else if (strcmp(arg[i],"-pe") == 0 || strcmp(arg[i],"--print-e") == 0){
             print_e = true;
         }
         else//如果参数不是以"-i"或"-o"开头，则默认为input

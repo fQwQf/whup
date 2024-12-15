@@ -1,7 +1,7 @@
 function Hanoi(n : number) {
 	if(n==1){
         ans = ans + 1;
-    }	
+    }
 	else {
 		Hanoi(n-1);
 		Hanoi(1);

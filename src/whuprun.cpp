@@ -35,7 +35,13 @@ int main(int n, const char *arg[])
     #endif
 
     if(n==1){
-        std::cout << "Usage: whuprun <input_file> | -i <input_file> | -o <output_file>" << std::endl;
+        std::cout << "Usage: whuprun " << std::endl
+                << std::left << std::setw(25) << " <file>" << " input file path" << std::endl
+                << std::left << std::setw(25) << " -i / --input <file>" << " input file path" << std::endl
+                << std::left << std::setw(25) << " -c / --clock" << " print wall clock time" << std::endl
+                << std::left << std::setw(25) << " -pc1 / --print-c1" << " print details of the first compile" << std::endl
+                << std::left << std::setw(25) << " -pc2 / --print-c2" << " print details of the second compile" << std::endl
+                << std::left << std::setw(25) << " -pe / --print-e" << " print details of execute" << std::endl;
         return 0;
     }
 
