@@ -542,14 +542,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==WINPUT)
         {
-            if(var_declares[tacs[i].arg1]=="string")
-            {
-                std::cin>>*(std::string*)*tac.arg1;
-            }
-            else
-            {
-                std::cin>>*(float*)*tac.arg1;
-            }
+            std::cin>>*(std::string*)*tac.arg1;
         }
         else if(tac.opperator==PUSH)
         {
