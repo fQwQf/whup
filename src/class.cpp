@@ -1,4 +1,7 @@
 #include"class.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 //全局的类表
 std::unordered_map<std::string,Class*> class_table;
 Class::Class(std::vector<Token> code)
@@ -13,15 +16,15 @@ Class::Class(std::vector<Token> code)
     if (class_table.find(className) == class_table.end())
     {
         class_table[className] = this;
-        std::cout<<"add class "<<className<<std::endl;
-        std::cout<<"class body is "<<std::endl;
+        WHUPout<<"add class "<<className<<std::endl;
+        WHUPout<<"class body is "<<std::endl;
         for(auto &i:class_table[className]->statements)
         {
-            std::cout<<i.value<<" ";
+            WHUPout<<i.value<<" ";
         }
     }
     else
     {
-        std::cout << "警告：类 " << className << " 已存在，未重复添加。" << std::endl;
+        WHUPout << "警告：类 " << className << " 已存在，未重复添加。" << std::endl;
     }
 }

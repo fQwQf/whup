@@ -1,6 +1,9 @@
 #include"classfunction.h"
 #include"expression.h"
 #include"class.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 extern std::string function_ret_label;//只有在处理函数时才会有的值。用于函数返回时跳转至ret区域。
 extern std::string function_return_value;//同理
 extern std::vector<ThreeAddressCode> tacs;
@@ -29,7 +32,7 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
 
     tokens.erase(tokens.begin(),tokens.begin()+i);
 
-    std::cout << "Function name: " << name << std::endl;
+    WHUPout << "Function name: " << name << std::endl;
 
     //1.形参处理    
     folmalPara(tokens);
@@ -45,12 +48,12 @@ ClassFunction::ClassFunction(std::vector<Token> &tokens,Environment *env,std::un
 //与普通函数相比调用的时候，要多一步对实例名的识别，这样才能找到对应的函数表
 //现在希望call对构造函数进行特殊处理，需要在其中添加一些判断语句
 std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
-    std::cout <<"call function " << name << std::endl;
+    WHUPout <<"call function " << name << std::endl;
     for(auto&i:tokens)
     {
-        std::cout << i.value << " ";
+        WHUPout << i.value << " ";
     }
-    std::cout << std::endl;
+    WHUPout << std::endl;
 
     int i=0;
     if(tokens[1].type==SYMBOL&&tokens[1].value=="->"){
@@ -69,18 +72,18 @@ std::string ClassFunction::call(std::vector<Token> &tokens,Environment* env){//�
 
     call_with_stack_frame(env);
     
-    std::cout << "call function " << name << " success" << std::endl;
+    WHUPout << "call function " << name << " success" << std::endl;
 
     return return_value;
 }
 
 std::string ClassFunction::callInline(std::vector<Token> &tokens,Environment* env){//返回值是储存返回值的临时变量名
-    std::cout <<"call function " << name << std::endl;
+    WHUPout <<"call function " << name << std::endl;
     for(auto&i:tokens)
     {
-        std::cout << i.value << " ";
+        WHUPout << i.value << " ";
     }
-    std::cout << std::endl;
+    WHUPout << std::endl;
 
     int i=0;
     if(tokens[1].type==SYMBOL&&tokens[1].value=="->"){
@@ -98,7 +101,7 @@ std::string ClassFunction::callInline(std::vector<Token> &tokens,Environment* en
     this->realPara(realParaTokens,env);
 
     
-    std::cout << "call function " << name << " success" << std::endl;
+    WHUPout << "call function " << name << " success" << std::endl;
 
     return return_value;
 }

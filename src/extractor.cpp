@@ -1,6 +1,7 @@
 // 从传入参数中提取所需要的信息
 #include "extractor.h"
 
+
 //参数n表示命令行参数的数量，const char *arg[]表示一个字符串数组，包含命令行参数
 Extractor::Extractor(int n,const char *arg[])
 {

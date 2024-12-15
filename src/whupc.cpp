@@ -7,6 +7,7 @@
 #include"execute.h"
 #include<unordered_map>
 #include "lexer.h"
+#include "WHUPstream.h"
 
 #ifdef _WIN32
 #include "windows.h"
@@ -23,6 +24,10 @@ bool print_c1 = false;
 bool print_c2 = false;
 bool print_e = false;
 
+extern WHUPstream_compile1 WHUPout;
+extern WHUPstream_compile2 WHUPout_c1;
+extern WHUPstream_execute WHUPout_e;
+
 
 int main(int n, const char *arg[])
 {
@@ -35,6 +40,7 @@ int main(int n, const char *arg[])
         return 0;
     }
 
+
     Extractor extractor(n, arg);//提取输入和输出文件路径
 
     //确定文件的输出路径，默认为out.cpp
@@ -44,6 +50,11 @@ int main(int n, const char *arg[])
     }else{
         out = "out.hust";
     }
+
+    //确定是否打印信息
+    print_c1 = extractor.print_c1;
+    print_c2 = extractor.print_c2;
+    print_e = extractor.print_e;
 
     //用io类读取输入文件内容到字符串expression中
     IO io(extractor.get_input_file(), out);
@@ -79,8 +90,8 @@ int main(int n, const char *arg[])
 
     io.writeTAC(tacs);
 
-    std::cout << "Generate code to " << out << std::endl;
-    std::cout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
+    WHUPout << "Generate code to " << out << std::endl;
+    WHUPout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
     // std::cout<<"tacArrs size:" << tacArrs.size() << std::endl;
     // for(auto i : tacArrs)
@@ -117,6 +128,6 @@ int main(int n, const char *arg[])
     if (extractor.wall_clock)
         std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
 
-    std::cout<<"Execute success!"<<std::endl;
+    WHUPout_e <<"Execute success!"<<std::endl;
     return 0;
 }

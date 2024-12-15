@@ -2,6 +2,9 @@
 #include"var.h"
 #include"classfunction.h"
 #include"class.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 extern std::unordered_map<std::string,Class*>class_table;
 extern std::vector<ThreeAddressCode>tacs;
 extern std::unordered_map<std::string, std::string> var_declares;  // 存储将放入c++中变量名和类型的哈希表
@@ -96,11 +99,11 @@ void Object::constuctor_declare(std::vector<Token>subtokens)
             std::vector<Token> subtokens(bodyTokens.begin() + last_semicolon, bodyTokens.begin() + i);
             // 打印出所有Token
             // debug时可能有用
-            // std::cout<<"subtokens:"<<std::endl;
+            // WHUPout<<"subtokens:"<<std::endl;
             // for(auto &i:subtokens){
-            //    std::cout << i.value << " ";
+            //    WHUPout << i.value << " ";
             // }
-            // std::cout << std::endl;
+            // WHUPout << std::endl;
             if(subtokens[1].value=="="&&Object_env->var_table.find(subtokens[0].value)!=Object_env->var_table.end())
             {
                 Object_env->change_type_var(subtokens[0].value,var_declares[subtokens[2].value]);
@@ -113,7 +116,7 @@ void Object::constuctor_declare(std::vector<Token>subtokens)
 
 void Object::copy(Object*ptrObject)
 {
-    std::cout<<this->Object_name<<std::endl;
+    WHUPout<<this->Object_name<<std::endl;
     for(auto&i:this->Object_env->var_table)
     {
         for(auto&j:ptrObject->Object_env->var_table)
@@ -150,25 +153,25 @@ void Object::generator(std::vector<Token>subtokens)
     if(subtokens[0].type==KEYWORD&&subtokens[0].value=="var")
     {
         var_declare(subtokens);
-        std::cout<<"var "<<subtokens[1].value<<" declare success"<<std::endl;
+        WHUPout<<"var "<<subtokens[1].value<<" declare success"<<std::endl;
     }
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="function")
     {
         function_declare(subtokens);
-        std::cout<<"function "<<subtokens[1].value<<" declare success"<<std::endl;
+        WHUPout<<"function "<<subtokens[1].value<<" declare success"<<std::endl;
     }
     else if(subtokens[0].type==IDENTIFIER&&subtokens[0].value==Class_name&&subtokens[1].value=="(")
     {
         //构造函数
         constuctor_declare(subtokens);
-        std::cout<<"constructor declare success"<<std::endl;
+        WHUPout<<"constructor declare success"<<std::endl;
     }
     else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&class_table.find(subtokens[0].value)!=class_table.end())
     {
         //类中包含对象成员
         std::string className=subtokens[0].value;
         std::string objectName=subtokens[1].value;
-        std::cout<<"new object in an object"<<objectName<<std::endl;
+        WHUPout<<"new object in an object"<<objectName<<std::endl;
         Object*thisObject=new Object(className,objectName,Object_env);
         
         if(subtokens[2].type==SYMBOL&&subtokens[2].value=="(")
@@ -177,10 +180,10 @@ void Object::generator(std::vector<Token>subtokens)
         std::string functionName=className;
         // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         // {
-        //     std::cout<<"not found classfunction"<<functionName;
+        //     WHUPout<<"not found classfunction"<<functionName;
         //     exit(1);
         // }
-        std::cout<<functionName<<" call begin"<<std::endl;
+        WHUPout<<functionName<<" call begin"<<std::endl;
         // thisFunctionTable[functionName]->call(subtokens,this->env);
         thisObject->myConstructor->call(subtokens,this->Object_env);
 
@@ -193,18 +196,18 @@ void Object::generator(std::vector<Token>subtokens)
         else if(subtokens[2].value=="=")
         {
             //对等号左边的对象调用copy，传入等号右边的对象
-            std::cout<<"copy begin"<<std::endl;
+            WHUPout<<"copy begin"<<std::endl;
             for(auto&i:subtokens)
             {
-                std::cout<<i.value<<" ";
+                WHUPout<<i.value<<" ";
             }
             object_table[subtokens[1].value]->copy(object_table[subtokens[3].value]);
         }
-        std::cout<<"new object "<<objectName<<" success"<<std::endl;
+        WHUPout<<"new object "<<objectName<<" success"<<std::endl;
     }
     else
     {
-        std::cout<<"error: unknown statement"<<std::endl;
+        WHUPout<<"error: unknown statement"<<std::endl;
     }
 }
 
@@ -217,12 +220,12 @@ Object::Object(std::string className,std::string objectName,Environment*env)
     std::vector<Token> tokens=class_table[className]->getStatements();//通过className，在类表中找到对应的声明语句
     //接下来按分号为间隔扫描得到独立语句
 
-    std::cout<<"get statments!"<<std::endl;
+    WHUPout<<"get statments!"<<std::endl;
     for(auto&i:tokens)
     {
-        std::cout<<i.value<<" ";
+        WHUPout<<i.value<<" ";
     }
-    std::cout<<std::endl;
+    WHUPout<<std::endl;
 
     int last_semicolon = 0;
 

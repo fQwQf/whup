@@ -1,4 +1,7 @@
 #include"break.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 extern std::stack<int> global_circulation_id;
 //用一个全局栈来记录循环的id，这样就可以在break语句中找到对应的循环的结束标签了。
 Break::Break(Environment*env)
@@ -9,7 +12,7 @@ Break::Break(Environment*env)
     //所以关键在于在label生成时，合理地创建“变量名”
     if(global_circulation_id.empty())
     {
-        std::cout<<"break语句错误，没有对应的循环"<<std::endl;
+        WHUPout<<"break语句错误，没有对应的循环"<<std::endl;
         exit(0);
     }
     global_circulation_id.pop();

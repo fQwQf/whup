@@ -1,5 +1,6 @@
 #include"execute.h"
 #include"whup_parser.h"
+#include "WHUPstream.h"
 
 extern std::vector<ThreeAddressCode>tacs;//全局的三地址码
 extern std::unordered_map<std::string,std::string>var_declares;
@@ -17,6 +18,9 @@ std::stack<std::string>functionStack_string;
 //std::vector<runTAC> runtimeTACs;// 存储运行时三地址码
 std::unordered_map<std::string,float*>runtime_number;//
 std::unordered_map<std::string,std::string*>runtime_string;//
+
+WHUPstream_compile2 WHUPout_c2;
+WHUPstream_execute WHUPout_e;
 
 
 //对于reference只需要重载一次ASSIGN
@@ -73,7 +77,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
         }
     }
 
-    std::cout << "start execute" << std::endl;
+    WHUPout_c2 << "start execute" << std::endl;
 
     //这里是登记常量
     std::vector<runTAC> runtimeTACs(tacs.size());
@@ -91,27 +95,27 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
         runtime_string[i.first]=new std::string(i.second);
     }
 
-    std::cout << "vars and consts are registered" << std::endl;
+    WHUPout_c2 << "vars and consts are registered" << std::endl;
 
     // 这里是登记数组
     // 数组指针也存在runtime_string和runtime_number中，因此需要有确保不会与变量混淆的数组名机制
     // arg1:size arg2:type result:name
     for (auto i : tacArrs){
-        // std::cout<<"success!!"<<std::endl;
+        // WHUPout_c2<<"success!!"<<std::endl;
         if(i.arg2=="number"){
             runtime_number[i.result]=new float[std::stoi(i.arg1)]();
-            std::cout<< i.result << " registered success!!"<<std::endl;
-            std::cout<< "length: " << i.arg1 << " type: " << i.arg2 <<std::endl;
-            std::cout<< "address: " << runtime_number[i.result] << std::endl;
+            WHUPout_c2<< i.result << " registered success!!"<<std::endl;
+            WHUPout_c2<< "length: " << i.arg1 << " type: " << i.arg2 <<std::endl;
+            WHUPout_c2<< "address: " << runtime_number[i.result] << std::endl;
         }else if(i.arg2=="string"){
             runtime_string[i.result]=new std::string[std::stoi(i.arg1)]();
-            std::cout<< i.result << " registered success!!"<<std::endl;
-            std::cout<< "length: " << i.arg1 << " type: " << i.arg2 <<std::endl;
+            WHUPout_c2<< i.result << " registered success!!"<<std::endl;
+            WHUPout_c2<< "length: " << i.arg1 << " type: " << i.arg2 <<std::endl;
         }
         
     }
 
-    std::cout << "arrays are registered" << std::endl;
+    WHUPout_c2 << "arrays are registered" << std::endl;
 
     //数组偏移按计划通过BIAS指令实现，那么就应该在二次编译时插入新的指令，因此要在setLabel前进行
     //具体思路是：如果在任一语句中检测到>->，先将其登记并替换为相应的指针
@@ -123,12 +127,12 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
 
 
         if((*tac).arg1.find(">->") != std::string::npos){
-            std::cout << "array: " << array << std::endl;
+            WHUPout_c2 << "array: " << array << std::endl;
 
             std::string array_name(&array[0],&array[(*tac).arg1.find(">->")]);
             std::string bias(&array[(*tac).arg1.find(">->")+3],&array[(*tac).arg1.size()]);
 
-            std::cout<< "array: " << array_name << " bias: " << bias <<std::endl;
+            WHUPout_c2<< "array: " << array_name << " bias: " << bias <<std::endl;
             if(runtime_string.find(array) != runtime_string.end()){
                 auto it = tacs.insert(tac,{BIASSTR,array_name,bias,array});
                 tac = ++it;
@@ -156,13 +160,13 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
         array = (*tac).arg2;
         if ((*tac).arg2.find(">->") != std::string::npos)
         {
-            std::cout << "array: " << array << std::endl;
+            WHUPout_c2 << "array: " << array << std::endl;
 
 
             std::string array_name(&array[0], &array[(*tac).arg2.find(">->")]);
             std::string bias(&array[(*tac).arg2.find(">->") + 3], &array[(*tac).arg2.size()]);
 
-            std::cout << "array: " << array_name << " bias: " << bias << std::endl;
+            WHUPout_c2 << "array: " << array_name << " bias: " << bias << std::endl;
 
             if (runtime_string.find(array) != runtime_string.end())
             {
@@ -194,13 +198,13 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
         array = (*tac).result;
         if ((*tac).result.find(">->") != std::string::npos)
         {
-            std::cout << "array: " << array << std::endl;
+            WHUPout_c2 << "array: " << array << std::endl;
 
 
             std::string array_name(&array[0], &array[(*tac).result.find(">->")]);
             std::string bias(&array[(*tac).result.find(">->") + 3], &array[(*tac).result.size()]);
 
-            std::cout << "array: " << array_name << " bias: " << bias << std::endl;
+            WHUPout_c2 << "array: " << array_name << " bias: " << bias << std::endl;
 
             if (runtime_string.find(array) != runtime_string.end())
             {
@@ -226,7 +230,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
                     auto it = tacs.insert(tac,{BIASNUM,array_name,bias,array});
                     tac = ++it;
                     }else{
-                    std::cout << "MAN! WHAT CAN I SAY!" << std::endl;
+                    WHUPout_c2 << "MAN! WHAT CAN I SAY!" << std::endl;
                 }
             }
         }
@@ -234,21 +238,21 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
     }
 
     for (auto i : tacs){
-        std::cout << i.opperator << " " << i.arg1 << " " << i.arg2 << " " << i.result << std::endl;
+        WHUPout_c2 << i.opperator << " " << i.arg1 << " " << i.arg2 << " " << i.result << std::endl;
     }
 
 
     //没有resize，唐完了🤣
     runtimeTACs.resize(tacs.size());
 
-    std::cout << "arrays are offsetted" << std::endl;
+    WHUPout_c2 << "arrays are offsetted" << std::endl;
 
     setLabel(tacs);
 
     for(int i=0;i<tacs.size();i++)
     {
         ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        // std::cout<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        WHUPout_c2<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
             runtimeTACs[i].opperator=ASSIGN;
@@ -300,14 +304,14 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
         {
             runtimeTACs[i].opperator=GOTO;
             runtimeTACs[i].line=labelMap[tac.result];
-            //std::cout << labelMap[tac.result] << tac.result <<std::endl;
+            //WHUPout_c2 << labelMap[tac.result] << tac.result <<std::endl;
         }
         else if(tac.opperator==IF_GOTO)
         {
             runtimeTACs[i].opperator=IF_GOTO;
             runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
             runtimeTACs[i].line=labelMap[tac.result];
-            //std::cout << labelMap[tac.result] << tac.result <<std::endl;
+            //WHUPout_c2 << labelMap[tac.result] << tac.result <<std::endl;
         }
         else if(tac.opperator==PRINT)
         {
@@ -400,7 +404,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
             runtimeTACs[i].result=(void**)&runtime_string[tac.result];
         }
         else{
-            std::cout << "Fuck!Unexpected op!" << std::endl;
+            WHUPout_c2 << "Fuck!Unexpected op!" << std::endl;
         }
     }
 
@@ -414,7 +418,8 @@ void execute(std::vector<runTAC> runtacs)
     for(int i=0;i<runtacs.size();i++)
     {
         runTAC tac=runtacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        //虽然WHUPout可以开关，但是如果不注释掉性能直接爆炸
+        //WHUPout_e<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
             *(float*)*tac.result=*(float*)*tac.arg1;
@@ -510,9 +515,9 @@ void execute(std::vector<runTAC> runtacs)
         {
             *(float*)*tac.result=*(float*)*tac.arg1&&*(float*)*tac.arg2;
         }
-        else if(tac.opperator==LABEL)//label什么也不干，只是记录自己的索引
+        else if(tac.opperator==LABEL)
         {
-            //std::cout << "label " << i;
+            //label什么也不干，只是记录自己的索引
         }
         else if(tac.opperator==GOTO)
         {
@@ -520,10 +525,6 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==IF_GOTO)
         {
-            // if((char*)*tac.result == "end_of_file")
-            // {
-            //     return;
-            // }
             if(*(float*)*tac.arg1)
             {
                 i=tac.line;
@@ -533,11 +534,11 @@ void execute(std::vector<runTAC> runtacs)
         {
             if(var_declares[tacs[i].arg1]=="string"||(tacs[i].arg1[0]=='\"'&&*(tacs[i].arg1.end()-1)=='\"'))
             {
-                std::cout<<*(std::string*)*tac.arg1<<std::endl;
+                std::cout <<*(std::string*)*tac.arg1<<std::endl;
             }
             else
             {
-                std::cout<<*(float*)*tac.arg1<<std::endl;
+                std::cout <<*(float*)*tac.arg1<<std::endl;
             }
         }
         else if(tac.opperator==WINPUT)
@@ -546,7 +547,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==PUSH)
         {
-            //std::cout << "push "<<i<<std::endl;
+            WHUPout_e << "push "<<i<<std::endl;
             if(functionStack_string.size() >= 10000 || functionStack_number.size() >= 10000){
                 std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : stack overflow!" << "\033[0m" << std::endl;
 
@@ -579,7 +580,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==CALL)
         {
-            //std::cout << "CALL " << i << std::endl;
+            WHUPout_e << "CALL " << i << std::endl;
             labelStack.push(i);
             i=tac.line;
         }
@@ -608,7 +609,6 @@ void execute(std::vector<runTAC> runtacs)
             catch (const std::invalid_argument &e)
             {
                 std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : Invalid STON input! \033[0m"<< std::endl;
-                // 处理错误，例如提示用户重新输入
             }
             catch (const std::exception &e)
             {

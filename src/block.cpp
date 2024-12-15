@@ -17,6 +17,7 @@
 #include "whup_io.h"
 #include "cast.h"
 #include "whupinput.h"
+#include "WHUPstream.h"
 
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
@@ -27,6 +28,8 @@ extern std::unordered_map<std::string,Class*>class_table;
 extern std::vector<Error> errors; // 存储错误信息
 extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 extern std::set<Function*> used_functions;
+
+WHUPstream_compile1 WHUPout;
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)
@@ -86,7 +89,7 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
 
     //打印所有token看看
     /*for (const auto &token : tokens) {
-        std::cout << token.type << " " << token.value << " " << token.line_number << std::endl;
+        WHUPout << token.type << " " << token.value << " " << token.line_number << std::endl;
     }*/
 
     block(tokens);
@@ -136,11 +139,11 @@ void Block::block(std::vector<Token> tokens)
             std::vector<Token> subtokens(tokens.begin() + last_semicolon, tokens.begin() + i);
             // 打印出所有Token
             // debug时可能有用
-            std::cout<<"subtokens:"<<std::endl;
-            /*for(auto &i:subtokens){
-               std::cout << i.value << " ";
-            }*/
-            std::cout << std::endl;
+            WHUPout<<"subtokens:"<<std::endl;
+            for(auto &i:subtokens){
+               WHUPout << i.value << " ";
+            }
+            WHUPout << std::endl;
             
             last_semicolon = i+1;
             generate(subtokens);
@@ -169,14 +172,14 @@ void Block::generate(std::vector<Token> subtokens)
 
     if (subtokens[0].type == IDENTIFIER && subtokens[1].value != "("&&subtokens[1].type!=IDENTIFIER&&subtokens[1].value!="->")
     {
-        std::cout<<"assign begin"<<std::endl;
+        WHUPout<<"assign begin"<<std::endl;
         subtokens.insert(subtokens.begin(),namespace_tokens.begin(),namespace_tokens.end());
 
         for(auto&i:subtokens)
         {
-            std::cout<<i.value<<" ";
+            WHUPout<<i.value<<" ";
         }
-        std::cout<<std::endl;
+        WHUPout<<std::endl;
 
         //新增对类的赋值语句，只支持object1=object2这样的语句
         if(object_table.find(subtokens[0].value)!=object_table.end())
@@ -185,7 +188,7 @@ void Block::generate(std::vector<Token> subtokens)
         }
         else
         new Assign(subtokens,env);
-        std::cout << "assign generate" << std::endl;
+        WHUPout << "assign generate" << std::endl;
     }
     else if(subtokens[0].type == IDENTIFIER && subtokens[1].value == "(")
     {
@@ -199,36 +202,36 @@ void Block::generate(std::vector<Token> subtokens)
         if (funcenv->get_function(subtokens[0].value) == nullptr)
         {
             //TODO 改成报错
-            std::cout << "Function " << subtokens[0].value << " not found" << std::endl;
+            WHUPout << "Function " << subtokens[0].value << " not found" << std::endl;
         }
         else
         {
             Function *func = funcenv->get_function(subtokens[0].value);
             func->call(subtokens, this->env);
-            std::cout << "call function: " << subtokens[0].value << std::endl;
+            WHUPout << "call function: " << subtokens[0].value << std::endl;
             return;
         }
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "var")
     {
         new Var(subtokens,env);
-        std::cout << "var generate" << std::endl;
+        WHUPout << "var generate" << std::endl;
     }
     else if(subtokens[0].type == KEYWORD && subtokens[0].value == "number")
     {
-        std::cout << "find number" << std::endl;
+        WHUPout << "find number" << std::endl;
         new Arr(subtokens,env,"number");
-        std::cout << "arr generate" << std::endl;
+        WHUPout << "arr generate" << std::endl;
     }
     else if(subtokens[0].type == KEYWORD && subtokens[0].value == "string")
     {
         new Arr(subtokens,env,"string");
-        std::cout << "arr generate" << std::endl;
+        WHUPout << "arr generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
     {
         new Print(subtokens,env);
-        std::cout << "print generate" << std::endl;
+        WHUPout << "print generate" << std::endl;
     }
     else if(subtokens[0].type==KEYWORD && subtokens[0].value=="if")
     {
@@ -258,12 +261,12 @@ void Block::generate(std::vector<Token> subtokens)
             if (subtokens.size() == 1)
             {
                 new Return(env);
-                std::cout << "find return!" << std::endl;
+                WHUPout << "find return!" << std::endl;
             }
             else
             {
                 new Return(subtokens, env);
-                std::cout << "find return!" << std::endl;
+                WHUPout << "find return!" << std::endl;
             }
         }
     }
@@ -279,25 +282,25 @@ void Block::generate(std::vector<Token> subtokens)
     // {
     //     std::string className=subtokens[0].value;
     //     std::string objectName=subtokens[1].value;
-    //     std::cout<<"new object "<<objectName<<std::endl;
+    //     WHUPout<<"new object "<<objectName<<std::endl;
     //     new Object(className,objectName,env);
-    //     std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    //     WHUPout<<"new object "<<objectName<<" success"<<std::endl;
     // }
     // else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="(")
     // {
     //     //构造函数，创建对象的同时调用构造函数
     //     std::string className=subtokens[0].value;
     //     std::string objectName=subtokens[1].value;
-    //     std::cout<<"new object "<<objectName<<std::endl;
+    //     WHUPout<<"new object "<<objectName<<std::endl;
     //     Object*thisObject=new Object(className,objectName,env);
     //     std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
     //     std::string functionName=className;
     //     // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
     //     // {
-    //     //     std::cout<<"not found classfunction"<<functionName;
+    //     //     WHUPout<<"not found classfunction"<<functionName;
     //     //     exit(1);
     //     // }
-    //     std::cout<<functionName<<" call begin"<<std::endl;
+    //     WHUPout<<functionName<<" call begin"<<std::endl;
     //     // thisFunctionTable[functionName]->call(subtokens,this->env);
     //     thisObject->myConstructor->callInline(subtokens,this->env);
 
@@ -307,15 +310,15 @@ void Block::generate(std::vector<Token> subtokens)
     //     //注：generate重载为内联形式
     //     thisObject->myConstructor->generateInline();
         
-    //     std::cout<<"new object "<<objectName<<" success"<<std::endl;
+    //     WHUPout<<"new object "<<objectName<<" success"<<std::endl;
     // }
     // else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==IDENTIFIER&&subtokens[2].value=="=")
     // {
     //     //对等号左边的对象调用copy，传入等号右边的对象
-    //     std::cout<<"copy begin"<<std::endl;
+    //     WHUPout<<"copy begin"<<std::endl;
     //     for(auto&i:subtokens)
     //     {
-    //         std::cout<<i.value<<" ";
+    //         WHUPout<<i.value<<" ";
     //     }
     //     object_table[subtokens[1].value]->copy(object_table[subtokens[3].value]);
     // }
@@ -326,7 +329,7 @@ void Block::generate(std::vector<Token> subtokens)
     {
         std::string className=subtokens[0].value;
         std::string objectName=subtokens[1].value;
-        std::cout<<"new object "<<objectName<<std::endl;
+        WHUPout<<"new object "<<objectName<<std::endl;
         Object*thisObject=new Object(className,objectName,env);
         
         if(subtokens[2].type==SYMBOL&&subtokens[2].value=="(")
@@ -335,10 +338,10 @@ void Block::generate(std::vector<Token> subtokens)
         std::string functionName=className;
         // if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         // {
-        //     std::cout<<"not found classfunction"<<functionName;
+        //     WHUPout<<"not found classfunction"<<functionName;
         //     exit(1);
         // }
-        std::cout<<functionName<<" call begin"<<std::endl;
+        WHUPout<<functionName<<" call begin"<<std::endl;
         // thisFunctionTable[functionName]->call(subtokens,this->env);
         thisObject->myConstructor->call(subtokens,this->env);
 
@@ -351,18 +354,18 @@ void Block::generate(std::vector<Token> subtokens)
         else if(subtokens[2].value=="=")
         {
             //对等号左边的对象调用copy，传入等号右边的对象
-            std::cout<<"copy begin"<<std::endl;
+            WHUPout<<"copy begin"<<std::endl;
             for(auto&i:subtokens)
             {
-                std::cout<<i.value<<" ";
+                WHUPout<<i.value<<" ";
             }
             object_table[subtokens[1].value]->copy(object_table[subtokens[3].value]);
         }
-        std::cout<<"new object "<<objectName<<" success"<<std::endl;
+        WHUPout<<"new object "<<objectName<<" success"<<std::endl;
     }
     else if(subtokens[0].type==IDENTIFIER&&subtokens[1].type==SYMBOL&&subtokens[1].value=="->")
     {
-        std::cout<<"in the call"<<std::endl;
+        WHUPout<<"in the call"<<std::endl;
         Object* thisObject=object_table[subtokens[0].value];
         std::unordered_map<std::string,ClassFunction*> thisFunctionTable=thisObject->function_table;
         std::string functionName=subtokens[2].value;
@@ -372,14 +375,14 @@ void Block::generate(std::vector<Token> subtokens)
         {
             pushErrors(subtokens[0],"not found classfunction "+functionName);
         }
-        std::cout<<functionName<<" call begin"<<std::endl;
+        WHUPout<<functionName<<" call begin"<<std::endl;
         thisFunctionTable[functionName]->call(subtokens,this->env);
     }
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="import")
     {
-        std::cout << "import" << std::endl;
+        WHUPout << "import" << std::endl;
 
-        std::cout << subtokens[1].value << " ";
+        WHUPout << subtokens[1].value << " ";
         std::string fileName = subtokens[1].value;
 
         // fileName是相对于文件的，现在要改为相对于whupc的
@@ -416,12 +419,12 @@ void Block::generate(std::vector<Token> subtokens)
     }
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="cast")
     {
-        std::cout << "cast!" << std::endl;
+        WHUPout << "cast!" << std::endl;
         new Cast(subtokens,env);
     }
     else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="whupinput")
     {
-        std::cout << "winput!" << std::endl;
+        WHUPout << "winput!" << std::endl;
         new WInput(subtokens,env);
     } 
     else

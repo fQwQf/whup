@@ -4,6 +4,9 @@
 #include"object.h"
 #include "check.h"
 #include "arr.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
 
@@ -62,12 +65,12 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
     //这是命名空间中的变量
     if (expr.size() == 3 && expr[1].type == SYMBOL && expr[1].value == "::")
     {
-        std::cout << "find IDENTIFIER in namespace!";
+        WHUPout << "find IDENTIFIER in namespace!";
         if (E_expr[2].processed == true)
         {
             tac.result = E_expr[2].value;
-            std::cout << "result: " << tac.result << std::endl;
-            std::cout << "processed: " << E_expr[2].processed << std::endl;
+            WHUPout << "result: " << tac.result << std::endl;
+            WHUPout << "processed: " << E_expr[2].processed << std::endl;
             return;
         }
         else
@@ -77,7 +80,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             checkSyntax::checkVar(E_expr[2].value, namespace_table[expr[0].value], E_expr[2].line_number, E_expr[2]);
 
             tac.result = namespace_table[expr[0].value]->get_var(E_expr[2].value);
-            std::cout << "result: " << tac.result << std::endl;
+            WHUPout << "result: " << tac.result << std::endl;
             return;
         }
     }
@@ -87,11 +90,11 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 
         if (expr[0].type == IDENTIFIER)
         {
-            std::cout << "find IDENTIFIER!";
+            WHUPout << "find IDENTIFIER!";
             if(E_expr[0].processed == true){
                 tac.result = E_expr[0].value;
-                std::cout << "result: " << tac.result << std::endl;
-                std::cout << "processed: " << E_expr[0].processed << std::endl;
+                WHUPout << "result: " << tac.result << std::endl;
+                WHUPout << "processed: " << E_expr[0].processed << std::endl;
                 return;
             }
           
@@ -99,21 +102,21 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             checkSyntax::checkVar(E_expr[0].value,env,E_expr[0].line_number,E_expr[0]);
           
             tac.result = env->get_var(E_expr[0].value);
-            std::cout << "result: " << tac.result << std::endl;
+            WHUPout << "result: " << tac.result << std::endl;
         }
         else if (expr[0].type == STRING)
         {
-            std::cout << "find STRING!";
+            WHUPout << "find STRING!";
             tac.result = "\"" + E_expr[0].value + "\"";
-            std::cout << "result: " << tac.result << std::endl;
+            WHUPout << "result: " << tac.result << std::endl;
             runtimeEnv_string[tac.result]=tac.result;
-            std::cout<<runtimeEnv_string[tac.result]<<std::endl;
+            WHUPout<<runtimeEnv_string[tac.result]<<std::endl;
         }
         else if (expr[0].type == NUMBER)
         {
-            std::cout << "find NUMBER!";
+            WHUPout << "find NUMBER!";
             tac.result = E_expr[0].value;
-            std::cout << "result: " << tac.result << std::endl;
+            WHUPout << "result: " << tac.result << std::endl;
 
             runtimeEnv_number[tac.result]=std::stof(tac.result);
             //测试设置常量的思路
@@ -123,14 +126,14 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
     };
     if(expr[0].type == IDENTIFIER && expr[1].value == "[" )
     {
-        std::cout << "find IDENTIFIER!";
+        WHUPout << "find IDENTIFIER!";
         std::vector<Token> indextokens;
         int thisarr = 0;
         while(thisarr<arrs.size())
 		{
 			if(arrs[thisarr].name==E_expr[0].value)
 			{
-				std::cout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
+				WHUPout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
 				break;
 			}
 			thisarr++;
@@ -147,18 +150,18 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             E_expr.erase(E_expr.begin());//消去变量名
                 // for(auto i : arrs)
             // {
-            //     std::cout<<"name = "<<i.name<<std::endl;
-            //     std::cout<<"dimension = "<<i.dimension<<std::endl;
-            //     std::cout<<"size = "<<i.size<<std::endl;
+            //     WHUPout<<"name = "<<i.name<<std::endl;
+            //     WHUPout<<"dimension = "<<i.dimension<<std::endl;
+            //     WHUPout<<"size = "<<i.size<<std::endl;
             // }
-            // std::cout << "dimension: " << arrs[thisarr].dimension << std::endl;
+            // WHUPout << "dimension: " << arrs[thisarr].dimension << std::endl;
             int temp_dimension = arrs[thisarr].dimension;
             while(temp_dimension>0)
 		    {
 			    E_expr.erase(E_expr.begin());
 			    // for(auto i:E_expr)
     			// {
-	    		// 	std::cout<<i.value<<" ";
+	    		// 	WHUPout<<i.value<<" ";
 	    		// }
 	    		indextokens.push_back(E_expr[0]);
 	    		Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
@@ -171,7 +174,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
                     indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),E_expr[0].line_number,E_expr[0].file_name});
                 }
 	    		indextokens.push_back(temp2);
-	    		// std::cout<<"index is "<<index<<std::endl;
+	    		// WHUPout<<"index is "<<index<<std::endl;
 	    		E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
 	    		temp_dimension--;
 	    	}
@@ -179,7 +182,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             Expr *index_expr = new Expr(indextokens, env);
             tac.result = env->get_arr(arrs[thisarr].name)+">->"+index_expr->getTacResult();
             // tac.result = env->get_arr(E_expr[0].value);
-            std::cout << "result: " << tac.result << std::endl;
+            WHUPout << "result: " << tac.result << std::endl;
             return;
         }
     }
@@ -248,12 +251,12 @@ std::string Expr::return_type()
 //合并对expr的所有处理,将得到的三地址码栈压入总栈
 void Expr::expr()
 {
-    std::cout << "expr scan start!" << "size:";
-    std::cout << E_expr.size() <<  "  ";
+    WHUPout << "expr scan start!" << "size:";
+    WHUPout << E_expr.size() <<  "  ";
     for (auto &i : E_expr){
-        std::cout << i.value << " ";
+        WHUPout << i.value << " ";
     }
-    std::cout << std::endl;
+    WHUPout << std::endl;
 
     
     // 扫描逻辑或
@@ -262,7 +265,7 @@ void Expr::expr()
         matchPar(i);//扫描括号符号
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "||" || E_expr[i].type == KEYWORD && E_expr[i].value == "or")
         {
-            std::cout << "find ||" << std::endl;
+            WHUPout << "find ||" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -284,7 +287,7 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "&&" || E_expr[i].type == KEYWORD && E_expr[i].value == "and")
         {
-            std::cout << "find &&" << std::endl;
+            WHUPout << "find &&" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -307,7 +310,7 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "<" || E_expr[i].value == "<=" || E_expr[i].value == ">" || E_expr[i].value == ">=" || E_expr[i].value == "==" || E_expr[i].value == "!="))
         {
-            std::cout << "find compare" << std::endl;
+            WHUPout << "find compare" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -355,7 +358,7 @@ void Expr::expr()
             //c++不支持两个直接的string相加，故这样处理
             if (E_expr.size() == 3 && E_expr[0].type == STRING && E_expr[2].type == STRING && E_expr[1].value == "+")
             {
-                std::cout << "find string add" << std::endl;
+                WHUPout << "find string add" << std::endl;
 
                 std::string temp = newTempVar("string");
                 tacs.push_back({STRASSIGN,"=", "\"" + E_expr[0].value + "\"", "", temp});
@@ -370,7 +373,7 @@ void Expr::expr()
                 return;
             }
 
-            std::cout << "find add   i =" << i <<std::endl;
+            WHUPout << "find add   i =" << i <<std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -399,7 +402,7 @@ void Expr::expr()
         matchPar(i);
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "*" || E_expr[i].value == "/" || E_expr[i].value == "%"))
         {
-            std::cout << "find */%" << std::endl;
+            WHUPout << "find */%" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -454,7 +457,7 @@ void Expr::expr()
 
         if (E_expr[i].type == SYMBOL && E_expr[i].value == "**")
         {
-            std::cout << "find **" << std::endl;
+            WHUPout << "find **" << std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -515,7 +518,7 @@ void Expr::expr()
 
     // 前面均没扫到说明全部被括号包裹
     // 去掉首尾括号并重新调用expr（）
-    std::cout << "find par" << std::endl;
+    WHUPout << "find par" << std::endl;
 
     //检查是否出现错误
     // printErrors();
@@ -523,5 +526,5 @@ void Expr::expr()
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());
     this->expr();
-    std::cout<<"expr success."<<std::endl;
+    WHUPout<<"expr success."<<std::endl;
 };
