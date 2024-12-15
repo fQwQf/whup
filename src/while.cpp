@@ -1,5 +1,8 @@
 #include"block.h"
 #include"while.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 extern int global_env_id;  //全局EnvironmentID计数器
 std::stack<int> global_circulation_id;
 void While::matchPar(int& i, std::vector<Token>code)
@@ -48,7 +51,7 @@ void While::matchBrace(int& i, std::vector<Token>code)
 }
 While::While(std::vector<Token> &code,Environment*env):While_env(env)
 {
-	std::cout<<"code lenths="<<code.size()<<std::endl;
+	WHUPout<<"code lenths="<<code.size()<<std::endl;
 	code.erase(code.begin());//预先将while和；词法单元去掉
 	//首先设计label用于后续跳转
 	std::string While_Block_label = newTempLabel();
@@ -74,13 +77,13 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	{
     throw std::length_error("Invalid position for creating vector");
 	}
-	std::cout<<"pos="<<pos<<std::endl;
+	WHUPout<<"pos="<<pos<<std::endl;
 	While_Expr = new Expr(std::vector<Token>(code.begin(), code.begin() + pos+1),this->While_env);
 	/*
 	唐得没边之：搞错迭代器开始和结束的范围
 	*/
 	//注意，此时已经将三地址码压入tacs中
-	std::cout<<"expr done"<<std::endl;
+	WHUPout<<"expr done"<<std::endl;
 	//先处理判断语句
 	std::string While_Expr_result = While_Expr->getTacResult();
 	
@@ -96,17 +99,17 @@ While::While(std::vector<Token> &code,Environment*env):While_env(env)
 	//为block提供标签
 	tacs.push_back({LABEL, "label","","",While_Block_label });
 
-	std::cout<<"Block begin"<<std::endl;
+	WHUPout<<"Block begin"<<std::endl;
 	//初始化W_block;
 	++pos;//跳过“）”
-	std::cout<<code.size()<<std::endl;
+	WHUPout<<code.size()<<std::endl;
 	int Block_begin = pos;
-	std::cout<<"pos="<<pos<<std::endl;
+	WHUPout<<"pos="<<pos<<std::endl;
 	matchBrace(pos, code);
-	std::cout<<"pos="<<pos<<std::endl;
+	WHUPout<<"pos="<<pos<<std::endl;
 	While_Block = new Block(std::vector<Token>(code.begin() + Block_begin + 1, code.begin() + pos+1), While_env);
 
-	std::cout<<"xunhuan begin."<<std::endl;
+	WHUPout<<"xunhuan begin."<<std::endl;
 	//跳转再次进入while
 	tacs.push_back({GOTO, "goto","","",While_begin_label });
 

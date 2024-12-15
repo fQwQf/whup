@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
 #include "whup_parser.h"
 #include "function.h"
+#include "WHUPstream.h"
 
+extern WHUPstream_compile1 WHUPout;
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
@@ -86,7 +88,7 @@ std::string Environment::get_var(std::string name)
     {
         // if(var_table[name]=="null")//用来禁止未确定类型的变量被使用
         // {
-        //     std::cout << "Variable "+name+" not define type" << std::endl;
+        //     WHUPout << "Variable "+name+" not define type" << std::endl;
         //     exit(1);
         // }
         return name + '_' + std::to_string(id) + '_' + var_table[name];
@@ -96,7 +98,7 @@ std::string Environment::get_var(std::string name)
         if (parent == nullptr)
         {
 
-            std::cout << "Variable "+name+" not found,return null" << std::endl;
+            WHUPout << "Variable "+name+" not found,return null" << std::endl;
             if(var_declares.find(name)==var_declares.end())
             return "null";
             else
@@ -117,7 +119,7 @@ std::string Environment::get_arr(std::string name)
     {
         // if(arr_table[name]=="null")//用来禁止未确定类型的变量被使用
         // {
-        //     std::cout << "Variable "+name+" not define type" << std::endl;
+        //     WHUPout << "Variable "+name+" not define type" << std::endl;
         //     exit(1);
         // }
         return name + '_' + std::to_string(id) + '_' + arr_table[name];
@@ -127,7 +129,7 @@ std::string Environment::get_arr(std::string name)
         if (parent == nullptr)
         {
 
-            std::cout << "Array "+name+" not found,return null" << std::endl;
+            WHUPout << "Array "+name+" not found,return null" << std::endl;
             return "null";
         }
         else
@@ -209,12 +211,12 @@ std::string Environment::get_type_var(std::string name){
         {
             if(var_declares.find(name)!=var_declares.end())
             {
-                std::cout<<"find "<<name<<" in var_declares"<<std::endl;
+                WHUPout<<"find "<<name<<" in var_declares"<<std::endl;
                 return var_declares[name];
             }
             // else
             // {
-            //     std::cout << "Variable "+name+" not define type" << std::endl;
+            //     WHUPout << "Variable "+name+" not define type" << std::endl;
             //     exit(1);
             // }
             return "notfound";

@@ -22,13 +22,13 @@ public:
 
     std::string read_line(int line);
 
-    void writeTAC(const std::vector<ThreeAddressCode>& tacs);
+    void writeTAC();
 
     std::string escapeQuotes(const std::string& str);
 
     std::vector<std::string> splitHUSTLine(const std::string& line);
 
-    std::vector<ThreeAddressCode> readTAC();
+    void readTAC();
 
     std::string opTACtoHUST(const std::string& op);
 

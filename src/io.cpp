@@ -1,5 +1,14 @@
 #include "whup_io.h"
+#include "WHUPstream.h"
 
+extern WHUPstream_compile1 WHUPout;
+
+//序列化就是要读写这五个
+extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+extern std::vector<ThreeAddressCode> tacArrs;  
+extern std::unordered_map<std::string, std::string> var_declares;//存储变量的声明信息
+extern std::unordered_map<std::string,float>runtimeEnv_number;//
+extern std::unordered_map<std::string,std::string>runtimeEnv_string;//
 
 IO::IO(const std::string &in_file, const std::string &out_file)
 {
@@ -59,11 +68,47 @@ std::string IO::read_line(int line)
 	return line_value;
 }
 
-void IO::writeTAC(const std::vector<ThreeAddressCode>& tacs){
+void IO::writeTAC(){
 
     for (const auto& tac : tacs) {
-        out << opTACtoHUST(tac.op) << " " << escapeQuotes(tac.arg1) << " " << escapeQuotes(tac.arg2) << " " << escapeQuotes(tac.result) << "\n";
+        out << tac.opperator << " " << escapeQuotes(tac.arg1) << " " << escapeQuotes(tac.arg2) << " " << escapeQuotes(tac.result) << "\n";
     }
+
+    WHUPout << "write TAC" << std::endl;
+
+    out << "\n";
+
+    for (const auto& tac : tacArrs) {
+        out << tac.opperator << " " << escapeQuotes(tac.arg1) << " " << escapeQuotes(tac.arg2) << " " << escapeQuotes(tac.result) << "\n";
+    }
+
+    WHUPout << "write Arr" << std::endl;
+
+    out << "\n";
+
+    for (auto var : var_declares) {
+        out << "VAR " << var.first << " " << var.second << "\n";
+    }
+
+    WHUPout << "write VAR" << std::endl;
+    
+    out << "\n";
+
+    for (const auto& [key, value] : runtimeEnv_number) {
+        out << "NUMBER " << escapeQuotes(key) << " " << escapeQuotes(std::to_string(value)) << "\n";
+    }
+
+    WHUPout << "write NUMBER" << std::endl;
+
+    out << "\n";
+
+    for (const auto& [key, value] : runtimeEnv_string) {
+        out << "STRING " << escapeQuotes(key) << " " << escapeQuotes(value) << "\n";
+    }
+
+    WHUPout << "write STRING" << std::endl;
+
+    out << "\n";
 
 }
 
@@ -214,9 +259,13 @@ std::vector<std::string> IO::splitHUSTLine(const std::string& line) {
             }
         } else if(ch == '\"'){
             inQuotes = !inQuotes;
-            cell = "\"" + cell + "\"";
+            cell = cell + "\"";
         }
         else if (ch == ' ' && !inQuotes) {
+            if(cell == "NULL")
+            {
+                cell = "";
+            }
             result.push_back(cell);
             cell.clear();
         } else {
@@ -224,28 +273,51 @@ std::vector<std::string> IO::splitHUSTLine(const std::string& line) {
         }
     }
     if (!cell.empty() || inQuotes) {
+        if(cell == "NULL")
+            {
+                cell = "";
+            }
         result.push_back(cell);
     }
     return result;
 }
 
-std::vector<ThreeAddressCode> IO::readTAC() {
-    std::vector<ThreeAddressCode> tacs;
-
+void IO::readTAC() {
     std::string line;
     while (std::getline(in, line)) {
         std::vector<std::string> parts = splitHUSTLine(line);
         if (parts.size() == 4) {
-            ThreeAddressCode tac;
-            tac.op = parts[0];
-            tac.arg1 = parts[1];
-            tac.arg2 = parts[2];
-            tac.result = parts[3];
-            tacs.push_back(tac);
+            
+            Operator part0 = Operator(stoi(parts[0]));
+
+            ThreeAddressCode tac{part0,parts[1],parts[2],parts[3]};
+
+            if (part0 != ARRSET)
+            {
+                tacs.push_back(tac);
+            }
+            else
+            {
+                tacArrs.push_back(tac);
+            }
         }
+        else if(parts.size() == 3)
+        {
+            if(parts[0] == "VAR")
+            {
+                var_declares[parts[1]] = parts[2];
+            }else if(parts[0] == "NUMBER")
+            {
+                runtimeEnv_number[parts[1]] = std::stof(parts[2]);
+            }else if(parts[0] == "STRING")
+            {
+                runtimeEnv_string[parts[1]] = parts[2];
+            }
+            
+        }
+
     }
 
-    return tacs;
 }
 
 std::string IO::readWHUPLib()

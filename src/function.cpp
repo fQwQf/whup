@@ -1,6 +1,9 @@
 #include "function.h"
 #include "expression.h"
 #include "check.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 
 extern std::vector<Error> errors;
 
@@ -40,7 +43,7 @@ Function::Function(std::vector<Token> &tokens, Environment *env)
 
     tokens.erase(tokens.begin(), tokens.begin() + i);
 
-    std::cout << "Function name: " << name << std::endl;
+    WHUPout << "Function name: " << name << std::endl;
 
     // 1.形参处理
     folmalPara(tokens);
@@ -77,12 +80,12 @@ void Function::matchPar(int &i, std::vector<Token> &tokens) // 实际上是由ma
 
 std::string Function::call(std::vector<Token> &tokens, Environment *env)
 { // 返回值是储存返回值的临时变量名
-    std::cout << "call function " << name << std::endl;
+    WHUPout << "call function " << name << std::endl;
     for (auto &i : tokens)
     {
-        std::cout << i.value << " ";
+        WHUPout << i.value << " ";
     }
-    std::cout << std::endl;
+    WHUPout << std::endl;
 
     //参数入栈
     push_real_para(env);
@@ -100,7 +103,7 @@ std::string Function::call(std::vector<Token> &tokens, Environment *env)
 
     call_with_stack_frame(env);
 
-    std::cout << "call function " << name << " success" << std::endl;
+    WHUPout << "call function " << name << " success" << std::endl;
 
 
     return return_value;
@@ -139,7 +142,7 @@ void Function::call_with_stack_frame(Environment *env)
         //将局部变量加入栈帧
         for (auto &i : env->var_table)
         {
-            std::cout << "local var: " << i.first << " " << i.second << std::endl;
+            WHUPout << "local var: " << i.first << " " << i.second << std::endl;
             stack_frame.push_back(env->get_var(i.first));
         }
 
@@ -147,12 +150,12 @@ void Function::call_with_stack_frame(Environment *env)
         stack_frame.insert(stack_frame.end(), env->return_var_list.begin(), env->return_var_list.end());
 
         //输出函数调用返回值
-        std::cout << "env->return_var_list: ";
+        WHUPout << "env->return_var_list: ";
         for (auto &i : env->return_var_list)
         {
-            std::cout << i << " ";
+            WHUPout << i << " ";
         }
-        std::cout << std::endl;
+        WHUPout << std::endl;
 
 
         //将栈帧压入栈中
@@ -183,19 +186,19 @@ void Function::generate()
 
     body_tokens.pop_back();                                          // 去掉 }
 
-    std::cout << "Function: " << name << std::endl;
-    std::cout << "Params: " << std::endl;
+    WHUPout << "Function: " << name << std::endl;
+    WHUPout << "Params: " << std::endl;
     for (auto &param : params_name)
     {
-        std::cout << "  " << param.first << " " << param.second << std::endl;
+        WHUPout << "  " << param.first << " " << param.second << std::endl;
     }
-    std::cout << "Return type: " << return_type << std::endl;
-    std::cout << "Body: " << std::endl;
+    WHUPout << "Return type: " << return_type << std::endl;
+    WHUPout << "Body: " << std::endl;
     for (auto &token : body_tokens)
     {
-        std::cout << "  " << token.value;
+        WHUPout << "  " << token.value;
     }
-    std::cout << std::endl;
+    WHUPout << std::endl;
 
     function_ret_label = end_label;
     function_return_value = return_value;
@@ -214,19 +217,19 @@ void Function::generate()
 //     body_tokens.erase(body_tokens.begin(), body_tokens.begin() + 1); // 去掉: type {
 //     body_tokens.pop_back();                                          // 去掉 }
 
-//     std::cout << "Function: " << name << std::endl;
-//     std::cout << "Params: " << std::endl;
+//     WHUPout << "Function: " << name << std::endl;
+//     WHUPout << "Params: " << std::endl;
 //     for (auto &param : params_name)
 //     {
-//         std::cout << "  " << param.first << " " << param.second << std::endl;
+//         WHUPout << "  " << param.first << " " << param.second << std::endl;
 //     }
-//     std::cout << "Return type: " << return_type << std::endl;
-//     std::cout << "Body: " << std::endl;
+//     WHUPout << "Return type: " << return_type << std::endl;
+//     WHUPout << "Body: " << std::endl;
 //     for (auto &token : body_tokens)
 //     {
-//         std::cout << "  " << token.value;
+//         WHUPout << "  " << token.value;
 //     }
-//     std::cout << std::endl;
+//     WHUPout << std::endl;
 
 
 //     // Block能否识别临时变量？
@@ -273,8 +276,8 @@ void Function::folmalPara(std::vector<Token> &tokens)
                 pt.isreference=false;
                 if(tokens[i].value=="&")
                 {
-                    std::cout<<"&"<<std::endl;
-                    std::cout<<tokens[i].value<<std::endl;
+                    WHUPout<<"&"<<std::endl;
+                    WHUPout<<tokens[i].value<<std::endl;
                     pt.isreference=true;
                     i++;
                 }
@@ -299,10 +302,10 @@ void Function::folmalPara(std::vector<Token> &tokens)
 
     for(int i=0;i<params_name.size();i++)
     {
-        std::cout<<"param "<<params_name[i].first<<" is "<<params_name[i].second<<std::endl;
-        std::cout<<"param "<<params_name[i].first<<" type is "<<params_type[i].type<<std::endl;
-        std::cout<<"param "<<params_name[i].first<<" isreference is "<<params_type[i].isreference<<std::endl;
-        std::cout<<std::endl;
+        WHUPout<<"param "<<params_name[i].first<<" is "<<params_name[i].second<<std::endl;
+        WHUPout<<"param "<<params_name[i].first<<" type is "<<params_type[i].type<<std::endl;
+        WHUPout<<"param "<<params_name[i].first<<" isreference is "<<params_type[i].isreference<<std::endl;
+        WHUPout<<std::endl;
     }
     tokens.erase(tokens.begin(), tokens.begin() + i);
 }
@@ -378,7 +381,7 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             std::vector<Token> subtokens(tokens.begin() + last_comma, tokens.begin() + i);
             last_comma = i + 1;
             Expr *expression = new Expr(subtokens, env);
-            std::cout << "pass value success!!!" << std::endl;
+            WHUPout << "pass value success!!!" << std::endl;
             if(!params_type[param_num].isreference)//按值
             {
                 if(expression->return_type()=="string")
@@ -388,13 +391,13 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             }
             else//按引用
             {
-                std::cout<<std::endl<<"reference"<<std::endl<<std::endl;
+                WHUPout<<std::endl<<"reference"<<std::endl<<std::endl;
                 if(expression->return_type()=="string")
                 tacs.push_back({REFSTR,"=", expression->getTacResult(), "", params_name[param_num].second});
                 else
                 tacs.push_back({REFNUM,"=", expression->getTacResult(), "", params_name[param_num].second});
             }
-            std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
+            WHUPout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;
         }
@@ -421,7 +424,7 @@ void Function::bodyTokens(std::vector<Token> &tokens)
                 {
                     token.value = params_name[i].second; // 这里的params_name[i].second是形参对应的临时变量名
                     token.processed = true;
-                    std::cout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
+                    WHUPout << "Processed token: " << params_name[i].first << " to " << token.value << std::endl;
                     break;
                 }
                 else
@@ -433,10 +436,10 @@ void Function::bodyTokens(std::vector<Token> &tokens)
     }
 
     this->body_tokens = tokens;
-    std::cout << this->name << " body tokens:" << std::endl;
+    WHUPout << this->name << " body tokens:" << std::endl;
     for (auto &i : body_tokens)
     {
-        std::cout << i.value << " ";
+        WHUPout << i.value << " ";
     }
 }
 

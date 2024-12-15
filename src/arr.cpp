@@ -1,5 +1,8 @@
 #include "arr.h"
 #include "assign.h"
+#include "WHUPstream.h"
+
+extern WHUPstream_compile1 WHUPout;
 
 extern std::vector<ThreeAddressCode> tacs;
 
@@ -10,10 +13,10 @@ void Arr::declare()
 {
     env->insert_arr(name);
     if(type=="number")
-        tacArrs.push_back({ARRSET,"", std::to_string(size),"number",env->get_arr(name)});
+        tacArrs.push_back({ARRSET, std::to_string(size),"number",env->get_arr(name)});
     else if(type=="string")
-        tacArrs.push_back({ARRSET,"", std::to_string(size),"string",env->get_arr(name)});
-    std::cout<<"arr declear success!!   tacArrs.size ="<<tacArrs.size()<<std::endl;
+        tacArrs.push_back({ARRSET, std::to_string(size),"string",env->get_arr(name)});
+    WHUPout<<"arr declear success!!   tacArrs.size ="<<tacArrs.size()<<std::endl;
 }
 
 Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type):type(type)
@@ -29,15 +32,15 @@ Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type):type(type)
             isAssign = true;
             //先完成声明
             dimension = (tokens.size()-6)/3;
-            // std::cout<<"dimension = "<<dimension<<std::endl;
+            // WHUPout<<"dimension = "<<dimension<<std::endl;
             std::vector<Token> temp_tokens=tokens;
             //消去初始化量、中括号和等号
             for(int i=0;i<4;i++) 
                 temp_tokens.pop_back();
             arr(env, tokens[1].value,temp_tokens,dimension,1);
 
-            std::cout<<"dimension = "<<this->dimension<<std::endl;
-            std::cout<<"size = "<<this->size<<std::endl;
+            WHUPout<<"dimension = "<<this->dimension<<std::endl;
+            WHUPout<<"size = "<<this->size<<std::endl;
             // Assign *ass = new Assign(std::vector<Token>(tokens.begin()+1, tokens.end()),env);
             // tokens.erase(tokens.begin(),tokens.end()-4);
             initArr(std::vector<Token>(tokens.begin()+1, tokens.end()),env);
@@ -54,9 +57,9 @@ Arr::Arr(std::vector<Token> tokens,Environment* env,std::string type):type(type)
     arrs.push_back(*this);
     // for(auto i : arrs)
     // {
-    //     std::cout<<"name = "<<i.name<<std::endl;
-    //     std::cout<<"dimension = "<<i.dimension<<std::endl;
-    //     std::cout<<"size = "<<i.size<<std::endl;
+    //     WHUPout<<"name = "<<i.name<<std::endl;
+    //     WHUPout<<"dimension = "<<i.dimension<<std::endl;
+    //     WHUPout<<"size = "<<i.size<<std::endl;
     // }
 }
 
@@ -87,7 +90,7 @@ void Arr::arr(Environment *env, std::string name, std::vector<Token> tokens ,int
 {
     // for(auto i : tokens)
     // {
-    //     std::cout<<i.value<<" ";
+    //     WHUPout<<i.value<<" ";
     // }
     tokens.pop_back();
     // if(std::isdigit(tokens.back().value))
@@ -95,7 +98,7 @@ void Arr::arr(Environment *env, std::string name, std::vector<Token> tokens ,int
         this->len.push_back(this->len.back()*std::stoi(tokens.back().value));
     else
         this->len.push_back(std::stoi(tokens.back().value));
-    // std::cout<<"len = "<<this->len.back()<<std::endl;
+    // WHUPout<<"len = "<<this->len.back()<<std::endl;
     size*=std::stoi(tokens.back().value);
     tokens.pop_back();
     tokens.pop_back();
@@ -112,5 +115,5 @@ void Arr::arr(Environment *env, std::string name, std::vector<Token> tokens ,int
     arr(env,name,tokens,dimension-1,size);
 
     this->dimension = dimension;
-    // std::cout<<"dimension = "<<this->dimension<<std::endl;
+    // WHUPout<<"dimension = "<<this->dimension<<std::endl;
 }

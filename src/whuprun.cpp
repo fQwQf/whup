@@ -13,13 +13,21 @@
 #include "windows.h"
 #endif
 
-extern std::vector<ThreeAddressCode> tacArrs;  
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
+extern std::vector<ThreeAddressCode> tacArrs;  
+extern std::unordered_map<std::string, std::string> var_declares;//存储变量的声明信息
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
+extern std::unordered_map<std::string,std::string>runtimeEnv_string;//
 
 extern bool print_c1;
 extern bool print_c2;
 extern bool print_e;
+
+extern WHUPstream_compile1 WHUPout;
+extern WHUPstream_compile2 WHUPout_c2;
+extern WHUPstream_execute WHUPout_e;
+
+
 int main(int n, const char *arg[])
 {
     #ifdef _WIN32
@@ -27,30 +35,25 @@ int main(int n, const char *arg[])
     #endif
 
     if(n==1){
-        std::cout << "Usage:" << " whupc " << std::endl
+        std::cout << "Usage: whuprun " << std::endl
                 << std::left << std::setw(25) << " <file>" << " input file path" << std::endl
                 << std::left << std::setw(25) << " -i / --input <file>" << " input file path" << std::endl
-                << std::left << std::setw(25) << " -o / --output <file>" << " output file path (default: out.hust)"<< std::endl
-                << std::left << std::setw(25) << " -pc1 / --print-c1" << " print details of the first compile" << std::endl;
+                << std::left << std::setw(25) << " -c / --clock" << " print wall clock time" << std::endl
+                << std::left << std::setw(25) << " -pc1 / --print-c1" << " print details of the first compile" << std::endl
+                << std::left << std::setw(25) << " -pc2 / --print-c2" << " print details of the second compile" << std::endl
+                << std::left << std::setw(25) << " -pe / --print-e" << " print details of execute" << std::endl;
         return 0;
     }
 
-
-    Extractor extractor(n, arg);//提取输入和输出文件路径
-
-    //确定文件的输出路径，默认为out.cpp
-    std::string out;
-    if(extractor.get_output_file() != ""){
-        out = extractor.get_output_file();
-    }else{
-        out = "out.hust";
-    }
+    Extractor extractor(n, arg);//提取输入文件路径
 
     //确定是否打印信息
     print_c1 = extractor.print_c1;
+    print_c2 = extractor.print_c2;
+    print_e = extractor.print_e;
 
     //用io类读取输入文件内容到字符串expression中
-    IO io(extractor.get_input_file(), out);
+    IO io(extractor.get_input_file());
     std::string expression = io.read();
 
     //进行expression的句法错误分析
@@ -75,11 +78,19 @@ int main(int n, const char *arg[])
     //进行expression的语法错误检查，并输出错误信息
     printErrors();
 
-    //将目标代码写入输出文件
-    io.writeTAC();
+    WHUPout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
-    std::cout << "Generate code to " << out << std::endl;
-    std::cout  << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
+    std::vector<runTAC> runtacs = TAC_to_runTAC(tacs);//将tacs转换为runTAC
 
+    std::clock_t start = clock();
+    
+    execute(runtacs);
+
+    std::clock_t end   = clock();
+
+    if (extractor.wall_clock)
+        std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
+
+    WHUPout_e <<"\033[0;32m Execute success!ヾ(•ω•`)o \033[0m"<<std::endl;
     return 0;
 }

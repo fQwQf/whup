@@ -1,12 +1,16 @@
 #include"assign.h"
 #include"check.h"
 #include"arr.h"
+#include "WHUPstream.h"
 
 extern std::vector<ThreeAddressCode> tacs;
 extern std::vector<Arr> arrs;
 extern std::vector<ThreeAddressCode> tacArrs; 
 extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 extern std::unordered_map<std::string,std::string>var_declares;
+
+extern WHUPstream_compile1 WHUPout;
+
 
 Assign::Assign(std::vector<Token> code, Environment* env)
 {
@@ -20,13 +24,13 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		//判断是否是数组赋值
 		if(code[1].value=="[")
 		{
-			std::cout<<"find array "<<std::endl;
+			WHUPout<<"find array "<<std::endl;
 			isArr = true;
 			while(thisarr<arrs.size())
 			{
 				if(arrs[thisarr].name==var.value)
 				{
-					std::cout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
+					WHUPout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
 					break;
 				}
 				thisarr++;
@@ -55,7 +59,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 			    code.erase(code.begin());
 			    // for(auto i:code)
     			// {
-	    		// 	std::cout<<i.value<<" ";
+	    		// 	WHUPout<<i.value<<" ";
 	    		// }
 	    		indextokens.push_back(code[0]);
 	    		Token temp1={SYMBOL,"*",code[0].line_number,code[0].file_name};
@@ -68,7 +72,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
                     indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),code[0].line_number,code[0].file_name});
                 }
 	    		indextokens.push_back(temp2);
-	    		// std::cout<<"index is "<<index<<std::endl;
+	    		// WHUPout<<"index is "<<index<<std::endl;
 	    		code.erase(code.begin(),code.begin()+2);//删除前两个节点
 	    		temp_dimension--;
 	    	}
@@ -88,9 +92,9 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		var = code[2];
 		code.erase(code.begin(),code.begin()+4);
 	}
-	std::cout<<"right expr"<<std::endl;
+	WHUPout<<"right expr"<<std::endl;
 	expr = new Expr(code,env);//将右侧代码建立新的expr
-	std::cout<<"expr tac.result"<<expr->getTacResult()<<std::endl;
+	WHUPout<<"expr tac.result"<<expr->getTacResult()<<std::endl;
 
 	if(!isArr)
 	{
@@ -99,16 +103,16 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 			env->insert_var(var.value);
 			env->change_type_var(var.value,expr->return_type());
 
-			std::cout << "var " << var.value << " declared automatically" << std::endl;
-			std::cout << "var " << var.value << " type is " << expr->return_type() << std::endl;
+			WHUPout << "var " << var.value << " declared automatically" << std::endl;
+			WHUPout << "var " << var.value << " type is " << expr->return_type() << std::endl;
 		
 		}else{
-			std::cout<<"var "<<var.value<<" already declared"<<std::endl;
+			WHUPout<<"var "<<var.value<<" already declared"<<std::endl;
 
-			std::cout<<expr->getTacResult()<<" type is "<<expr->return_type();
+			WHUPout<<expr->getTacResult()<<" type is "<<expr->return_type();
 			env->change_type_var(var.value,expr->return_type());//导致类型问题！！！
 
-			std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
+			WHUPout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
 		}
 		assign();
 	}
@@ -119,16 +123,16 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		// 	env->insert_arr(var.value);
 		// 	// env->change_type_var(var.value,expr->return_type());
 
-		// 	std::cout << "arr " << var.value << " declared automatically" << std::endl;
-		//  std::cout << "arr " << var.value << " type is " << expr->return_type() << std::endl;
+		// 	WHUPout << "arr " << var.value << " declared automatically" << std::endl;
+		//  WHUPout << "arr " << var.value << " type is " << expr->return_type() << std::endl;
 		
 		// }else{
-			std::cout<<"var "<<var.value<<" already declared"<<std::endl;
+			WHUPout<<"var "<<var.value<<" already declared"<<std::endl;
 
-			std::cout<<expr->getTacResult()<<" type is "<<"sub_arr "<<std::endl;
+			WHUPout<<expr->getTacResult()<<" type is "<<"sub_arr "<<std::endl;
 			// env->change_type_var(var.value,expr->return_type());//导致类型问题！！！
 
-			// std::cout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
+			// WHUPout<<"var "<<var.value<<" type changed to "<<expr->return_type()<<std::endl;
 		// }
 
 		Expr* index_expr = new Expr(indextokens,env);//将偏移量表达式建立新的expr

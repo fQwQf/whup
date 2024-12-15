@@ -3,6 +3,4 @@ number num[3][10][10]={10};
 num[j][1][2]=13;
 j=2;
 var k = "lsd";
-whupinput(k);
-cast(k,number,j);
-print(j);
+print(k);
