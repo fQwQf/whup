@@ -1,8 +1,5 @@
+var i=2;
 var j=1;
-number num[3][10][10]={10};
-num[j][1][2]=13;
-j=2;
-var k = "lsd";
-whupinput(k);
-cast(k,number,j);
-print(j);
+number num[3][5][5]={10};
+num[j+1][2][3]=1;
+print(((j+1)*(num[2][j][3]+num[0][4][j]-num[2][2][3]-num[0][4][i*j+1]))/2);

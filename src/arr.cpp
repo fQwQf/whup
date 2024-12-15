@@ -67,7 +67,7 @@ void Arr::initArr(std::vector<Token> code,Environment* env)
     //记录该变量
     Token var = code[0];
 	//消去变量、中括号和等号,只留下等号右边
-	code.erase(code.begin(),code.end()-4);
+	code.erase(code.begin(),code.end()-3);
     //去除表达式首尾大括号
     code.erase(code.begin());
     code.erase(code.end()-1);
@@ -75,10 +75,15 @@ void Arr::initArr(std::vector<Token> code,Environment* env)
     if(code.size() == 1)
     {
         //说明是单个值对数组初始化
+        Expr* expr = new Expr(code,env);
         for(int i=0;i<size;i++)
         {
-            Expr* expr = new Expr(code,env);
-            tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",env->get_arr(var.value)+">->"+std::to_string(i)});
+            std::vector<Token> temptoken;
+            Token index={NUMBER,std::to_string(i),code[0].line_number,code[0].file_name};
+            temptoken.push_back(index);
+            Expr* index_expr = new Expr(temptoken,env);
+            tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",env->get_arr(var.value)+">->"+index_expr->getTacResult()});
+            std::cout<<"init arr success!! "<<std::endl;
         }
     }
 }

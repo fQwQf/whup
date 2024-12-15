@@ -22,6 +22,8 @@ private:
     Environment* env;
 
     void matchPar(int& i);//用来跳过括号内容
+    void matchBracket(int& i);//用来检查中括号
+    bool is_single_arr(int demension);//用来检查是否只剩下单个数组
 public:
     //构造函数用以初始化expression类，传入参数为token集合和env
     Expr(const std::vector<Token>& expr,Environment* env);
