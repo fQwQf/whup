@@ -7,7 +7,7 @@ WInput::WInput(std::vector<Token>& expr,Environment* env){
 
     std::cout << "WInput: " << input << std::endl;
 
-    if(env->get_var(input)!="null"){
+    if(env->get_type_var(input)=="string"){
         tacs.push_back({WINPUT,env->get_var(input),"",""});
     }else{
         //TODO 报错
