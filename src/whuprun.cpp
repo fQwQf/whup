@@ -19,9 +19,9 @@ extern std::unordered_map<std::string, std::string> var_declares;//存储变量�
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
 extern std::unordered_map<std::string,std::string>runtimeEnv_string;//
 
-bool print_c1 = false;
-bool print_c2 = false;
-bool print_e = false;
+extern bool print_c1;
+extern bool print_c2;
+extern bool print_e;
 
 extern WHUPstream_compile1 WHUPout;
 extern WHUPstream_compile2 WHUPout_c2;

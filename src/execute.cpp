@@ -18,8 +18,8 @@ std::stack<std::string>functionStack_string;
 std::unordered_map<std::string,float*>runtime_number;//
 std::unordered_map<std::string,std::string*>runtime_string;//
 
-WHUPstream_compile2 WHUPout_c2;
-WHUPstream_execute WHUPout_e;
+extern WHUPstream_compile2 WHUPout_c2;
+extern WHUPstream_execute WHUPout_e;
 
 
 //对于reference只需要重载一次ASSIGN

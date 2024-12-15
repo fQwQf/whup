@@ -1,8 +1,12 @@
 #include "WHUPstream.h"
 
-extern bool print_c1;
-extern bool print_c2;
-extern bool print_e;
+bool print_c1 = false;
+bool print_c2 = false;
+bool print_e = false;
+
+WHUPstream_compile1 WHUPout;
+WHUPstream_compile2 WHUPout_c2;
+WHUPstream_execute WHUPout_e;
 
 WHUPstream::WHUPstream(): std::ostream(this){}
 

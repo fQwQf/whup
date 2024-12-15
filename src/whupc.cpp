@@ -17,9 +17,9 @@ extern std::vector<ThreeAddressCode> tacArrs;
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
 
-bool print_c1 = false;
-bool print_c2 = false;
-bool print_e = false;
+extern bool print_c1;
+extern bool print_c2;
+extern bool print_e;
 int main(int n, const char *arg[])
 {
     #ifdef _WIN32
