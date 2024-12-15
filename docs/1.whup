@@ -4,4 +4,5 @@ num[j][1][2]=13;
 j=2;
 var k = "lsd";
 whupinput(k);
-print(k);
+cast(k,number,j);
+print(j);

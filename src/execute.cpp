@@ -414,7 +414,7 @@ void execute(std::vector<runTAC> runtacs)
     for(int i=0;i<runtacs.size();i++)
     {
         runTAC tac=runtacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        //std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
             *(float*)*tac.result=*(float*)*tac.arg1;
@@ -601,11 +601,19 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==STON)
         {
-            *(float*)*tac.result=std::stof(*(std::string*)*tac.arg1);
+            try
+            {
+                *(float*)*tac.result=std::stof(*(std::string*)*tac.arg1);
+            }
+            catch (const std::invalid_argument &e)
+            {
+                std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : Invalid STON input! \033[0m"<< std::endl;
+                // 处理错误，例如提示用户重新输入
+            }
+            
         }
         else if(tac.opperator==NTOS)
         {
-            std::cout<< "cast" << *(float*)*tac.arg1 << std::endl;
             *(std::string*)*tac.result=std::to_string(*(float*)*tac.arg1);
         }
         else if(tac.opperator==EXIT)
