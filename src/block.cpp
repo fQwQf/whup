@@ -15,6 +15,7 @@
 #include"classfunction.h"
 #include "check.h"
 #include "whup_io.h"
+#include "cast.h"
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储所有函数名和对应的对象指针哈希表，用于生成函数体
@@ -410,9 +411,15 @@ void Block::generate(std::vector<Token> subtokens)
         Block import_block(tokens, env, true);
 
         namespace_table[fileName] = import_block.getEnv();
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="cast")
+    {
+        std::cout << "cast!" << std::endl;
+        new Cast(subtokens,env);
     } 
     else
     {
         pushErrors(subtokens[0],"unexpected token "+subtokens[0].value);
     }
+    
 }

@@ -67,7 +67,9 @@ enum Operator
     ARRGET,  //数组取值
     ARRLEN,  //数组长度
     BIASNUM,     //数字数组偏移
-    BIASSTR      //字符串
+    BIASSTR,      //字符串数组偏移
+    STON,   //字符串转数字
+    NTOS   //数字转字符串
 };
 
 struct ThreeAddressCode
@@ -78,7 +80,25 @@ struct ThreeAddressCode
     std::string arg2;   // 变量2
     std::string result; // 存储结果的变量
 
-    ThreeAddressCode(Operator o,std::string s1,std::string s2,std::string res):opperator(o),arg1(s1),arg2(s2),result(res){}
+    ThreeAddressCode(Operator o,std::string s1,std::string s2,std::string res):opperator(o),arg1(s1),arg2(s2),result(res){
+        if(o == REFSTR || o == REFNUM){
+            op = "REF";
+        }else if(o == ARRSET){
+            op = "ARRSET";
+        }else if(o == ARRGET){
+            op = "ARRGET";
+        }else if(o == ARRLEN){
+            op = "ARRLEN";
+        }else if(o == BIASNUM){
+            op = "BIASNUM";
+        }else if(o == BIASSTR){
+            op = "BIASSTR";
+        }else if(o == STON){
+            op = "STON";
+        }else if(o == NTOS){
+            op = "NTOS";
+        }
+    }
     ThreeAddressCode(){}
     ThreeAddressCode(Operator o,std::string op,std::string s1,std::string s2,std::string res):opperator(o),op(op),arg1(s1),arg2(s2),result(res){}
 };

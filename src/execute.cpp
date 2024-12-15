@@ -82,6 +82,12 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
     }
 
     for (auto i : runtimeEnv_string){
+        if(i.second[0]=='"'){
+            i.second.erase(0,1);
+        }
+        if(i.second.back()=='"'){
+            i.second.pop_back();
+        }
         runtime_string[i.first]=new std::string(i.second);
     }
 
@@ -235,9 +241,6 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
     //没有resize，唐完了🤣
     runtimeTACs.resize(tacs.size());
 
-    std::cout << tacs.size() << std::endl;
-    std::cout << runtimeTACs.size() << std::endl;
-
     std::cout << "arrays are offsetted" << std::endl;
 
     setLabel(tacs);
@@ -382,6 +385,20 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
             runtimeTACs[i].arg2=(void**)&runtime_number[tac.arg2];
             runtimeTACs[i].result=(void**)&runtime_string[tac.result];
         }
+        else if(tac.opperator==STON)
+        {
+            runtimeTACs[i].opperator=STON;
+            runtimeTACs[i].arg1=(void**)&runtime_string[tac.arg1];
+            runtimeTACs[i].arg2=NULL;
+            runtimeTACs[i].result=(void**)&runtime_number[tac.result];
+        }
+        else if(tac.opperator==NTOS)
+        {
+            runtimeTACs[i].opperator=NTOS;
+            runtimeTACs[i].arg1=(void**)&runtime_number[tac.arg1];
+            runtimeTACs[i].arg2=NULL;
+            runtimeTACs[i].result=(void**)&runtime_string[tac.result];
+        }
         else{
             std::cout << "Fuck!Unexpected op!" << std::endl;
         }
@@ -397,7 +414,7 @@ void execute(std::vector<runTAC> runtacs)
     for(int i=0;i<runtacs.size();i++)
     {
         runTAC tac=runtacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        //std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        std::cout<< tac.opperator <<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
             *(float*)*tac.result=*(float*)*tac.arg1;
@@ -588,6 +605,15 @@ void execute(std::vector<runTAC> runtacs)
         {
             std::string* temp=(std::string*)*tac.arg1+int(*(float*)*tac.arg2);
             *(tac.result) = (void**)&temp;
+        }
+        else if(tac.opperator==STON)
+        {
+            *(float*)*tac.result=std::stof(*(std::string*)*tac.arg1);
+        }
+        else if(tac.opperator==NTOS)
+        {
+            std::cout<< "cast" << *(float*)*tac.arg1 << std::endl;
+            *(std::string*)*tac.result=std::to_string(*(float*)*tac.arg1);
         }
         else if(tac.opperator==EXIT)
         {

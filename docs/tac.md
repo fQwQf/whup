@@ -132,3 +132,19 @@
 | BIASSTR | arg1 | arg2 | result |
 
 效果：使result指向arg1偏移arg2的值个string单位长度。
+
+## STON
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| STON | arg1 |  | result |
+
+效果：将字符串arg1的值转换为数字，赋给result。
+
+## NTOS
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| NTOS | arg1 |  | result |
+
+效果：将数字arg1的值转换为字符串，赋给result。
