@@ -23,7 +23,6 @@ bool print_c1 = false;
 bool print_c2 = false;
 bool print_e = false;
 
-extern WHUPstream_compile1 WHUPout;
 extern WHUPstream_compile2 WHUPout_c2;
 extern WHUPstream_execute WHUPout_e;
 
@@ -35,44 +34,21 @@ int main(int n, const char *arg[])
     #endif
 
     if(n==1){
-        std::cout << "Usage: whuprun <input_file> | -i <input_file> | -o <output_file>" << std::endl;
+        std::cout << "Usage: whupc <input_file> | -i <input_file> | -o <output_file>" << std::endl;
         return 0;
     }
 
-    Extractor extractor(n, arg);//提取输入文件路径
+
+    Extractor extractor(n, arg);//提取参数
+
 
     //确定是否打印信息
-    print_c1 = extractor.print_c1;
     print_c2 = extractor.print_c2;
     print_e = extractor.print_e;
 
-    //用io类读取输入文件内容到字符串expression中
+    //用io类读取hust文件内容
     IO io(extractor.get_input_file());
-    std::string expression = io.read();
-
-    //进行expression的句法错误分析
-    CheckSemicolon::checkCode(expression,extractor.get_input_file());
-    printErrors();
-
-    //先对tokens进行统一的括号错误检查
-    checkBrackets::checkPar(expression,extractor.get_input_file());
-    checkBrackets::checkBracket(expression,extractor.get_input_file());
-    checkBrackets::checkBrace(expression,extractor.get_input_file());
-    printErrors();
-
-    //进行词法分析
-    Lexer lexer(expression,extractor.get_input_file());
-    std::vector<Token> tokens = lexer.tokenize();
-    tokens.pop_back(); // 删除最后一个换行符
-
-
-    //使用得到的token集合进行语法分析，生成一个中间表示
-    Block block(tokens);
-
-    //进行expression的语法错误检查，并输出错误信息
-    printErrors();
-
-    WHUPout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
+    io.readTAC();
 
     std::vector<runTAC> runtacs = TAC_to_runTAC(tacs);//将tacs转换为runTAC
 
@@ -80,11 +56,11 @@ int main(int n, const char *arg[])
     
     execute(runtacs);
 
-    std::clock_t end   = clock();
+    std::clock_t end = clock();
 
     if (extractor.wall_clock)
         std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
 
-    WHUPout_e <<"\033[0;32m Execute success!ヾ(•ω•`)o \033[0m"<<std::endl;
+    WHUPout_e <<"Execute success!"<<std::endl;
     return 0;
 }

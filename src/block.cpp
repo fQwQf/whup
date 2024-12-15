@@ -29,7 +29,7 @@ extern std::vector<Error> errors; // 存储错误信息
 extern std::unordered_map<std::string, Environment*> namespace_table; // 存储命名空间名和对应的Environment对象的哈希表
 extern std::set<Function*> used_functions;
 
-WHUPstream_compile1 WHUPout;
+extern WHUPstream_compile1 WHUPout;
 
 //跳过大括号
 void Block::matchBrace(int &i,std::vector<Token> &tokens)

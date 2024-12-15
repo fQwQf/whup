@@ -13,9 +13,9 @@ void Arr::declare()
 {
     env->insert_arr(name);
     if(type=="number")
-        tacArrs.push_back({ARRSET,"", std::to_string(size),"number",env->get_arr(name)});
+        tacArrs.push_back({ARRSET, std::to_string(size),"number",env->get_arr(name)});
     else if(type=="string")
-        tacArrs.push_back({ARRSET,"", std::to_string(size),"string",env->get_arr(name)});
+        tacArrs.push_back({ARRSET, std::to_string(size),"string",env->get_arr(name)});
     WHUPout<<"arr declear success!!   tacArrs.size ="<<tacArrs.size()<<std::endl;
 }
 

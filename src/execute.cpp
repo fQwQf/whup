@@ -6,7 +6,6 @@ extern std::vector<ThreeAddressCode>tacs;//全局的三地址码
 extern std::unordered_map<std::string,std::string>var_declares;
 std::vector<ThreeAddressCode>tacArrs;//数组声明
 
-extern std::string newTempLabel();
 std::stack<int>labelStack;
 
 std::unordered_map<std::string,float>runtimeEnv_number;//
@@ -53,7 +52,7 @@ void setLabel(std::vector<ThreeAddressCode>tacs)
 {
     for(int i=0;i<tacs.size();i++)
     {
-        if(tacs[i].op=="label")
+        if(tacs[i].opperator==LABEL)
         {
             labelMap[tacs[i].result]=i;
         }
@@ -252,7 +251,7 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
     for(int i=0;i<tacs.size();i++)
     {
         ThreeAddressCode tac=tacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
-        WHUPout_c2<<tac.op<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
+        WHUPout_c2<<tac.opperator<<" "<<tac.arg1<<" "<<tac.arg2<<" "<<tac.result<<std::endl;
         if(tac.opperator==ASSIGN)
         {
             runtimeTACs[i].opperator=ASSIGN;
@@ -406,6 +405,22 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
         else{
             WHUPout_c2 << "Fuck!Unexpected op!" << std::endl;
         }
+    }
+
+    for (auto i : runtimeTACs){
+        WHUPout_c2 << "arg1:" << i.arg1 << " arg2:" << i.arg2 << " op:" << i.opperator << " result:" << i.result <<" line:" << i.line << std::endl;
+        if (i.arg1!=0){
+            WHUPout_c2 << "arg1: " << *(float*)i.arg1 << std::endl;
+        }
+        if (i.arg2!=0){
+            WHUPout_c2 << "arg2: " << *(float*)i.arg2 << std::endl;
+        }
+    
+    
+        if (i.result!=0){
+            WHUPout_c2 << "result: " << *(float*)i.result << std::endl;
+        }
+        WHUPout_c2 << std::endl;
     }
 
     return runtimeTACs;

@@ -13,21 +13,13 @@
 #include "windows.h"
 #endif
 
-
 extern std::vector<ThreeAddressCode> tacArrs;  
 extern std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
-extern std::vector<std::pair<std::string, std::string>> var_declares;//存储变量的声明信息
 extern std::unordered_map<std::string,float>runtimeEnv_number;//
 
 bool print_c1 = false;
 bool print_c2 = false;
 bool print_e = false;
-
-extern WHUPstream_compile1 WHUPout;
-extern WHUPstream_compile2 WHUPout_c2;
-extern WHUPstream_execute WHUPout_e;
-
-
 int main(int n, const char *arg[])
 {
     #ifdef _WIN32
@@ -52,8 +44,6 @@ int main(int n, const char *arg[])
 
     //确定是否打印信息
     print_c1 = extractor.print_c1;
-    print_c2 = extractor.print_c2;
-    print_e = extractor.print_e;
 
     //用io类读取输入文件内容到字符串expression中
     IO io(extractor.get_input_file(), out);
@@ -81,52 +71,11 @@ int main(int n, const char *arg[])
     //进行expression的语法错误检查，并输出错误信息
     printErrors();
 
-    //生成目标代码
-    //std::string code = generator();
-
     //将目标代码写入输出文件
-    //io.writeTAC(tacs);
+    io.writeTAC();
 
-    io.writeTAC(tacs);
+    std::cout << "Generate code to " << out << std::endl;
+    std::cout  << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
 
-    WHUPout << "Generate code to " << out << std::endl;
-    WHUPout << "\033[0;32m Done!ヾ(•ω•`)o \033[0m" << std::endl;
-
-    // std::cout<<"tacArrs size:" << tacArrs.size() << std::endl;
-    // for(auto i : tacArrs)
-    // {
-    //     std::cout << i.arg1 << std::endl;
-    //     std::cout << i.arg2 << std::endl;
-    //     std::cout << i.opperator << std::endl;
-    //     std::cout << i.result << std::endl;
-    // }
-    std::vector<runTAC> runtacs = TAC_to_runTAC(tacs);//将tacs转换为runTAC
-
-    /*for (auto i : runtacs){
-        std::cout << "arg1:" << i.arg1 << " arg2:" << i.arg2 << " op:" << i.opperator << " result:" << i.result <<" line:" << i.line << std::endl;
-        if (i.arg1!=0){
-            std::cout << "arg1: " << *(float*)i.arg1 << std::endl;
-        }
-        if (i.arg2!=0){
-            std::cout << "arg2: " << *(float*)i.arg2 << std::endl;
-        }
-    
-    
-        if (i.result!=0){
-            std::cout << "result: " << *(float*)i.result << std::endl;
-        }
-        std::cout << std::endl;
-    }*/
-
-    std::clock_t start = clock();
-    
-    execute(runtacs);
-
-    std::clock_t end   = clock();
-
-    if (extractor.wall_clock)
-        std::cout << "Wall clock time:" << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
-
-    WHUPout_e <<"Execute success!"<<std::endl;
     return 0;
 }

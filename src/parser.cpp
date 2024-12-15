@@ -3,7 +3,7 @@
 #include "function.h"
 #include "WHUPstream.h"
 
-extern WHUPstream_compile1 WHUPout;
+WHUPstream_compile1 WHUPout;
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
 std::vector<ThreeAddressCode> function_tacs; // 存储函数内三地址代码的向量
