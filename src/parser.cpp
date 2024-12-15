@@ -66,6 +66,10 @@ void Environment::insert_var(std::string name)
 {
     var_table[name] = "null";
 }
+void Environment::insert_arr(std::string name)
+{
+    arr_table[name] = "null";
+}
 /**
  * 简介： 查找变量的函数
  *
@@ -93,11 +97,42 @@ std::string Environment::get_var(std::string name)
         {
 
             std::cout << "Variable "+name+" not found,return null" << std::endl;
+            if(var_declares.find(name)==var_declares.end())
             return "null";
+            else
+            return name;
         }
         else
         {
             return parent->get_var(name);
+        }
+    }
+    return "null";
+
+}
+
+std::string Environment::get_arr(std::string name)
+{
+    if (arr_table.find(name) != arr_table.end())
+    {
+        // if(arr_table[name]=="null")//用来禁止未确定类型的变量被使用
+        // {
+        //     std::cout << "Variable "+name+" not define type" << std::endl;
+        //     exit(1);
+        // }
+        return name + '_' + std::to_string(id) + '_' + arr_table[name];
+    }
+    else
+    {
+        if (parent == nullptr)
+        {
+
+            std::cout << "Array "+name+" not found,return null" << std::endl;
+            return "null";
+        }
+        else
+        {
+            return parent->get_arr(name);
         }
     }
     return "null";
@@ -135,6 +170,26 @@ void Environment::change_type_var(std::string name, std::string t)
     var_declares[get_var(name)] = t;//并非在符号表创建条目时就插入var_declares，这样只声明未赋值的变量就不会被编译
     return;
 }
+// void Environment::change_type_arr(std::string name, std::string t)
+// {
+//     if (arr_table.find(name) != arr_table.end())
+//     {
+//         arr_table[name] = t;
+//     }
+//     else
+//     {
+//         if (parent == nullptr)
+//         {
+//             return;
+//         }
+//         else
+//         {
+//             parent->change_type_arr(name, t);
+//         }
+//     }
+//     var_declares[get_arr(name)] = t;//并非在符号表创建条目时就插入var_declares，这样只声明未赋值的变量就不会被编译
+//     return;
+// }
 
 /*
 该函数用于在变量表中查找指定名称的变量类型。

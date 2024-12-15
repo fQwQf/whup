@@ -1,6 +1,7 @@
 #include "block.h"
 #include"assign.h"
 #include"var.h"
+#include"arr.h"
 #include"print.h"
 #include"if.h"
 #include"while.h"
@@ -14,6 +15,9 @@
 #include"classfunction.h"
 #include "check.h"
 #include "whup_io.h"
+#include "cast.h"
+#include "whupinput.h"
+
 
 extern std::string function_ret_label; // 函数返回标签，可用于检测是否在处理函数。
 extern std::unordered_map<std::string, Function*> functions;  // 存储所有函数名和对应的对象指针哈希表，用于生成函数体
@@ -81,9 +85,9 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     tokens.insert(tokens.begin(),lib_tokens.begin(),lib_tokens.end());
 
     //打印所有token看看
-    for (const auto &token : tokens) {
+    /*for (const auto &token : tokens) {
         std::cout << token.type << " " << token.value << " " << token.line_number << std::endl;
-    }
+    }*/
 
     block(tokens);
 
@@ -111,9 +115,11 @@ Block::Block(std::vector<Token> tokens)//这个是全局block
     
 }
 
-Block::Block(std::vector<Token> tokens, Environment *env, bool is_import) : Block(tokens, env)
+Block::Block(std::vector<Token> tokens, Environment *env, bool is_import)
 {
+    this->env = new Environment(env);
     this->env->is_import = is_import;
+    block(tokens);
 };
 
 // 以分号为分隔扫描
@@ -131,9 +137,9 @@ void Block::block(std::vector<Token> tokens)
             // 打印出所有Token
             // debug时可能有用
             std::cout<<"subtokens:"<<std::endl;
-            for(auto &i:subtokens){
+            /*for(auto &i:subtokens){
                std::cout << i.value << " ";
-            }
+            }*/
             std::cout << std::endl;
             
             last_semicolon = i+1;
@@ -207,6 +213,17 @@ void Block::generate(std::vector<Token> subtokens)
     {
         new Var(subtokens,env);
         std::cout << "var generate" << std::endl;
+    }
+    else if(subtokens[0].type == KEYWORD && subtokens[0].value == "number")
+    {
+        std::cout << "find number" << std::endl;
+        new Arr(subtokens,env,"number");
+        std::cout << "arr generate" << std::endl;
+    }
+    else if(subtokens[0].type == KEYWORD && subtokens[0].value == "string")
+    {
+        new Arr(subtokens,env,"string");
+        std::cout << "arr generate" << std::endl;
     }
     else if (subtokens[0].type == KEYWORD && subtokens[0].value == "print")
     {
@@ -353,8 +370,7 @@ void Block::generate(std::vector<Token> subtokens)
 
         if(thisFunctionTable.find(functionName)==thisFunctionTable.end())
         {
-            std::cout<<"not found classfunction"<<functionName;
-            exit(1);
+            pushErrors(subtokens[0],"not found classfunction "+functionName);
         }
         std::cout<<functionName<<" call begin"<<std::endl;
         thisFunctionTable[functionName]->call(subtokens,this->env);
@@ -397,9 +413,20 @@ void Block::generate(std::vector<Token> subtokens)
         Block import_block(tokens, env, true);
 
         namespace_table[fileName] = import_block.getEnv();
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="cast")
+    {
+        std::cout << "cast!" << std::endl;
+        new Cast(subtokens,env);
+    }
+    else if(subtokens[0].type==KEYWORD&&subtokens[0].value=="whupinput")
+    {
+        std::cout << "winput!" << std::endl;
+        new WInput(subtokens,env);
     } 
     else
     {
         pushErrors(subtokens[0],"unexpected token "+subtokens[0].value);
     }
+    
 }

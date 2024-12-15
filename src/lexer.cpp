@@ -154,6 +154,7 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "function",
         "let", 
         "var", 
+        "arr",
         "const", 
         "break", 
         "continue", 
@@ -166,12 +167,14 @@ std::unordered_set<std::string> Lexer::keywords() const {
         "this", 
         "class", 
         "import", 
-        "function",
+        "whupinput",
         "not", 
         "and", 
         "or", 
         "print", 
-        "input"};
+        "number",
+        "string",
+        "cast"};
 }
 
 std::unordered_set<std::string> Lexer::symbol_sets() const {
@@ -198,6 +201,6 @@ std::unordered_set<std::string> Lexer::symbol_sets() const {
         "->",
         "::",
         "<<",
-        ">>"
+        ">>",
     };
 }

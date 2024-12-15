@@ -139,7 +139,8 @@ void Function::call_with_stack_frame(Environment *env)
         //将局部变量加入栈帧
         for (auto &i : env->var_table)
         {
-            stack_frame.push_back(i.first);
+            std::cout << "local var: " << i.first << " " << i.second << std::endl;
+            stack_frame.push_back(env->get_var(i.first));
         }
 
         //函数调用返回值加入栈帧
@@ -243,7 +244,6 @@ void Function::folmalPara(std::vector<Token> &tokens)
     //  现在开始分析形参
     //  TODO:如果这里发现错误如首token不是括号，抛出异常
     int i = 0;
-
     if (tokens[0].type == SYMBOL && tokens[0].value == "(")
     {
         // tokens.erase(tokens.begin());
@@ -264,11 +264,22 @@ void Function::folmalPara(std::vector<Token> &tokens)
             {
                 // tokens.erase(tokens.begin());
                 i++;
-                params_type.push_back(tokens[i].value);
+                paramType pt;
+                pt.type=tokens[i].value;
                 params_name.push_back({param_name, newTempVar(tokens[i].value)});
-
-                // tokens.erase(tokens.begin(), tokens.begin() + 1);
+                
                 i++;
+                // tokens.erase(tokens.begin(), tokens.begin() + 1);
+                pt.isreference=false;
+                if(tokens[i].value=="&")
+                {
+                    std::cout<<"&"<<std::endl;
+                    std::cout<<tokens[i].value<<std::endl;
+                    pt.isreference=true;
+                    i++;
+                }
+
+                params_type.push_back(pt);
             }
             else
             {
@@ -283,9 +294,16 @@ void Function::folmalPara(std::vector<Token> &tokens)
     for (int param_num = 0; param_num < params_name.size(); param_num++)
     {
         env->insert_var(params_name[param_num].first);
-        env->change_type_var(params_name[param_num].first, params_type[param_num]);
+        env->change_type_var(params_name[param_num].first, params_type[param_num].type);
     }
 
+    for(int i=0;i<params_name.size();i++)
+    {
+        std::cout<<"param "<<params_name[i].first<<" is "<<params_name[i].second<<std::endl;
+        std::cout<<"param "<<params_name[i].first<<" type is "<<params_type[i].type<<std::endl;
+        std::cout<<"param "<<params_name[i].first<<" isreference is "<<params_type[i].isreference<<std::endl;
+        std::cout<<std::endl;
+    }
     tokens.erase(tokens.begin(), tokens.begin() + i);
 }
 
@@ -361,11 +379,21 @@ void Function::realPara(std::vector<Token> &tokens, Environment *env)
             last_comma = i + 1;
             Expr *expression = new Expr(subtokens, env);
             std::cout << "pass value success!!!" << std::endl;
-
-            if(expression->return_type()=="string")
-            tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
-            else
-            tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            if(!params_type[param_num].isreference)//按值
+            {
+                if(expression->return_type()=="string")
+                tacs.push_back({STRASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+                else
+                tacs.push_back({ASSIGN,"=", expression->getTacResult(), "", params_name[param_num].second});
+            }
+            else//按引用
+            {
+                std::cout<<std::endl<<"reference"<<std::endl<<std::endl;
+                if(expression->return_type()=="string")
+                tacs.push_back({REFSTR,"=", expression->getTacResult(), "", params_name[param_num].second});
+                else
+                tacs.push_back({REFNUM,"=", expression->getTacResult(), "", params_name[param_num].second});
+            }
             std::cout << "param " << params_name[param_num].first << " is " << params_name[param_num].second << std::endl;
 
             param_num += 1;

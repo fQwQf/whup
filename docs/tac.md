@@ -92,3 +92,59 @@
 | return | |  |  |
 
 效果：从返回栈中弹出位置，跳转到该位置。
+
+## ptr
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| ptr | arg1 |  | result |
+
+效果：将arg1的指针指向result。  
+
+## load
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| load | arg1 |  | result |
+
+效果：将arg1的值赋给result。
+
+## REFNUM
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| REFNUM | arg1 |  | result |
+
+效果：使result指向arg1
+
+## BIASNUM
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| BIASNUM | arg1 | arg2 | result |
+
+效果：使result指向arg1偏移arg2的值个float单位长度。
+
+## BIASSTR
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| BIASSTR | arg1 | arg2 | result |
+
+效果：使result指向arg1偏移arg2的值个string单位长度。
+
+## STON
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| STON | arg1 |  | result |
+
+效果：将字符串arg1的值转换为数字，赋给result。
+
+## NTOS
+
+| op | arg1 | arg2 | result |
+|---|---|---|---|
+| NTOS | arg1 |  | result |
+
+效果：将数字arg1的值转换为字符串，赋给result。

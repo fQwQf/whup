@@ -14,6 +14,12 @@
 
 class Function;//前向声明
 
+#ifndef FUNCTION_H_
+#include "function.h"
+#endif
+
+class Function;//前向声明
+
 // 创建新的临时变量
 std::string newTempVar(std::string type);
 // 创建新的临时标签
@@ -53,8 +59,19 @@ enum Operator
     CALL,    // call
     RET,     // return
     EXIT,    // end
-    POW      // **
+    POW,    // **
+    REFSTR,
+    REFNUM,      //引用传递
+    ARRSET,  //数组声明
+    ARRASSIGN,//数组赋值
+    ARRGET,  //数组取值
+    ARRLEN,  //数组长度
+    BIASNUM,     //数字数组偏移
+    BIASSTR,      //字符串数组偏移
+    STON,   //字符串转数字
+    NTOS   //数字转字符串
 };
+
 struct ThreeAddressCode
 {
     Operator opperator;       // 操作符
@@ -62,6 +79,28 @@ struct ThreeAddressCode
     std::string arg1;   // 变量1
     std::string arg2;   // 变量2
     std::string result; // 存储结果的变量
+
+    ThreeAddressCode(Operator o,std::string s1,std::string s2,std::string res):opperator(o),arg1(s1),arg2(s2),result(res){
+        if(o == REFSTR || o == REFNUM){
+            op = "REF";
+        }else if(o == ARRSET){
+            op = "ARRSET";
+        }else if(o == ARRGET){
+            op = "ARRGET";
+        }else if(o == ARRLEN){
+            op = "ARRLEN";
+        }else if(o == BIASNUM){
+            op = "BIASNUM";
+        }else if(o == BIASSTR){
+            op = "BIASSTR";
+        }else if(o == STON){
+            op = "STON";
+        }else if(o == NTOS){
+            op = "NTOS";
+        }
+    }
+    ThreeAddressCode(){}
+    ThreeAddressCode(Operator o,std::string op,std::string s1,std::string s2,std::string res):opperator(o),op(op),arg1(s1),arg2(s2),result(res){}
 };
 
 /*
@@ -90,6 +129,7 @@ private:
 public:
     // 以哈希表创建符号表，用于存储变量名及其类型
     std::unordered_map<std::string, std::string> var_table;
+    std::unordered_map<std::string, std::string> arr_table;
 
     // 储存存储返回值的临时变量，便于压入栈帧
     // 放在environment是因为栈帧的另一个组成部分，即局部变量，也在environment，这样统一性更好
@@ -99,6 +139,7 @@ public:
     std::unordered_map<std::string, Function*> function_table;  
 
     bool is_import = false; // 是否为导入环境
+
 
     /*
     构造函数，用于初始化一个新的environment对象，并将其父符号表设置为传入的指针p。
@@ -117,6 +158,7 @@ public:
      *  name 要插入的变量名。
      */
     void insert_var(std::string name);
+    void insert_arr(std::string name);
     /**
      * 简介： 查找变量的函数
      *
@@ -128,6 +170,7 @@ public:
      * 返回值： 变量翻译成的c++的名称，如果未找到则返回"null"
      */
     std::string get_var(std::string name);
+    std::string get_arr(std::string name);
 
     /**
      * 简介： 更改变量类型的函数
@@ -140,6 +183,7 @@ public:
      *  t 新的变量类型
      */
     void change_type_var(std::string name, std::string t);
+    void change_type_arr(std::string name, std::string t);
 
     /**
      * 函数名：get_type_var
@@ -163,6 +207,7 @@ public:
 
     // 查找一个函数，方法和查变量一样
     Function* get_function(std::string name);
+
 };
 
 #endif

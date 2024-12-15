@@ -13,15 +13,15 @@ while(j<=100)
             if(i%b==0)
             {
                 isprime=0;
-            };
+            }
             b=b+1;
-        };
+        }
         if(isprime==1)
         {
             sum=sum+i;
-        };
+        }
         i=i+1;
-    };
+    }
     j=j+1;
-};
+}
 print("done");

@@ -3,8 +3,14 @@
 #include"classfunction.h"
 #include"object.h"
 #include "check.h"
+#include "arr.h"
 
 extern std::vector<ThreeAddressCode> tacs; // 存储三地址代码的向量
+
+//不用哈希吗？
+extern std::vector<Arr> arrs;       // 存储数组对象的向量
+
+extern std::vector<ThreeAddressCode> tacArrs; // 存储数组三地址代码的向量
 extern int tempVarCounter;                 // 临时变量计数器
 extern std::unordered_map<std::string, Function*> functions;  // 存储函数名和对应的对象指针哈希表
 extern std::unordered_map<std::string, Object*> object_table;  // 存储对象名和对应的对象指针哈希表
@@ -115,6 +121,68 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
         }
         return;
     };
+    if(expr[0].type == IDENTIFIER && expr[1].value == "[" )
+    {
+        std::cout << "find IDENTIFIER!";
+        std::vector<Token> indextokens;
+        int thisarr = 0;
+        while(thisarr<arrs.size())
+		{
+			if(arrs[thisarr].name==E_expr[0].value)
+			{
+				std::cout<<"find array "<<arrs[thisarr].name<<" on arrs index "<<thisarr<<std::endl;
+				break;
+			}
+			thisarr++;
+		}
+		if(thisarr==arrs.size())
+		{
+			//兼顾了数组未声明的报错
+			pushErrors(E_expr[0], "Unrecognized arr token '" + E_expr[0].value + "' ");
+		}
+
+        //说明只有这一个数组变量了，否则是数组表达式，不能直接运算，应该调用this->expr()
+        if(E_expr.size()==3*arrs[thisarr].dimension+1)
+        {
+            E_expr.erase(E_expr.begin());//消去变量名
+                // for(auto i : arrs)
+            // {
+            //     std::cout<<"name = "<<i.name<<std::endl;
+            //     std::cout<<"dimension = "<<i.dimension<<std::endl;
+            //     std::cout<<"size = "<<i.size<<std::endl;
+            // }
+            // std::cout << "dimension: " << arrs[thisarr].dimension << std::endl;
+            int temp_dimension = arrs[thisarr].dimension;
+            while(temp_dimension>0)
+		    {
+			    E_expr.erase(E_expr.begin());
+			    // for(auto i:E_expr)
+    			// {
+	    		// 	std::cout<<i.value<<" ";
+	    		// }
+	    		indextokens.push_back(E_expr[0]);
+	    		Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
+	    		Token temp2={SYMBOL,"+",E_expr[0].line_number,E_expr[0].file_name};
+	    		indextokens.push_back(temp1);
+                if(temp_dimension==1)
+	    		{
+                    indextokens.push_back({NUMBER,std::to_string(1),E_expr[0].line_number,E_expr[0].file_name});
+	    		}else{
+                    indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),E_expr[0].line_number,E_expr[0].file_name});
+                }
+	    		indextokens.push_back(temp2);
+	    		// std::cout<<"index is "<<index<<std::endl;
+	    		E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
+	    		temp_dimension--;
+	    	}
+            indextokens.pop_back();//删除最后一个加号
+            Expr *index_expr = new Expr(indextokens, env);
+            tac.result = env->get_arr(arrs[thisarr].name)+">->"+index_expr->getTacResult();
+            // tac.result = env->get_arr(E_expr[0].value);
+            std::cout << "result: " << tac.result << std::endl;
+            return;
+        }
+    }
     tac.result = newTempVar(return_type());
     //env->change_type_var(tac.result, return_type());
     this->expr();
@@ -302,7 +370,7 @@ void Expr::expr()
                 return;
             }
 
-            std::cout << "find add" << std::endl;
+            std::cout << "find add   i =" << i <<std::endl;
 
             left = new Expr(std::vector<Token>(E_expr.begin(), E_expr.begin() + i), this->env);
             left->env = env; // 传递环境
@@ -358,6 +426,7 @@ void Expr::expr()
         };
     };
 
+    //这就是函数调用
     //扫描乘方
     //乘方结合性与其他的不同，扫描方向也相反
     for (int i = 0; i < E_expr.size() - 1; i++){
@@ -408,7 +477,7 @@ void Expr::expr()
         funcenv = namespace_table[E_expr[0].value];
         E_expr.erase(E_expr.begin(), E_expr.begin()+2);
     }
-
+    
     if (E_expr[0].type == IDENTIFIER && E_expr[1].type == SYMBOL && E_expr[1].value == "(" && E_expr[E_expr.size() - 1].type == SYMBOL && E_expr[E_expr.size() - 1].value == ")"){
         Function* func = funcenv->get_function(E_expr[0].value);
         std::vector<Token> E_expression = E_expr;
@@ -449,10 +518,10 @@ void Expr::expr()
     std::cout << "find par" << std::endl;
 
     //检查是否出现错误
-    printErrors();
+    // printErrors();
 
     E_expr.pop_back();
     E_expr.erase(E_expr.begin());
     this->expr();
-    std::cout<<"expr success.";
+    std::cout<<"expr success."<<std::endl;
 };

@@ -1,4 +1,8 @@
-import bb;
-
-c = add(bb::add(3,4),9);
-print(sqrt(c-4));
+var j=1;
+number num[3][10][10]={10};
+num[j][1][2]=13;
+j=2;
+var k = "lsd";
+whupinput(k);
+cast(k,number,j);
+print(j);

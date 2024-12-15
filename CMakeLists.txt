@@ -9,9 +9,13 @@ include_directories ( ./include )
 file(COPY WHUPLib DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_compile_options(-O3)
+file(COPY WHUPLib DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp 
-            src/break.cpp src/continue.cpp src/return.cpp src/expression.cpp src/object.cpp src/class.cpp src/classfunction.cpp src/function.cpp)
+add_compile_options(-O3)
+
+add_library(block SHARED src/block.cpp src/if.cpp src/while.cpp src/var.cpp src/print.cpp src/assign.cpp src/while.cpp src/arr.cpp
+            src/break.cpp src/continue.cpp src/return.cpp src/expression.cpp src/object.cpp src/class.cpp src/classfunction.cpp 
+            src/function.cpp src/cast.cpp src/whupinput.cpp)
 add_library(execute SHARED src/execute.cpp)
 add_library(parser SHARED src/parser.cpp)
 add_library(lexer SHARED src/lexer.cpp)

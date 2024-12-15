@@ -2,9 +2,10 @@ j=1;
 sum=0;
 while(j<=100)
 {
+    sum = 0;
     i=3;
     
-    while(i<=3000)
+    while(i<=10000)
     {
         isprime=1;
         b=2;
@@ -18,10 +19,11 @@ while(j<=100)
         };
         if(isprime==1)
         {
-            sum=sum+i;
+            sum=sum+1;
         };
         i=i+1;
     };
     j=j+1;
 };
+print(sum);
 print("done");
