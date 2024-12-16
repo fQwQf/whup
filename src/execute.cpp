@@ -562,7 +562,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==PUSH)
         {
-            WHUPout_e << "push "<<i<<std::endl;
+            //WHUPout_e << "push "<<i<<std::endl;
             if(functionStack_string.size() >= 10000 || functionStack_number.size() >= 10000){
                 std::cerr << "\033[31m Runtime Error (⊙ _⊙ )!!! : stack overflow!" << "\033[0m" << std::endl;
 
@@ -595,7 +595,7 @@ void execute(std::vector<runTAC> runtacs)
         }
         else if(tac.opperator==CALL)
         {
-            WHUPout_e << "CALL " << i << std::endl;
+            //WHUPout_e << "CALL " << i << std::endl;
             labelStack.push(i);
             i=tac.line;
         }

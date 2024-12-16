@@ -1,0 +1,5 @@
+function f(a:number){
+    print(a);
+    f(a+1);
+};
+f(0);
