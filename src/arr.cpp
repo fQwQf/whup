@@ -1,18 +1,21 @@
 #include "arr.h"
 #include "assign.h"
+#include "check.h"
 
 extern std::vector<ThreeAddressCode> tacs;
 
 std::vector<Arr> arrs;//记录所有数组
 extern std::vector<ThreeAddressCode> tacArrs;
 
-void Arr::declare()
+void Arr::declare(std::vector<Token> tokens)
 {
     env->insert_arr(name);
     if(type=="number")
         tacArrs.push_back({ARRSET,"", std::to_string(size),"number",env->get_arr(name)});
     else if(type=="string")
         tacArrs.push_back({ARRSET,"", std::to_string(size),"string",env->get_arr(name)});
+    else
+        pushErrors(tokens[0], "arr type error ");
     std::cout<<"arr declear success!!   tacArrs.size ="<<tacArrs.size()<<std::endl;
 }
 
@@ -110,7 +113,7 @@ void Arr::arr(Environment *env, std::string name, std::vector<Token> tokens ,int
         this->env = env;
         this->name = name;
         this->size = size;
-        declare();
+        declare(tokens);
         return;
     }
 

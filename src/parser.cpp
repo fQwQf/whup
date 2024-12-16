@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 #include "whup_parser.h"
 #include "function.h"
+#include "check.h"
+// #include "lexer.h"
 
 
 std::vector<ThreeAddressCode> tacs;  // 存储三地址代码的向量
@@ -154,6 +156,10 @@ void Environment::change_type_var(std::string name, std::string t)
     if (var_table.find(name) != var_table.end())
     {
         //TODO 添加类型检查，如果不是由null改成其它或没有改变，就报错
+        if(var_table[name] != "null" || var_table[name] == t)
+        {
+            pushErrors(Token(),"Variable "+name+" type can't change from "+var_table[name]+" to "+t);
+        }
         var_table[name] = t;
     }
     else
@@ -266,6 +272,7 @@ Function* Environment::get_function(std::string name){
         if(parent==nullptr)
         {
             // TODO 报错
+            pushErrors(Token(), "Function '"+name+"' is not define");
             return nullptr;
         }
         else

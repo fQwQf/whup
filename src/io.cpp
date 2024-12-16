@@ -1,4 +1,5 @@
 #include "whup_io.h"
+#include "check.h"
 
 
 IO::IO(const std::string &in_file, const std::string &out_file)
@@ -255,8 +256,8 @@ std::string IO::readWHUPLib()
     // 检查文件夹是否存在
     if (!std::filesystem::exists(folderPath) || !std::filesystem::is_directory(folderPath))
     {
-        //TODO 统一报错
-        std::cerr << "Folder WHUPLib does not exist." << std::endl;
+        //TODO 统一报错(OK)
+        // pushErrors(Token(), "WHUPLib folder not found!");
         return "";
     }
 
@@ -269,8 +270,8 @@ std::string IO::readWHUPLib()
         if (in.is_open()) {
             result += read();
         }else{
-            //TODO 统一报错
-            std::cerr << "Failed to open file: " << entry.path().string() << std::endl;
+            //TODO 统一报错(OK)
+            // pushErrors(Token(), "Failed to open the file: " + entry.path().string());
         }
 
     }

@@ -184,7 +184,7 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
 {
     std::string trimmedLine = trim(line);//去掉收尾空白符后的line
     std::string trimmedNextLine = trim(nextline);//去掉收尾空白符后的nextline
-    // 忽略空行和仅有 '{' 或 '}' 开头的块
+    // 忽略空行和仅有 '{' 或 '}' 的块
     if (trimmedLine.empty() || trimmedLine == "{" || trimmedLine == "}") 
     {
         return;
@@ -208,7 +208,7 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
     }
     
     // 忽略{}结构前的";"检查
-    if(trimmedNextLine.front() == '{') 
+    if(trimmedNextLine.front() == '{')
     {
         return;
     }
@@ -222,10 +222,10 @@ void CheckSemicolon::checkLine(const std::string& line,const std::string& nextli
     }
     
 }
-/*TODO 这样的语句不会报错
+/*TODO 这样的语句不会报错(OK)
 function add(a:number,b:number):number{
     print(a+b);
-    return 
+    return ;
 };
 
 add(8,6);*/

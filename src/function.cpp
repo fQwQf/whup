@@ -242,7 +242,7 @@ void Function::folmalPara(std::vector<Token> &tokens)
 {
     // 1.形参处理
     //  现在开始分析形参
-    //  TODO:如果这里发现错误如首token不是括号，抛出异常
+    //  TODO:如果这里发现错误如首token不是括号，抛出异常(OK)
     int i = 0;
     if (tokens[0].type == SYMBOL && tokens[0].value == "(")
     {
@@ -288,6 +288,10 @@ void Function::folmalPara(std::vector<Token> &tokens)
         }
         // tokens.erase(tokens.begin());
         i++;
+    }
+    else
+    {
+        pushErrors(tokens[0], "No parameter list for function " + name);
     }
 
     // 现在登记参数

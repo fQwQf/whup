@@ -331,7 +331,8 @@ std::string Expr::return_type()
                 }
                 else
                 {
-                    // TODO:报错
+                    // TODO:报错(OK)
+                    pushErrors(E_expr[i], "Unrecognized return type of function '" + E_expr[i].value + "' ");
                 }
             }
         }

@@ -9,8 +9,8 @@ private:
     
     std::vector<std::string> value;
     
-    //“声明”函数，，将新声明的变量加入符号表中
-    void declare();
+    //“声明”函数，，将新声明的变量加入符号表中(传入tokens是为了方便报错）
+    void declare(std::vector<Token> tokens);
 
 public:
     //记录数组的大小

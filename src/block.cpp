@@ -192,14 +192,20 @@ void Block::generate(std::vector<Token> subtokens)
         Environment* funcenv = this -> env;
         //如果指定了命名空间，切过去
         if(!namespace_tokens.empty() && namespace_tokens[0].type == IDENTIFIER){
-            //TODO 这里加个找不到命名空间的报错
+            //TODO 这里加个找不到命名空间的报错(OK)
+            if(namespace_table.find(namespace_tokens[0].value) == namespace_table.end())
+            {
+                pushErrors(namespace_tokens[0],"namespace '"+namespace_tokens[0].value+"' is not found");
+            }
+
             funcenv = namespace_table[namespace_tokens[0].value];
         }
 
         if (funcenv->get_function(subtokens[0].value) == nullptr)
         {
-            //TODO 改成报错
-            std::cout << "Function " << subtokens[0].value << " not found" << std::endl;
+            //TODO 改成报错(OK)
+            pushErrors(subtokens[0],"function '"+subtokens[0].value+"' is not found");
+            // exit(1);
         }
         else
         {
