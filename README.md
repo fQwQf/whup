@@ -77,15 +77,3 @@ HUST是一种类似于汇编的，供虚拟机运行的中间代码。
 ## 示例
 
 请参考[examples](/docs/example.md)。
-
-## 运行流程
-对于WHUPC，首先接收来自命令行的参数，
-
-```mermaid
-flowchart LR
-  A["JS"]
-  B["Mermaid"]
-  C["Markdown 原生"]
-  D["Markdown 定制"]
-  A --制作了--> B --内嵌到了 --> C --衍生了--> D
-```
