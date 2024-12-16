@@ -399,5 +399,66 @@ myFunction(1,);  // 错误
 
 ```JavaScript
 class MyClass {
-    
-}
+    //此处为类的声明语句
+};
+```
+
+whup将类的所有数据成员全部设定为私有
+数据成员的声明：
+```JavaScript
+var a;
+```
+注意：类的数据成员一定用var关键字声明
+
+构造函数：
+```JavaScript
+class ClassName
+{
+    ClassName(para1,para2...)
+    {
+        //构造函数的定义语句
+    };
+};
+```
+
+成员函数用function生成
+调用成员函数用->运算符
+
+eg:
+```JavaScript
+class Student
+{
+    var age;
+    var score;
+
+    Student(year:number,grades:number)
+    {
+        age=year;
+        score=grades;
+    };
+    function getScore()
+    {
+        return score;
+    };
+};
+```
+
+## 引用
+
+whup支持函数参数以引用形式传递，语法如下：
+
+```JavaScript
+function swap(x:number&,y:number&)//定义
+{
+    t=x;
+    x=y;
+    y=t;
+};
+
+a=1;
+b=2;
+swap(a,b);//调用
+
+//此时a=2,b=1
+```
+
