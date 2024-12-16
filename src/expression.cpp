@@ -52,6 +52,59 @@ void Expr::matchPar(int &i)
     }
 }
 
+void Expr::matchBracket(int &i)
+{
+    if (E_expr[i].value == "[")
+    {
+        int leftPar = 1;
+        int rightPar = 0; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
+        while (leftPar != rightPar)
+        {
+            i++;
+            if (E_expr[i].value == "]")
+            {
+                rightPar++;
+            }
+            else if (E_expr[i].value == "[")
+            {
+                leftPar++;
+            }
+            else
+                continue;
+        }
+    }
+}
+
+bool Expr::is_single_arr(int demension)
+{
+    int leftPar = 0;
+    int rightPar = 0;
+    int this_Demension = 0;
+    for(int i=0;i<E_expr.size();i++)
+    {
+        if(E_expr[i].value=="[")
+        {
+            leftPar++;
+        }
+        else if(E_expr[i].value=="]")
+        {
+            rightPar++;
+        }
+        else
+            continue;
+        if(leftPar==rightPar)
+        {
+            this_Demension++;
+            leftPar=0;
+            rightPar=0;
+        }
+    }
+    if(this_Demension==demension)
+        return true;
+    else
+        return false;
+}
+
 void Expr::setEnv(Environment *env)
 {
     this->env = env;
@@ -144,8 +197,17 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 			pushErrors(E_expr[0], "Unrecognized arr token '" + E_expr[0].value + "' ");
 		}
 
+        for(auto i : E_expr)
+    	{
+		    std::cout<<i.value<<" ";
+    	}
+		std::cout<<std::endl;
+        int demension = arrs[thisarr].dimension;    
+        int temp_dimension = arrs[thisarr].dimension;
+        bool flag=is_single_arr(temp_dimension);
+        std::cout << "is_single_arr flag: " << flag << std::endl;
         //说明只有这一个数组变量了，否则是数组表达式，不能直接运算，应该调用this->expr()
-        if(E_expr.size()==3*arrs[thisarr].dimension+1)
+        if(flag)
         {
             E_expr.erase(E_expr.begin());//消去变量名
                 // for(auto i : arrs)
@@ -154,18 +216,50 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             //     WHUPout<<"dimension = "<<i.dimension<<std::endl;
             //     WHUPout<<"size = "<<i.size<<std::endl;
             // }
-            // WHUPout << "dimension: " << arrs[thisarr].dimension << std::endl;
-            int temp_dimension = arrs[thisarr].dimension;
+            // std::cout << "dimension: " << arrs[thisarr].dimension << std::endl;
             while(temp_dimension>0)
 		    {
-			    E_expr.erase(E_expr.begin());
+                int i=0;
+                matchBracket(i);
+                // Expr *expr = new Expr(std::vector<Token>(E_expr.begin()+1,E_expr.begin()+i-1), env);
+            
+			    // E_expr.erase(E_expr.begin());//消去左括号
 			    // for(auto i:E_expr)
     			// {
 	    		// 	WHUPout<<i.value<<" ";
 	    		// }
-	    		indextokens.push_back(E_expr[0]);
-	    		Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
+                Token temp1={SYMBOL,"*",E_expr[0].line_number,E_expr[0].file_name};
 	    		Token temp2={SYMBOL,"+",E_expr[0].line_number,E_expr[0].file_name};
+                Token temp3={SYMBOL,"(",E_expr[0].line_number,E_expr[0].file_name};
+                Token temp4={SYMBOL,")",E_expr[0].line_number,E_expr[0].file_name};
+	    		// indextokens.push_back(E_expr[0]);
+	    		E_expr.erase(E_expr.begin());//消去左括号
+                if(i>2)
+				{
+					indextokens.push_back(temp3);
+					for(int j=0;j<i-1;j++)
+					{
+						indextokens.push_back(E_expr[0]);
+						E_expr.erase(E_expr.begin());
+						// for(auto i : code)
+    					// {
+    					//     std::cout<<i.value<<" ";
+    					// }
+						std::cout<<std::endl;
+					}
+					indextokens.push_back(temp4);
+				}
+				else
+				{
+					indextokens.push_back(E_expr[0]);
+					E_expr.erase(E_expr.begin());
+					// for(auto i : code)
+    				// {
+    				//     std::cout<<i.value<<" ";
+    				// }
+					std::cout<<std::endl;
+				}
+				E_expr.erase(E_expr.begin());//消去右括号
 	    		indextokens.push_back(temp1);
                 if(temp_dimension==1)
 	    		{
@@ -174,8 +268,8 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
                     indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),E_expr[0].line_number,E_expr[0].file_name});
                 }
 	    		indextokens.push_back(temp2);
-	    		// WHUPout<<"index is "<<index<<std::endl;
-	    		E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
+	    		// std::cout<<"index is "<<index<<std::endl;
+	    		// E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
 	    		temp_dimension--;
 	    	}
             indextokens.pop_back();//删除最后一个加号
@@ -353,6 +447,25 @@ void Expr::expr()
     for (int i = E_expr.size() - 1; i > 0; i--)
     {
         matchPar(i);
+        if(E_expr[i].type == SYMBOL && E_expr[i].value == "]")
+        {
+            int leftPar = 0;
+            int rightPar = 1; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
+            while (leftPar != rightPar)
+            {
+                --i;
+                if (E_expr[i].value == "]")
+                {
+                    rightPar++;
+                }
+                else if (E_expr[i].value == "[")
+                {
+                    leftPar++;
+                }
+                else
+                    continue;
+            }
+        }
         if (E_expr[i].type == SYMBOL && (E_expr[i].value == "+" || E_expr[i].value == "-"))
         {
             //c++不支持两个直接的string相加，故这样处理
