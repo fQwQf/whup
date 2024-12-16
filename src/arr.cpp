@@ -86,7 +86,7 @@ void Arr::initArr(std::vector<Token> code,Environment* env)
             temptoken.push_back(index);
             Expr* index_expr = new Expr(temptoken,env);
             tacs.push_back({ASSIGN,"=",expr->getTacResult(),"",env->get_arr(var.value)+">->"+index_expr->getTacResult()});
-            std::cout<<"init arr success!! "<<std::endl;
+            WHUPout<<"init arr success!! "<<std::endl;
         }
     }
 }

@@ -199,13 +199,13 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 
         for(auto i : E_expr)
     	{
-		    std::cout<<i.value<<" ";
+		    WHUPout<<i.value<<" ";
     	}
-		std::cout<<std::endl;
+		WHUPout<<std::endl;
         int demension = arrs[thisarr].dimension;    
         int temp_dimension = arrs[thisarr].dimension;
         bool flag=is_single_arr(temp_dimension);
-        std::cout << "is_single_arr flag: " << flag << std::endl;
+        WHUPout << "is_single_arr flag: " << flag << std::endl;
         //说明只有这一个数组变量了，否则是数组表达式，不能直接运算，应该调用this->expr()
         if(flag)
         {
@@ -216,7 +216,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
             //     WHUPout<<"dimension = "<<i.dimension<<std::endl;
             //     WHUPout<<"size = "<<i.size<<std::endl;
             // }
-            // std::cout << "dimension: " << arrs[thisarr].dimension << std::endl;
+            // WHUPout << "dimension: " << arrs[thisarr].dimension << std::endl;
             while(temp_dimension>0)
 		    {
                 int i=0;
@@ -243,9 +243,9 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 						E_expr.erase(E_expr.begin());
 						// for(auto i : code)
     					// {
-    					//     std::cout<<i.value<<" ";
+    					//     WHUPout<<i.value<<" ";
     					// }
-						std::cout<<std::endl;
+						WHUPout<<std::endl;
 					}
 					indextokens.push_back(temp4);
 				}
@@ -255,9 +255,9 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
 					E_expr.erase(E_expr.begin());
 					// for(auto i : code)
     				// {
-    				//     std::cout<<i.value<<" ";
+    				//     WHUPout<<i.value<<" ";
     				// }
-					std::cout<<std::endl;
+					WHUPout<<std::endl;
 				}
 				E_expr.erase(E_expr.begin());//消去右括号
 	    		indextokens.push_back(temp1);
@@ -268,7 +268,7 @@ Expr::Expr(const std::vector<Token> &expr, Environment *env) : E_expr(expr)
                     indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),E_expr[0].line_number,E_expr[0].file_name});
                 }
 	    		indextokens.push_back(temp2);
-	    		// std::cout<<"index is "<<index<<std::endl;
+	    		// WHUPout<<"index is "<<index<<std::endl;
 	    		// E_expr.erase(E_expr.begin(),E_expr.begin()+2);//删除前两个节点
 	    		temp_dimension--;
 	    	}

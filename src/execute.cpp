@@ -20,6 +20,7 @@ std::unordered_map<std::string,std::string*>runtime_string;//
 
 extern WHUPstream_compile2 WHUPout_c2;
 extern WHUPstream_execute WHUPout_e;
+extern WHUPstream_number WHUPout_number;
 
 
 //对于reference只需要重载一次ASSIGN
@@ -429,7 +430,10 @@ std::vector<runTAC> TAC_to_runTAC(std::vector<ThreeAddressCode> &tacs){
 
 void execute(std::vector<runTAC> runtacs)
 {
-    
+    //不使用科学计数法
+    std::cout.setf(std::ios::fixed);
+    std::cout.unsetf(std::ios::showpoint);
+
     for(int i=0;i<runtacs.size();i++)
     {
         runTAC tac=runtacs[i];//一方面用临时变量更清晰，另一方面用索引记录行数
@@ -553,7 +557,8 @@ void execute(std::vector<runTAC> runtacs)
             }
             else
             {
-                std::cout <<*(float*)*tac.arg1<<std::endl;
+                WHUPout_number <<*(float*)*tac.arg1;
+                std::cout <<std::endl;
             }
         }
         else if(tac.opperator==WINPUT)

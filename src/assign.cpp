@@ -81,11 +81,11 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		    {
 				for(auto i : code)
     			{
-        			std::cout<<i.value<<" ";
+        			WHUPout<<i.value<<" ";
     			}
 				int i=0;
 				assign_matchBracket(code,i);
-				std::cout<<"i is "<<i<<std::endl;
+				WHUPout<<"i is "<<i<<std::endl;
 			    // code.erase(code.begin());
 			    // for(auto i:code)
     			// {
@@ -105,9 +105,9 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 						code.erase(code.begin());
 						// for(auto i : code)
     					// {
-    					//     std::cout<<i.value<<" ";
+    					//     WHUPout<<i.value<<" ";
     					// }
-						std::cout<<std::endl;
+						WHUPout<<std::endl;
 					}
 					indextokens.push_back(temp4);
 				}
@@ -117,9 +117,9 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 					code.erase(code.begin());
 					// for(auto i : code)
     				// {
-    				//     std::cout<<i.value<<" ";
+    				//     WHUPout<<i.value<<" ";
     				// }
-					std::cout<<std::endl;
+					WHUPout<<std::endl;
 				}
 				code.erase(code.begin());//消去右括号
 	    		indextokens.push_back(temp1);
@@ -130,7 +130,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
                     indextokens.push_back({NUMBER,std::to_string(arrs[thisarr].len[temp_dimension-2]),code[0].line_number,code[0].file_name});
                 }
 	    		indextokens.push_back(temp2);
-	    		// std::cout<<"index is "<<index<<std::endl;
+	    		// WHUPout<<"index is "<<index<<std::endl;
 	    		// code.erase(code.begin(),code.begin()+2);//删除前两个节点
 	    		temp_dimension--;
 	    	}
@@ -194,7 +194,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		// }
 
 		Expr* index_expr = new Expr(indextokens,env);//将偏移量表达式建立新的expr
-		std::cout<<"index expr tac.result"<<index_expr->getTacResult()<<std::endl;
+		WHUPout<<"index expr tac.result"<<index_expr->getTacResult()<<std::endl;
 		assign(true,index_expr);
 	}
 }
