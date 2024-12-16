@@ -438,9 +438,12 @@ class Student
     };
     function getScore()
     {
-        return score;
+        print(score);
     };
 };
+
+Student s1(18,150);
+s1->getScore();
 ```
 
 ## 引用
