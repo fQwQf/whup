@@ -12,6 +12,29 @@ extern std::unordered_map<std::string,std::string>var_declares;
 extern WHUPstream_compile1 WHUPout;
 
 
+void assign_matchBracket(std::vector<Token> E_expr,int &i)
+{
+    if (E_expr[i].value == "[")
+    {
+        int leftPar = 1;
+        int rightPar = 0; // 分别记录已经读取的左括号右括号的个数,当相等时即可结束
+        while (leftPar != rightPar)
+        {
+            i++;
+            if (E_expr[i].value == "]")
+            {
+                rightPar++;
+            }
+            else if (E_expr[i].value == "[")
+            {
+                leftPar++;
+            }
+            else
+                continue;
+        }
+    }
+}
+
 Assign::Assign(std::vector<Token> code, Environment* env)
 {
 	bool isArr = false;
@@ -56,14 +79,49 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 			int temp_dimension = arrs[thisarr].dimension;
 			while(temp_dimension>0)
 		    {
-			    code.erase(code.begin());
+				for(auto i : code)
+    			{
+        			WHUPout<<i.value<<" ";
+    			}
+				int i=0;
+				assign_matchBracket(code,i);
+				WHUPout<<"i is "<<i<<std::endl;
+			    // code.erase(code.begin());
 			    // for(auto i:code)
     			// {
 	    		// 	WHUPout<<i.value<<" ";
 	    		// }
-	    		indextokens.push_back(code[0]);
 	    		Token temp1={SYMBOL,"*",code[0].line_number,code[0].file_name};
 	    		Token temp2={SYMBOL,"+",code[0].line_number,code[0].file_name};
+				Token temp3={SYMBOL,"(",code[0].line_number,code[0].file_name};
+                Token temp4={SYMBOL,")",code[0].line_number,code[0].file_name};
+				code.erase(code.begin());//消去左括号
+				if(i>2)
+				{
+					indextokens.push_back(temp3);
+					for(int j=0;j<i-1;j++)
+					{
+						indextokens.push_back(code[0]);
+						code.erase(code.begin());
+						// for(auto i : code)
+    					// {
+    					//     WHUPout<<i.value<<" ";
+    					// }
+						WHUPout<<std::endl;
+					}
+					indextokens.push_back(temp4);
+				}
+				else
+				{
+					indextokens.push_back(code[0]);
+					code.erase(code.begin());
+					// for(auto i : code)
+    				// {
+    				//     WHUPout<<i.value<<" ";
+    				// }
+					WHUPout<<std::endl;
+				}
+				code.erase(code.begin());//消去右括号
 	    		indextokens.push_back(temp1);
                 if(temp_dimension==1)
 	    		{
@@ -73,7 +131,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
                 }
 	    		indextokens.push_back(temp2);
 	    		// WHUPout<<"index is "<<index<<std::endl;
-	    		code.erase(code.begin(),code.begin()+2);//删除前两个节点
+	    		// code.erase(code.begin(),code.begin()+2);//删除前两个节点
 	    		temp_dimension--;
 	    	}
 			indextokens.pop_back();//删除最后一个加号
@@ -136,6 +194,7 @@ Assign::Assign(std::vector<Token> code, Environment* env)
 		// }
 
 		Expr* index_expr = new Expr(indextokens,env);//将偏移量表达式建立新的expr
+		WHUPout<<"index expr tac.result"<<index_expr->getTacResult()<<std::endl;
 		assign(true,index_expr);
 	}
 }

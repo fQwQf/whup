@@ -7,6 +7,7 @@ bool print_e = false;
 WHUPstream_compile1 WHUPout;
 WHUPstream_compile2 WHUPout_c2;
 WHUPstream_execute WHUPout_e;
+WHUPstream_number WHUPout_number;
 
 WHUPstream::WHUPstream(): std::ostream(this){}
 

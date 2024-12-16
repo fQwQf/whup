@@ -1,0 +1,66 @@
+number prime[1000000];
+number isComposite[1000000];
+var len_prime = 1;
+
+function sieve(n:number){
+    
+    i = 2;
+    while(i <= n){
+        if(isComposite[i] == 0) {
+            prime[len_prime] = i;
+            len_prime = len_prime + 1;
+            print("???");
+        };
+        j = 0;
+        while(j < len_prime){
+            if(i * prime[j] > n){
+                break;
+            };
+            isComposite[i * prime[j]] = 1;
+            if((i % prime[j]) == 0){
+                break;
+            };
+            j = j + 1;
+        };
+        i = i + 1;
+    };
+    
+};
+sieve(1000000);
+
+k = 0;
+while(k < 1000000){
+    isComposite[k] = 0;
+    k = k + 1;
+};
+print ("???");
+
+
+i = 2;
+    while(i <= 1000000){
+        if(isComposite[i] == 0) {
+            prime[len_prime] = i;
+            len_prime = len_prime + 1;
+            print("point1");
+        };
+        j = 0;
+        while(j < (len_prime+1)){
+            if(i * prime[j] > 1000000){
+                break;
+            };
+            isComposite[i * prime[j]] = 1;
+            if((i % prime[j]) == 0){
+                break;
+            };
+            j = j + 1;
+        };
+        i = i + 1;
+    };
+
+i=0;
+while(i<len_prime){
+    print(prime[i]);
+    print(89);
+    i = i + 1;
+};
+print ("???");
